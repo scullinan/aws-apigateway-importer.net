@@ -1,0 +1,81 @@
+{
+	"swagger": "2.0",
+	"info": {
+		"version": "v1",
+		"title": "API"
+	},
+	"host": "brand.intelliflo.com:443",
+	"schemes": ["https"],
+	"paths": {
+		"/v1/brands": {
+			"get": {
+				"tags": ["AnonymousBrandController"],
+				"summary": "Find brands based on filters, this API may be called using client credentials flow i.e. user may be unauthenticated",
+				"operationId": "AnonymousBrand_FindForAnonymous",
+				"consumes": [],
+				"produces": ["application/json",
+				"text/json",
+				"application/hal+json"],
+				"parameters": [{
+					"name": "application",
+					"in": "query",
+					"description": "Application property of the brand",
+					"required": true,
+					"type": "string"
+				},
+				{
+					"name": "uri",
+					"in": "query",
+					"description": "Uri property of the brand",
+					"required": true,
+					"type": "string"
+				}],
+				"responses": {
+					"404": {
+						"description": "uri filter not provided"
+					}
+				},
+				"deprecated": false,
+				"security": [{
+					"oauth2": ["brand"]
+				}],
+				"x-amazon-apigateway-auth": {
+					"type": "none"
+				},
+				"x-amazon-apigateway-integration": {
+					"type": "http",
+					"uri": "https://uat-brand.intelliflo.com/v1/brands",
+					"httpMethod": "GET",
+					"requestParameters": {
+						"integration.request.querystring.application": "method.request.querystring.application",
+						"integration.request.querystring.uri": "method.request.querystring.uri"
+					},
+					"cacheNamespace": "cache-namespace",
+					"cacheKeyParameters": [],
+					"responses": {
+						"2\\d{2}": {
+							"statusCode": "200"
+						},
+						"default": {
+							"statusCode": "400"
+						}
+					}
+				}
+			}
+		}
+	},
+	"securityDefinitions": {
+		"oauth2": {
+			"type": "oauth2",
+			"description": "OAuth2 Implicit Grant",
+			"flow": "implicit",
+			"authorizationUrl": "https://identity.mypfp.co.uk/core/connect/authorize",
+			"tokenUrl": "https://identity.mypfp.co.uk/core/connect/token",
+			"scopes": {
+				"openid": "openid",
+				"myprofile": "myprofile",
+				"brand": "Brand"
+			}
+		}
+	}
+}
