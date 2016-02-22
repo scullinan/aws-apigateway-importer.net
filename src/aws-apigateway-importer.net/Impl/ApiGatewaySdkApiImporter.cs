@@ -180,5 +180,10 @@ namespace aws_apigateway_importer.net.Impl
         {
             return (string.IsNullOrEmpty(p1) && string.IsNullOrEmpty(p2)) || p1.Equals(p2);
         }
+
+        protected string GetStringValue(object obj)
+        {
+            return obj == null ? null : Convert.ToString(obj);  // use null value instead of "null"
+        }
     }
 }

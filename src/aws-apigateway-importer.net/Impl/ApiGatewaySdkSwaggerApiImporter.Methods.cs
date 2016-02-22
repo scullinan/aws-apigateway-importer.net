@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Threading.Tasks;
 using Amazon.APIGateway.Model;
 
@@ -9,9 +10,9 @@ namespace aws_apigateway_importer.net.Impl
     //Methods
     public partial class ApiGatewaySdkSwaggerApiImporter
     {
-        private void CreateMethods(RestApi api, Resource resource, PathItem path, IList<string> apiProduces)
+        private async Task CreateMethods(RestApi api, Resource resource, PathItem path, IList<string> apiProduces)
         {
-            var ops = GetOperations(path);
+            var ops = await GetOperations(path);
 
             ops.ForEach(async x => { 
                 await CreateMethod(api, resource, x.Key, x.Value, GetProducesContentType(apiProduces, x.Value.Produces));
@@ -19,7 +20,7 @@ namespace aws_apigateway_importer.net.Impl
             });
         }
 
-        private IDictionary<string, Operation> GetOperations(PathItem path)
+        private async Task<IDictionary<string, Operation>> GetOperations(PathItem path)
         {
             IDictionary<string, Operation> ops = new Dictionary<string, Operation>();
 
@@ -30,7 +31,7 @@ namespace aws_apigateway_importer.net.Impl
             AddOp(ops, "options", path.Options);
             AddOp(ops, "patch", path.Patch);
 
-            return ops;
+            return await Task.FromResult(ops);
         }
 
         private void AddOp(IDictionary<string, Operation> ops, string method, Operation operation)
@@ -46,7 +47,9 @@ namespace aws_apigateway_importer.net.Impl
             var input = new PutMethodRequest
             {
                 AuthorizationType = GetAuthorizationType(op),
-                ApiKeyRequired = IsApiKeyRequired(op)
+                ApiKeyRequired = IsApiKeyRequired(op),
+                RestApiId = api.Id,
+                ResourceId = resource.Id
             };
 
             // set input model if present in body
@@ -83,19 +86,31 @@ namespace aws_apigateway_importer.net.Impl
 
             // create method
             input.HttpMethod = httpMethod.ToUpper();
-            var method = await Client.PutMethodAsync(input);
+            var result = await Client.PutMethodAsync(input);
 
-            await CreateMethodResponses(api, method, modelContentType, op.Responses);
-            CreateMethodParameters(api, method, op.Parameters);
-            CreateIntegration(method, op.VendorExtensions);
+            var method = new Method()
+            {
+                HttpMethod = result.HttpMethod,
+                ApiKeyRequired = result.ApiKeyRequired,
+                AuthorizationType = result.AuthorizationType,
+                MethodIntegration = result.MethodIntegration,
+                MethodResponses = result.MethodResponses,
+                RequestModels = result.RequestModels,
+                RequestParameters = result.RequestParameters
+            };
+
+
+            await CreateMethodResponses(api, resource, method, modelContentType, op.Responses);
+            await CreateMethodParameters(api, resource, method, op.Parameters);
+            await CreateIntegration(api, resource, method, op.VendorExtensions);
         }
 
         private string GetAuthorizationType(Operation op)
         {
             var authType = "NONE";
-            if (op.VendorExtensions != null)
+            if (op.VendorExtensions != null && op.VendorExtensions.ContainsKey(EXTENSION_AUTH))
             {
-                var authExtension = (IDictionary<string, string>)op.VendorExtensions[(EXTENSION_AUTH];
+                var authExtension = op.VendorExtensions[EXTENSION_AUTH] as IDictionary<string, string>;
 
                 if (authExtension != null)
                 {
@@ -152,6 +167,11 @@ namespace aws_apigateway_importer.net.Impl
             return string.Empty;
         }
 
+        string GenerateModelName(Response response)
+        {
+            return GenerateModelName(response.Description);
+        }
+
         private string GenerateModelName(Parameter param)
         {
             return GenerateModelName(param.Description);
@@ -174,73 +194,35 @@ namespace aws_apigateway_importer.net.Impl
             return "[^A-Za-z0-9]";
         }
 
-        private async Task CreateMethodResponses(RestApi api, PutMethodResponse method, string modelContentType, IDictionary<string, Response> responses)
-        {
-            if (responses == null)
-            {
-                return;
-            }
-
-            // add responses from swagger
-            responses.ForEach(async x => {
-
-                if (x.Key.Equals("default"))
-                {
-                    Log.Warn("Default response not supported, skipping");
-                }
-                else
-                {
-                    Log.InfoFormat("Creating method response for api {0} and method {1} and status {2}", api.Id, method.HttpMethod, x.Key);
-
-                    var request = GetCreateResponseInput(api, modelContentType, x.Value);
-                    request.StatusCode = x.Key;
-
-
-                    await Client.PutMethodResponseAsync(request);
-                }
-            });
-        }
-
-        private PutMethodResponseRequest GetCreateResponseInput(RestApi api, String modelContentType, Response response)
+        private async Task<Model> GetModel(RestApi api, Response response)
         {
 
-            PutMethodResponseRequest input = new PutMethodResponseRequest();
+            string modelName;
 
-            // add response headers
-            if (response.Headers != null)
+            // if the response references a proper model, look for a model matching the model name
+            if (response.Schema != null && response.Schema.Type.Equals("ref"))
             {
-                input.ResponseParameters = new Dictionary<string, bool>();
-                response.getHeaders().entrySet().forEach(
-                        e->input.getResponseParameters().put("method.response.header." + e.getKey(), e.getValue().getRequired()));
-            }
-
-            // if the schema references an existing model, use that model for the response
-            Optional<Model> modelOpt = getModel(api, response);
-            if (modelOpt.isPresent())
-            {
-                input.setResponseModels(new HashMap<>());
-                String modelName = modelOpt.get().getName();
-                input.getResponseModels().put(modelContentType, modelName);
-                this.processedModels.add(modelName);
-                LOG.info("Found reference to existing model " + modelName);
+                modelName = response.Schema.Ref;
             }
             else
             {
-                // generate a model based on the schema if the model doesn't already exist
-                if (response.getSchema() != null)
-                {
-                    String modelName = generateModelName(response);
-
-                    LOG.info("Creating new model referenced from response: " + modelName);
-
-                    createModel(api, modelName, response.getSchema(), modelContentType);
-
-                    input.setResponseModels(new HashMap<>());
-                    input.getResponseModels().put(modelContentType, modelName);
-                }
+                // if the response has an embedded schema, look for a model matching the generated name
+                modelName = GenerateModelName(response);
             }
 
-            return input;
+            try
+            {
+                var result = await Client.GetModelAsync(new GetModelRequest() { ModelName = modelName });
+                return new Model()
+                {
+                    Description = result.Description,
+                    ContentType = result.ContentType,
+                    
+                };
+            }
+            catch (Exception ignored) { }
+
+            return null;
         }
     }
 }

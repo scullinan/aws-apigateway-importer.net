@@ -13,21 +13,21 @@ namespace aws_apigateway_importer.net.Impl
             Resource existingResource = await GetResource(api, parentResourceId, part);
 
             // create resource if doesn't exist
-            if (existingResource != null)
+            if (existingResource == null)
             {
                 Log.InfoFormat("Creating resource '{0}' on {1}", part, parentResourceId);
 
                var resource = await Client.CreateResourceAsync(new CreateResourceRequest()
                 {
-                    ParentId = parentResourceId,
-                    PathPart = part,
-                    RestApiId = api.Id
+                   RestApiId = api.Id,
+                   ParentId = parentResourceId,
+                   PathPart = part
                 });
 
                 return new Resource() {
+                    Id = resource.Id,
                     ParentId = resource.ParentId,
                     PathPart = resource.PathPart,
-                    Id = resource.Id,
                     Path = resource.Path,
                     ResourceMethods = resource.ResourceMethods
                 };
@@ -36,7 +36,7 @@ namespace aws_apigateway_importer.net.Impl
             var result = await Client.GetResourceAsync(new GetResourceRequest()
             {
                 RestApiId = api.Id,
-                ResourceId = existingResource.Id
+                ResourceId = parentResourceId
             });
 
             return new Resource()
@@ -45,7 +45,7 @@ namespace aws_apigateway_importer.net.Impl
                 PathPart = result.PathPart,
                 Id = result.Id,
                 Path = result.Path,
-                ResourceMethods = result.ResourceMethods
+                ResourceMethods = result.ResourceMethods 
             };
         }
 
@@ -70,11 +70,9 @@ namespace aws_apigateway_importer.net.Impl
                 if (createMethods)
                 {
                     // create methods on the leaf resource for each path
-                    CreateMethods(api, parentResource, path.Value, apiProduces);
+                    await CreateMethods(api, parentResource, path.Value, apiProduces);
                 }
             }
         }
-
-        
     }
 }

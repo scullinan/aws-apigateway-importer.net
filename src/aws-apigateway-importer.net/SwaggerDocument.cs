@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using Newtonsoft.Json;
 
 namespace aws_apigateway_importer.net
@@ -174,6 +175,7 @@ namespace aws_apigateway_importer.net
     public class Header : PartialSchema
     {
         public string Description;
+        public bool Required;
     }
 
     public class Xml

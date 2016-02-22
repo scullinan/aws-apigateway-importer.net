@@ -34,7 +34,12 @@ namespace aws_apigateway_importer.net.Impl
 
             await CreateModel(api, modelName, model.Description, GenerateSchema(model, modelName, definitions), modelContentType);
         }
+
+        private async Task CreateModel(RestApi api, String modelName, Schema model, string modelContentType)
+        {
+            Log.InfoFormat("Creating model for api id {0} with name {1}", api.Id, modelName);
+
+            await CreateModel(api, modelName, model.Description, GenerateSchema(model, modelName, Swagger.Definitions), modelContentType);
+        }
     }
-
-
 }

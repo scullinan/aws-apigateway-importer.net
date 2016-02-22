@@ -67,6 +67,7 @@
     <Compile Include="Impl\ApiGatewaySdkApiImporter.cs" />
     <Compile Include="Impl\ApiGatewaySdkSwaggerApiImporter.cs" />
     <Compile Include="Impl\ApiGatewaySdkSwaggerApiImporter.Methods.cs" />
+    <Compile Include="Impl\ApiGatewaySdkSwaggerApiImporter.Methods.Responses.cs" />
     <Compile Include="Impl\ApiGatewaySdkSwaggerApiImporter.Models.cs" />
     <Compile Include="Impl\ApiGatewaySdkSwaggerApiImporter.Resources.cs" />
     <Compile Include="Impl\ApiGatewaySwaggerApiFileImporter.cs" />
@@ -81,8 +82,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <Compile Include="Impl\ApiGatewaySdkSwaggerApiImporter.Methods.Parameters.cs" />
+    <Compile Include="Impl\ApiGatewaySdkSwaggerApiImporter.Methods.Integrations.cs" />
     <None Include="packages.config" />
-    <None Include="swagger.json" />
+    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\..\packages\AWSSDK.APIGateway.3.2.2.0-beta\analyzers\dotnet\cs\AWSSDK.APIGateway.CodeAnalysis.dll" />
