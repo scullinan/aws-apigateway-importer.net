@@ -4,7 +4,7 @@ using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace aws_apigateway_importer.net.Impl
+namespace AWS.APIGateway.Impl
 {
     public class ApiGatewaySwaggerApiFileImporter : ISwaggerApiFileImporter
     {

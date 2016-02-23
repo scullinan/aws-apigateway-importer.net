@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 using Amazon.APIGateway;
 using Amazon.APIGateway.Model;
 using log4net;
 
-namespace aws_apigateway_importer.net.Impl
+namespace AWS.APIGateway.Impl
 {
     public class ApiGatewaySdkApiImporter
     {

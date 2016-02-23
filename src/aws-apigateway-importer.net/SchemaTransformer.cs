@@ -6,7 +6,7 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
 using Newtonsoft.Json.Serialization;
 
-namespace aws_apigateway_importer.net
+namespace AWS.APIGateway
 {
     public class SchemaTransformer
     {

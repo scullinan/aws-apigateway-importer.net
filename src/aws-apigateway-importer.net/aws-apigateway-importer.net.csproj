@@ -7,8 +7,8 @@
     <ProjectGuid>{365747C1-AE08-4795-903F-C25152D2967B}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>aws_apigateway_importer.net</RootNamespace>
-    <AssemblyName>aws-apigateway-importer.net</AssemblyName>
+    <RootNamespace>AWS.APIGateway</RootNamespace>
+    <AssemblyName>aws-api-import</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -87,7 +87,6 @@
     <Compile Include="Impl\ApiGatewaySdkSwaggerApiImporter.Methods.Parameters.cs" />
     <Compile Include="Impl\ApiGatewaySdkSwaggerApiImporter.Methods.Integrations.cs" />
     <None Include="packages.config" />
-    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\..\packages\AWSSDK.APIGateway.3.2.2.0-beta\analyzers\dotnet\cs\AWSSDK.APIGateway.CodeAnalysis.dll" />

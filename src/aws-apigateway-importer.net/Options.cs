@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using CommandLine;
 
-namespace aws_apigateway_importer.net
+namespace AWS.APIGateway
 {
     public class Options
     {

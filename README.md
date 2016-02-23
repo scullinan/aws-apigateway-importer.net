@@ -1,6 +1,6 @@
 # Amazon API Gateway Importer.Net 
 ##### Based on [aws-apigateway-importer] : https://github.com/awslabs/aws-apigateway-importer
-The **Amazon API Gateway Importer** lets you create or update [Amazon API Gateway][service-page] APIs from a Swagger or RAML API representation.
+The **Amazon API Gateway Importer** lets you create or update [Amazon API Gateway][service-page] APIs from a Swagger representation.
 
 To learn more about API Gateway, please see the [service documentation][service-docs] or the [API documentation][api-docs].
 
@@ -17,32 +17,27 @@ This tool requires AWS credentials to be configured in at least one of the locat
 
 It will look for configured credentials in environment variables, Java system properties, [AWS SDK/CLI](http://aws.amazon.com/cli) profile credentials, and EC2 instance profile credentials.
 
-#### Build
-
-Build with `mvn assembly:assembly`
-
 ### Import a new API
 
 ```sh
-./aws-api-import.sh --create --files path/to/swagger.json
+./aws-api-import --create --files path/to/swagger.json
 
-./aws-api-import.sh -c --files path/to/api.raml
+./aws-api-import -c --files path/to/api.raml
 ```
 
 ### Update an existing API and deploy it to a stage
 
 ```sh
-./aws-api-import.sh --update API_ID --deploy STAGE_NAME --files path/to/swagger.yaml
+./aws-api-import --update API_ID --deploy STAGE_NAME --files path/to/swagger.yaml
 
-./aws-api-import.sh --update API_ID --deploy STAGE_NAME --raml-config --files path/to/config.json path/to/api.raml
+./aws-api-import --update API_ID --deploy STAGE_NAME --raml-config --files path/to/config.json path/to/api.raml
 ```
 
 For Windows environments replace `./aws-api-import.sh` with `./aws-api-import.cmd` in the examples.
 
 ### API Gateway Extension Example
 
-You can fully define an API Gateway API in Swagger using the `x-amazon-apigateway-auth` and `x-amazon-apigateway-integration` extensions,
-or in RAML using an external configuration file.
+You can fully define an API Gateway API in Swagger using the `x-amazon-apigateway-auth` and `x-amazon-apigateway-integration` extensions.
 
 Defined on an Operation:
 
@@ -89,10 +84,4 @@ Defined on an Operation:
        }
    }
 }
-```
-
-## Testing
-
-```sh
-mvn test
 ```

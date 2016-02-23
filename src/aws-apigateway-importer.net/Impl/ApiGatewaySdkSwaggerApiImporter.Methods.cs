@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
 using System.Threading.Tasks;
 using Amazon.APIGateway.Model;
 
-namespace aws_apigateway_importer.net.Impl
+namespace AWS.APIGateway.Impl
 {
     //Methods
     public partial class ApiGatewaySdkSwaggerApiImporter

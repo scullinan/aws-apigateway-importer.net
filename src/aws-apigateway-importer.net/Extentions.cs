@@ -4,7 +4,7 @@ using System.Linq;
 using Amazon.APIGateway.Model;
 using Newtonsoft.Json.Linq;
 
-namespace aws_apigateway_importer.net
+namespace AWS.APIGateway
 {
     public static class Extentions
     {

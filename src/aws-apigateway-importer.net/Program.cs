@@ -1,12 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using aws_apigateway_importer.net.Impl;
+using AWS.APIGateway.Impl;
 using CommandLine;
 using log4net;
 using log4net.Config;
 
-namespace aws_apigateway_importer.net
+namespace AWS.APIGateway
 {
     class Program
     {

@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Amazon.APIGateway.Model;
 
-namespace aws_apigateway_importer.net.Impl
+namespace AWS.APIGateway.Impl
 {
     //Resources
     public partial class ApiGatewaySdkSwaggerApiImporter

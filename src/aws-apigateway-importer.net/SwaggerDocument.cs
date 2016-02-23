@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
-using aws_apigateway_importer.net.Impl;
+using AWS.APIGateway.Impl;
 using Newtonsoft.Json;
 
-namespace aws_apigateway_importer.net
+namespace AWS.APIGateway
 {
     public class SwaggerDocument
     {

@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Amazon.APIGateway;
 using Amazon.APIGateway.Model;
 using Newtonsoft.Json.Linq;
 
-namespace aws_apigateway_importer.net.Impl
+namespace AWS.APIGateway.Impl
 {
     public partial class ApiGatewaySdkSwaggerApiImporter
     {
