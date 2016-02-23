@@ -56,6 +56,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Net.Http.WebRequest" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -72,6 +73,7 @@
     <Compile Include="Impl\ApiGatewaySdkSwaggerApiImporter.Resources.cs" />
     <Compile Include="Impl\ApiGatewaySwaggerApiFileImporter.cs" />
     <Compile Include="Extentions.cs" />
+    <Compile Include="Impl\VendorExtensionsConverter.cs" />
     <Compile Include="ISwaggerApiFileImporter.cs" />
     <Compile Include="ISwaggerApiImporter.cs" />
     <Compile Include="Options.cs" />

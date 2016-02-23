@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.Eventing.Reader;
+using aws_apigateway_importer.net.Impl;
 using Newtonsoft.Json;
 
 namespace aws_apigateway_importer.net
@@ -64,6 +65,7 @@ namespace aws_apigateway_importer.net
         public Dictionary<string, object> VendorExtensions = new Dictionary<string, object>();
     }
 
+    [JsonConverter(typeof(VendorExtensionsConverter))]
     public class Operation
     {
         public IList<string> Tags;

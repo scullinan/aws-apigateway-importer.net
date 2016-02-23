@@ -44,8 +44,8 @@ namespace aws_apigateway_importer.net.Impl
 
         private static SwaggerDocument Import(string filePath)
         {
-            var serializer = new JsonSerializer {ContractResolver = new CamelCasePropertyNamesContractResolver()};
-
+            var serializer = new JsonSerializer {ContractResolver = new CamelCasePropertyNamesContractResolver(), NullValueHandling = NullValueHandling.Ignore };
+    
             var sr = new StreamReader(filePath);
             return serializer.Deserialize<SwaggerDocument>(new JsonTextReader(sr));
         }

@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Amazon.APIGateway;
 using Amazon.APIGateway.Model;
+using Newtonsoft.Json.Linq;
 
 namespace aws_apigateway_importer.net.Impl
 {
@@ -18,8 +16,8 @@ namespace aws_apigateway_importer.net.Impl
                 return;
             }
 
-            var integ = (IDictionary <string, Dictionary<string, string>> )vendorExtensions[EXTENSION_INTEGRATION];
-			var type = IntegrationType.FindValue(integ["type"].ToString().ToUpper()); 
+            var integ = (JObject)vendorExtensions[EXTENSION_INTEGRATION];
+            var type = IntegrationType.FindValue(GetStringValue(integ["type"]).ToUpper());
 
             Log.InfoFormat("Creating integration with type {0}", type);
 
@@ -31,38 +29,45 @@ namespace aws_apigateway_importer.net.Impl
                 Uri = GetStringValue(integ["uri"]),
                 Credentials = GetStringValue(integ["credentials"]),
                 HttpMethod = GetStringValue(integ["httpMethod"]),
-                RequestParameters = integ["requestParameters"],
-                RequestTemplates = integ["requestParameters"],
+                IntegrationHttpMethod = GetStringValue(integ["httpMethod"]),
+                RequestParameters = integ["requestParameters"]?.ToObject<Dictionary<string, string>>(),
+                RequestTemplates =  integ["requestTemplates"]?.ToObject<Dictionary<string, string>>(),
                 CacheNamespace = GetStringValue(integ["cacheNamespace"]),
-                CacheKeyParameters = integ["cacheKeyParameters"].Select(x => x.Value).ToList()
+                CacheKeyParameters = integ["cacheKeyParameters"]?.ToObject<List<string>>()
             };
 
             var integration = await Client.PutIntegrationAsync(request);
 
-            await CreateIntegrationResponses(integration, integ);
+            await CreateIntegrationResponses(api, resource, integration, integ.ToDictionary());
         }
 
-        private async Task CreateIntegrationResponses(PutIntegrationResponse integration, IDictionary<string, Dictionary<string, string>> integ)
+        private async Task CreateIntegrationResponses(RestApi api, Resource resource, PutIntegrationResponse integration, IDictionary<string, object> integ)
         {
             // todo: avoid unchecked casts
-			var responses = (IDictionary<string, Dictionary<string, object>>)integ["responses"];
+            var responses = integ.ToDictionary<string, object>("responses");
 
             responses.ForEach(async e => {
                 var pattern = e.Key.Equals("default") ? null : e.Key;
-                var response = e.Value;
+                var response = e.Value as IDictionary<string, object>;
 
-                var status = response["statusCode"].ToString();
+                if(response != null) { 
+                    var status = response["statusCode"].ToString();
+                    var responseParams = response.ToDictionary<string, string>("responseParameters");
+                    var responseTemplates = response.ToDictionary<string, string>("responseTemplates");
 
-                var request = new PutIntegrationResponseRequest()
-                {
-                    ResponseParameters = (Dictionary<string, string>)response["responseParameters"],
-					ResponseTemplates = (Dictionary<string, string>)response["responseTemplates"],
-					SelectionPattern = pattern,
-					StatusCode = status
+                    var request = new PutIntegrationResponseRequest()
+                    {
+                        RestApiId = api.Id,
+                        ResourceId = resource.Id,
+                        HttpMethod = integration.HttpMethod,
+                        ResponseParameters = responseParams,
+					    ResponseTemplates = responseTemplates,
+					    SelectionPattern = pattern,
+					    StatusCode = status
+                    };
 
-                };
-
-                await Client.PutIntegrationResponseAsync(request);
+                    await Client.PutIntegrationResponseAsync(request);
+                }
             });
         }
     }
