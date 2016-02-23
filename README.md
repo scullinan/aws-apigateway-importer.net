@@ -13,7 +13,7 @@ To learn more about API Gateway, please see the [service documentation][service-
 ### Prerequisites
 
 #### Credentials
-This tool requires AWS credentials to be configured in at least one of the locations specified by the [default credential provider chain](http://docs.aws.amazon.com/AWSSdkDocsJava/latest/DeveloperGuide/credentials.html).
+This tool requires AWS credentials to be configured in at least one of the locations specified by the [default credential provider chain](http://docs.aws.amazon.com/AWSSdkDocsNET/V2/DeveloperGuide/net-dg-config-creds.html).
 
 It will look for configured credentials in environment variables, Java system properties, [AWS SDK/CLI](http://aws.amazon.com/cli) profile credentials, and EC2 instance profile credentials.
 
@@ -22,7 +22,6 @@ It will look for configured credentials in environment variables, Java system pr
 ```sh
 ./aws-api-import --create --files path/to/swagger.json
 
-./aws-api-import -c --files path/to/api.raml
 ```
 
 ### Update an existing API and deploy it to a stage
@@ -30,10 +29,7 @@ It will look for configured credentials in environment variables, Java system pr
 ```sh
 ./aws-api-import --update API_ID --deploy STAGE_NAME --files path/to/swagger.yaml
 
-./aws-api-import --update API_ID --deploy STAGE_NAME --raml-config --files path/to/config.json path/to/api.raml
 ```
-
-For Windows environments replace `./aws-api-import.sh` with `./aws-api-import.cmd` in the examples.
 
 ### API Gateway Extension Example
 
