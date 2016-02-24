@@ -25,7 +25,7 @@ It will look for configured credentials in environment variables, Java system pr
 
 ```
 
-### Update an existing API and deploy it to a stage
+### Update an existing API and deploy it to a stage (To be Implemented)
 
 ```sh
 ./aws-api-import --update API_ID --deploy STAGE_NAME --files path/to/swagger.yaml
