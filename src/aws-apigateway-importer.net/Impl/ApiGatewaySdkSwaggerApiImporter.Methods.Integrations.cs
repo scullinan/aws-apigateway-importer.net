@@ -45,11 +45,13 @@ namespace AWS.APIGateway.Impl
             // todo: avoid unchecked casts
             var responses = integ.ToDictionary<string, object>("responses");
 
-            responses.ForEach(async e => {
+            responses?.ForEach(async e =>
+            {
                 var pattern = e.Key.Equals("default") ? null : e.Key;
                 var response = e.Value as IDictionary<string, object>;
 
-                if(response != null) { 
+                if (response != null)
+                {
                     var status = response["statusCode"].ToString();
                     var responseParams = response.ToDictionary<string, string>("responseParameters");
                     var responseTemplates = response.ToDictionary<string, string>("responseTemplates");
@@ -60,9 +62,9 @@ namespace AWS.APIGateway.Impl
                         ResourceId = resource.Id,
                         HttpMethod = integration.HttpMethod,
                         ResponseParameters = responseParams,
-					    ResponseTemplates = responseTemplates,
-					    SelectionPattern = pattern,
-					    StatusCode = status
+                        ResponseTemplates = responseTemplates,
+                        SelectionPattern = pattern,
+                        StatusCode = status
                     };
 
                     await Client.PutIntegrationResponseAsync(request);
