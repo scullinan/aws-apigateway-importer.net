@@ -1,5 +1,5 @@
 # Amazon API Gateway Importer.Net 
-##### Based on [aws-apigateway-importer] : https://github.com/awslabs/aws-apigateway-importer
+##### Based on [aws-apigateway-importer]: https://github.com/awslabs/aws-apigateway-importer
 The **Amazon API Gateway Importer** lets you create or update [Amazon API Gateway][service-page] APIs from a Swagger representation.
 
 To learn more about API Gateway, please see the [service documentation][service-docs] or the [API documentation][api-docs].
