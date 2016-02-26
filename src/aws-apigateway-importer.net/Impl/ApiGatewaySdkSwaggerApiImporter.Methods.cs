@@ -10,17 +10,17 @@ namespace AWS.APIGateway.Impl
     //Methods
     public partial class ApiGatewaySdkSwaggerApiImporter
     {
-        private async Task CreateMethods(RestApi api, Resource resource, PathItem path, IList<string> apiProduces)
+        private void CreateMethods(RestApi api, Resource resource, PathItem path, IList<string> apiProduces)
         {
-            var ops = await GetOperations(path);
+            var ops = GetOperations(path);
 
-            ops.ForEach(async x => { 
-                await CreateMethod(api, resource, x.Key, x.Value, GetProducesContentType(apiProduces, x.Value.Produces));
+            ops.ForEach(x => { 
+                CreateMethod(api, resource, x.Key, x.Value, GetProducesContentType(apiProduces, x.Value.Produces));
                 Log.InfoFormat("Creating method for api id {0} and resource id {1} with method {2}", api.Id, resource.Id, x.Key);
             });
         }
 
-        private async Task<IDictionary<string, Operation>> GetOperations(PathItem path)
+        private IDictionary<string, Operation> GetOperations(PathItem path)
         {
             IDictionary<string, Operation> ops = new Dictionary<string, Operation>();
 
@@ -31,7 +31,7 @@ namespace AWS.APIGateway.Impl
             AddOp(ops, "options", path.Options);
             AddOp(ops, "patch", path.Patch);
 
-            return await Task.FromResult(ops);
+            return ops;
         }
 
         private void AddOp(IDictionary<string, Operation> ops, string method, Operation operation)
@@ -42,7 +42,7 @@ namespace AWS.APIGateway.Impl
             }
         }
 
-        public async Task CreateMethod(RestApi api, Resource resource, string httpMethod, Operation op, string modelContentType)
+        public void CreateMethod(RestApi api, Resource resource, string httpMethod, Operation op, string modelContentType)
         {
             var input = new PutMethodRequest
             {
@@ -53,7 +53,7 @@ namespace AWS.APIGateway.Impl
             };
 
             // set input model if present in body
-            op.Parameters.Where(x => x.In.Equals("body")).ForEach(async p => {
+            op.Parameters.Where(x => x.In.Equals("body")).ForEach(p => {
                 //BodyParameter bodyParam = (BodyParameter)p;
 
                 var inputModel = GetInputModel(p);
@@ -79,14 +79,14 @@ namespace AWS.APIGateway.Impl
                         throw new ArgumentException("Body parameter '{0}' + must have a schema defined", p.Name);
                     }
 
-                    await CreateModel(api, modelName, p.Schema, Swagger.Definitions, modelContentType);
+                    CreateModel(api, modelName, p.Schema, Swagger.Definitions, modelContentType);
                     input.RequestModels[modelContentType] = modelName;
                 }
             });
 
             // create method
             input.HttpMethod = httpMethod.ToUpper();
-            var result = await Client.PutMethodAsync(input);
+            var result = Client.PutMethod(input);
 
             var method = new Method()
             {
@@ -100,35 +100,26 @@ namespace AWS.APIGateway.Impl
             };
 
 
-            await CreateMethodResponses(api, resource, method, modelContentType, op.Responses);
-            await CreateMethodParameters(api, resource, method, op.Parameters);
-            await CreateIntegration(api, resource, method, op.VendorExtensions);
+            CreateMethodResponses(api, resource, method, modelContentType, op.Responses);
+            CreateMethodParameters(api, resource, method, op.Parameters);
+            CreateIntegration(api, resource, method, op.VendorExtensions);
         }
 
         private string GetAuthorizationType(Operation op)
         {
             var authType = "NONE";
+
             if (op.VendorExtensions != null && op.VendorExtensions.ContainsKey(EXTENSION_AUTH))
             {
-                var authExtension = op.VendorExtensions[EXTENSION_AUTH] as IDictionary<string, string>;
+                var vendorExtension = op.VendorExtensions[EXTENSION_AUTH] as JObject;
+
+                var authExtension = vendorExtension?.ToObject<Dictionary<string, string>>();
 
                 if (authExtension != null)
                 {
                     authType = authExtension["type"].ToUpper();
                 }
             }
-
-            //if (op.VendorExtensions != null && op.VendorExtensions.ContainsKey(EXTENSION_AUTH))
-            //{
-            //    var vendorExtension = op.VendorExtensions[EXTENSION_AUTH] as JObject;
-
-            //    var authExtension = vendorExtension?.ToObject<Dictionary<string, string>>();
-
-            //    if (authExtension != null)
-            //    {
-            //        authType = authExtension["type"].ToUpper();
-            //    }
-            //}
 
             return authType;
         }
@@ -206,7 +197,7 @@ namespace AWS.APIGateway.Impl
             return "[^A-Za-z0-9]";
         }
 
-        private async Task<Model> GetModel(RestApi api, Response response)
+        private Model GetModel(RestApi api, Response response)
         {
 
             string modelName;
@@ -224,7 +215,7 @@ namespace AWS.APIGateway.Impl
 
             try
             {
-                var result = await Client.GetModelAsync(new GetModelRequest() { ModelName = modelName });
+                var result = Client.GetModel(new GetModelRequest() { ModelName = modelName });
                 return new Model()
                 {
                     Description = result.Description,

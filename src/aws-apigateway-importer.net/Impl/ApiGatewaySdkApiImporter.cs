@@ -18,7 +18,7 @@ namespace AWS.APIGateway.Impl
             Client = new AmazonAPIGatewayClient();
         }
 
-        protected async Task<CreateRestApiResponse> CreateApi(string name, string description)
+        protected CreateRestApiResponse CreateApi(string name, string description)
         {
             Log.InfoFormat("Creating API with Name {0}", name);
 
@@ -27,12 +27,12 @@ namespace AWS.APIGateway.Impl
                 Description = description
             };
 
-            return await Client.CreateRestApiAsync(request);
+            return Client.CreateRestApi(request);
         }
 
-        protected async Task<Resource> GetRootResource(RestApi api)
+        protected Resource GetRootResource(RestApi api)
         {
-            foreach (Resource resource in await BuildResourceList(api))
+            foreach (Resource resource in BuildResourceList(api))
             {
                 if ("/".Equals(resource.Path))
                 {
@@ -43,11 +43,11 @@ namespace AWS.APIGateway.Impl
             return null;
         }
 
-        protected async Task<List<Resource>> BuildResourceList(RestApi api)
+        protected List<Resource> BuildResourceList(RestApi api)
         {
             var resourceList = new List<Resource>();
 
-            var resources = await Client.GetResourcesAsync(new GetResourcesRequest()
+            var resources = Client.GetResources(new GetResourcesRequest()
             {
                 RestApiId = api.Id,
                 Limit = 500
@@ -62,18 +62,18 @@ namespace AWS.APIGateway.Impl
             //    resourceList.addAll(resources.getItem());
             //}
 
-            return await Task.FromResult(resourceList);
+            return resourceList;
         }
 
-        protected async Task DeleteDefaultModels(RestApi api)
+        protected void DeleteDefaultModels(RestApi api)
         {
-            var list = await BuildModelList(api);
-            list.ForEach(async model => {
+            var list = BuildModelList(api);
+            list.ForEach(model => {
                 Log.InfoFormat("Removing default model {0}", model.Name);
 
                 try
                 {
-                    await Client.DeleteModelAsync(new DeleteModelRequest() {
+                    Client.DeleteModel(new DeleteModelRequest() {
                         RestApiId = api.Id,
                         ModelName = model.Name
                     });
@@ -85,18 +85,18 @@ namespace AWS.APIGateway.Impl
             });
         }
 
-        protected async Task<List<Model>> BuildModelList(RestApi api)
+        protected List<Model> BuildModelList(RestApi api)
         {
             var modelList = new List<Model>();
             
-            var resources = await Client.GetModelsAsync(new GetModelsRequest()
+            var resources = Client.GetModels(new GetModelsRequest()
             {
                 RestApiId = api.Id,
                 Limit = 500
                 
             });
 
-            var response = await Client.GetModelsAsync(new GetModelsRequest()
+            var response = Client.GetModels(new GetModelsRequest()
             {
                 RestApiId = api.Id
             });
@@ -113,7 +113,7 @@ namespace AWS.APIGateway.Impl
             return modelList;
         }
 
-        protected async Task CreateModel(RestApi api, string modelName, string description, string schema, string modelContentType)
+        protected void CreateModel(RestApi api, string modelName, string description, string schema, string modelContentType)
         {
             if (schema == null) throw new ArgumentNullException(nameof(schema));
             ProcessedModels.Add(modelName);
@@ -127,7 +127,7 @@ namespace AWS.APIGateway.Impl
                 Schema = schema
             };
 
-            await Client.CreateModelAsync(input);
+            Client.CreateModel(input);
         }
 
         /* Build the full resource path, including base path, add any missing leading '/', remove any trailing '/',
@@ -163,9 +163,9 @@ namespace AWS.APIGateway.Impl
             return path.TrimEnd('/').TrimStart('/');
         }
 
-        protected async Task<Resource> GetResource(RestApi api, string parentResourceId, string pathPart)
+        protected Resource GetResource(RestApi api, string parentResourceId, string pathPart)
         {
-            foreach (Resource resource in await BuildResourceList(api))
+            foreach (Resource resource in BuildResourceList(api))
             {
                 if (PathEquals(pathPart, resource.PathPart) && resource.ParentId.Equals(parentResourceId))
                 {

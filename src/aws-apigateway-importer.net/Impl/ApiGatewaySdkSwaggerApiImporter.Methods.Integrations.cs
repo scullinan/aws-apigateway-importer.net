@@ -8,7 +8,7 @@ namespace AWS.APIGateway.Impl
 {
     public partial class ApiGatewaySdkSwaggerApiImporter
     {
-        private async Task CreateIntegration(RestApi api, Resource resource, Method method, IDictionary<string, object> vendorExtensions)
+        private void CreateIntegration(RestApi api, Resource resource, Method method, IDictionary<string, object> vendorExtensions)
         {
             if (!vendorExtensions.ContainsKey(EXTENSION_INTEGRATION))
             {
@@ -35,7 +35,7 @@ namespace AWS.APIGateway.Impl
                 CacheKeyParameters = integ["cacheKeyParameters"]?.ToObject<List<string>>()
             };
 
-            var integration = await Client.PutIntegrationAsync(request);
+            var integration = Client.PutIntegration(request);
             CreateIntegrationResponses(api, resource, integration, integ.ToDictionary());
         }
 
@@ -66,8 +66,7 @@ namespace AWS.APIGateway.Impl
                         StatusCode = status
                     };
 
-                    var task = Client.PutIntegrationResponseAsync(request);
-                    task.Wait();
+                    Client.PutIntegrationResponse(request);
                 }
             });
         }

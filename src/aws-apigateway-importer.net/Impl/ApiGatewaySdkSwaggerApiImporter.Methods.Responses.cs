@@ -6,7 +6,7 @@ namespace AWS.APIGateway.Impl
 {
     public partial class ApiGatewaySdkSwaggerApiImporter
     {
-        private async Task CreateMethodResponses(RestApi api, Resource resource, Method method, string modelContentType, IDictionary<string, Response> responses)
+        private void CreateMethodResponses(RestApi api, Resource resource, Method method, string modelContentType, IDictionary<string, Response> responses)
         {
             if (responses == null)
             {
@@ -14,7 +14,7 @@ namespace AWS.APIGateway.Impl
             }
 
             // add responses from swagger
-            responses.ForEach(async x => {
+            responses.ForEach(x => {
 
                 if (x.Key.Equals("default"))
                 {
@@ -24,18 +24,18 @@ namespace AWS.APIGateway.Impl
                 {
                     Log.InfoFormat("Creating method response for api {0} and method {1} and status {2}", api.Id, method.HttpMethod, x.Key);
 
-                    var request = await GetCreateResponseInput(api, modelContentType, x.Value);
+                    var request = GetCreateResponseInput(api, modelContentType, x.Value);
                     request.RestApiId = api.Id;
                     request.ResourceId = resource.Id;
                     request.StatusCode = x.Key;
                     request.HttpMethod = method.HttpMethod;
                     
-                    await Client.PutMethodResponseAsync(request);
+                    Client.PutMethodResponse(request);
                 }
             });
         }
 
-        private async Task<PutMethodResponseRequest> GetCreateResponseInput(RestApi api, string modelContentType, Response response)
+        private PutMethodResponseRequest GetCreateResponseInput(RestApi api, string modelContentType, Response response)
         {
 
             PutMethodResponseRequest input = new PutMethodResponseRequest();
@@ -51,7 +51,7 @@ namespace AWS.APIGateway.Impl
             }
 
             // if the schema references an existing model, use that model for the response
-            Model modelOpt = await GetModel(api, response);
+            Model modelOpt = GetModel(api, response);
             if (modelOpt != null)
             {
                 input.ResponseModels = new Dictionary<string, string>();
@@ -70,7 +70,7 @@ namespace AWS.APIGateway.Impl
 
                     Log.InfoFormat("Creating new model referenced from response: {0}", modelName);
 
-                    await CreateModel(api, modelName, response.Schema, modelContentType);
+                    CreateModel(api, modelName, response.Schema, modelContentType);
 
                     input.ResponseModels = new Dictionary<string, string> {[modelContentType] = modelName};
                 }

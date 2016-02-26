@@ -69,7 +69,7 @@ namespace AWS.APIGateway
 
             if (options.CreateNew)
             {
-                var apiId = importer.ImportApi(fileName).Result;
+                var apiId = importer.ImportApi(fileName);
 
                 if (options.Cleanup)
                 {

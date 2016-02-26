@@ -16,30 +16,30 @@ namespace AWS.APIGateway.Impl
             this.importer = importer;
         }
 
-        public async Task<string> ImportApi(string filePath)
+        public string ImportApi(string filePath)
         {
             log.InfoFormat("Attempting to create API from Swagger definition. Swagger file: {0}", filePath);
 
             var swagger = Import(filePath);
-            return await importer.CreateApi(swagger, Path.GetFileName(filePath));
+            return importer.CreateApi(swagger, Path.GetFileName(filePath));
         }
 
-        public async Task UpdateApi(string apiId, string filePath)
+        public void UpdateApi(string apiId, string filePath)
         {
             log.InfoFormat("Attempting to update API from Swagger definition. API identifier: {0} Swagger file: {1}", apiId, filePath);
 
             var swagger = Import(filePath);
-            await importer.UpdateApi(apiId, swagger);
+            importer.UpdateApi(apiId, swagger);
         }
 
-        public async Task Deploy(string apiId, string deploymentStage)
+        public void Deploy(string apiId, string deploymentStage)
         {
-            await importer.Deploy(apiId, deploymentStage);
+            importer.Deploy(apiId, deploymentStage);
         }
 
-        public async Task DeleteApi(string apiId)
+        public void DeleteApi(string apiId)
         {
-            await importer.DeleteApi(apiId);
+            importer.DeleteApi(apiId);
         }
 
         private static SwaggerDocument Import(string filePath)
