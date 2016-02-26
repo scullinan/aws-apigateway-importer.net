@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Amazon.APIGateway.Model;
+using Newtonsoft.Json.Linq;
 
 namespace AWS.APIGateway.Impl
 {
@@ -116,6 +117,18 @@ namespace AWS.APIGateway.Impl
                     authType = authExtension["type"].ToUpper();
                 }
             }
+
+            //if (op.VendorExtensions != null && op.VendorExtensions.ContainsKey(EXTENSION_AUTH))
+            //{
+            //    var vendorExtension = op.VendorExtensions[EXTENSION_AUTH] as JObject;
+
+            //    var authExtension = vendorExtension?.ToObject<Dictionary<string, string>>();
+
+            //    if (authExtension != null)
+            //    {
+            //        authType = authExtension["type"].ToUpper();
+            //    }
+            //}
 
             return authType;
         }

@@ -36,16 +36,15 @@ namespace AWS.APIGateway.Impl
             };
 
             var integration = await Client.PutIntegrationAsync(request);
-
-            await CreateIntegrationResponses(api, resource, integration, integ.ToDictionary());
+            CreateIntegrationResponses(api, resource, integration, integ.ToDictionary());
         }
 
-        private async Task CreateIntegrationResponses(RestApi api, Resource resource, PutIntegrationResponse integration, IDictionary<string, object> integ)
+        private void CreateIntegrationResponses(RestApi api, Resource resource, PutIntegrationResponse integration, IDictionary<string, object> integ)
         {
             // todo: avoid unchecked casts
             var responses = integ.ToDictionary<string, object>("responses");
 
-            responses?.ForEach(async e =>
+            responses?.ForEach(e =>
             {
                 var pattern = e.Key.Equals("default") ? null : e.Key;
                 var response = e.Value as IDictionary<string, object>;
@@ -67,7 +66,8 @@ namespace AWS.APIGateway.Impl
                         StatusCode = status
                     };
 
-                    await Client.PutIntegrationResponseAsync(request);
+                    var task = Client.PutIntegrationResponseAsync(request);
+                    task.Wait();
                 }
             });
         }

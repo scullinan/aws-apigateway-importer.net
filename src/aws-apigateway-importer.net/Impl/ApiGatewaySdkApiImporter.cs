@@ -120,6 +120,7 @@ namespace AWS.APIGateway.Impl
 
             var input = new CreateModelRequest
             {
+                RestApiId = api.Id,
                 Name = modelName,
                 Description = description,
                 ContentType = modelContentType,
