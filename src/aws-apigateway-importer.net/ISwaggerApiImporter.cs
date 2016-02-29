@@ -5,9 +5,9 @@ namespace AWS.APIGateway
 {
     public interface ISwaggerApiImporter
     {
-        Task<string> CreateApi(SwaggerDocument swagger, String name);
-        Task UpdateApi(string apiId, SwaggerDocument swagger);
-        Task Deploy(string apiId, string deploymentStage);
-        Task DeleteApi(string apiId);
+        string CreateApi(SwaggerDocument swagger, String name);
+        void UpdateApi(string apiId, SwaggerDocument swagger);
+        void Deploy(string apiId, string deploymentStage);
+        void DeleteApi(string apiId);
     }
 }

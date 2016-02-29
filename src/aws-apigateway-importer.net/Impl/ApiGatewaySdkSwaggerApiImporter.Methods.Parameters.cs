@@ -6,9 +6,9 @@ namespace AWS.APIGateway.Impl
 {
     public partial class ApiGatewaySdkSwaggerApiImporter
     {
-        private async Task CreateMethodParameters(RestApi api, Resource resource, Method method, IList<Parameter> parameters)
+        private void CreateMethodParameters(RestApi api, Resource resource, Method method, IList<Parameter> parameters)
         {
-            parameters.ForEach(async p =>
+            parameters.ForEach(p =>
             {
                 if (!p.In.Equals("body"))
                 {
@@ -27,7 +27,7 @@ namespace AWS.APIGateway.Impl
                             }
                         };
 
-                        await Client.UpdateMethodAsync(request);
+                        Client.UpdateMethod(request);
                     }
                 }
             });

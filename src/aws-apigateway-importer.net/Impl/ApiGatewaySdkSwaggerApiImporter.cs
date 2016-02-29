@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
+using Amazon.APIGateway.Model;
 using log4net;
 using Newtonsoft.Json;
 
@@ -17,21 +17,21 @@ namespace AWS.APIGateway.Impl
         private static string EXTENSION_INTEGRATION = "x-amazon-apigateway-integration";
         protected SwaggerDocument Swagger;
 
-        public async Task<string> CreateApi(SwaggerDocument swagger, string name)
+        public string CreateApi(SwaggerDocument swagger, string name)
         {
             this.Swagger = swagger;
             ProcessedModels.Clear();
-            var response = await CreateApi(GetApiName(swagger, name), swagger.Info.Description);
+            var response = CreateApi(GetApiName(swagger, name), swagger.Info.Description);
             log.InfoFormat("Created API {0}", response.Id);
 
             try
             {
                 var api = response.RestApi();
 
-                var rootResource = await GetRootResource(api);
-                await DeleteDefaultModels(api);
-                await CreateModels(api, swagger.Definitions, swagger.Produces);
-                await CreateResources(api, rootResource, swagger.BasePath, swagger.Produces, swagger.Paths, true);
+                var rootResource = GetRootResource(api);
+                DeleteDefaultModels(api);
+                CreateModels(api, swagger.Definitions, swagger.Produces);
+                CreateResources(api, rootResource, swagger.BasePath, swagger.Produces, swagger.Paths, true);
 
             }
             catch (Exception ex)
@@ -42,22 +42,23 @@ namespace AWS.APIGateway.Impl
             return string.Empty;
         }
 
-        public async Task UpdateApi(string apiId, SwaggerDocument swagger)
+        public void UpdateApi(string apiId, SwaggerDocument swagger)
         {
             log.Info("UpdateApi");
-            await Task.FromResult(0);
         }
 
-        public async Task Deploy(string apiId, string deploymentStage)
+        public void Deploy(string apiId, string deploymentStage)
         {
             log.Info("Deploy");
-            await Task.FromResult(0);
         }
 
-        public async Task DeleteApi(string apiId)
+        public void DeleteApi(string apiId)
         {
             log.Info("DeleteApi");
-            await Task.FromResult(0);
+            Client.DeleteRestApi(new DeleteRestApiRequest()
+            {
+                RestApiId = apiId
+            });
         }
 
         private string GetApiName(SwaggerDocument swagger, string fileName)

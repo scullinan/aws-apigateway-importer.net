@@ -8,16 +8,16 @@ namespace AWS.APIGateway.Impl
     public partial class ApiGatewaySdkSwaggerApiImporter
     {
         //Todo:Refactor
-        protected async Task<Resource> CreateResource(RestApi api, string parentResourceId, string part)
+        protected Resource CreateResource(RestApi api, string parentResourceId, string part)
         {
-            Resource existingResource = await GetResource(api, parentResourceId, part);
+            Resource existingResource = GetResource(api, parentResourceId, part);
 
             // create resource if doesn't exist
             if (existingResource == null)
             {
                 Log.InfoFormat("Creating resource '{0}' on {1}", part, parentResourceId);
 
-               var resource = await Client.CreateResourceAsync(new CreateResourceRequest()
+               var resource = Client.CreateResource(new CreateResourceRequest()
                 {
                    RestApiId = api.Id,
                    ParentId = parentResourceId,
@@ -33,7 +33,7 @@ namespace AWS.APIGateway.Impl
                 };
             }
 
-            var result = await Client.GetResourceAsync(new GetResourceRequest()
+            var result = Client.GetResource(new GetResourceRequest()
             {
                 RestApiId = api.Id,
                 ResourceId = parentResourceId
@@ -49,7 +49,7 @@ namespace AWS.APIGateway.Impl
             };
         }
 
-        private async Task CreateResources(RestApi api, Resource rootResource, string basePath, IList<string> apiProduces, IDictionary<string, PathItem> paths, bool createMethods)
+        private void CreateResources(RestApi api, Resource rootResource, string basePath, IList<string> apiProduces, IDictionary<string, PathItem> paths, bool createMethods)
         {
             //build path tree
 
@@ -64,13 +64,13 @@ namespace AWS.APIGateway.Impl
                 for (int i = 1; i < parts.Length; i++)
                 {
                     // exclude root resource as this will be created when the api is created
-                    parentResource = await CreateResource(api, parentResource.Id, parts[i]);
+                    parentResource = CreateResource(api, parentResource.Id, parts[i]);
                 }
 
                 if (createMethods)
                 {
                     // create methods on the leaf resource for each path
-                    await CreateMethods(api, parentResource, path.Value, apiProduces);
+                    CreateMethods(api, parentResource, path.Value, apiProduces);
                 }
             }
         }
