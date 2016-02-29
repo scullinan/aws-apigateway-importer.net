@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Amazon.APIGateway;
 using Amazon.APIGateway.Model;
 using log4net;

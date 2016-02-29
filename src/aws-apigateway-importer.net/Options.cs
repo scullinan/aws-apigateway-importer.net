@@ -8,6 +8,9 @@ namespace AWS.APIGateway
         [Option('u', "update", HelpText = "API ID to import swagger into an existing API")]
         public string ApiId { get; set; }
 
+        [Option("delete", HelpText = "API ID to delete")]
+        public string DeleteApiId { get; set; }
+
         [Option('c', "create", HelpText = "Create a new API")]
         public bool CreateNew { get; set; }
 
@@ -22,9 +25,6 @@ namespace AWS.APIGateway
 
         [Option('r', "region", HelpText = "Create a new API (optional)")]
         public string Region { get; set; }
-
-        [Option("raml-config", HelpText = "RAML file for API Gateway metadata (optional)")]
-        public string ConfigFile { get; set; }
 
         [Option("help")]
         public bool Help { get; set; }

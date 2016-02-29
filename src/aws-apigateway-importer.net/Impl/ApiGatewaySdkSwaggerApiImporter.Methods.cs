@@ -215,7 +215,7 @@ namespace AWS.APIGateway.Impl
 
             try
             {
-                var result = Client.GetModel(new GetModelRequest() { ModelName = modelName });
+                var result = Client.GetModel(new GetModelRequest() { RestApiId = api.Id, ModelName = modelName });
                 return new Model()
                 {
                     Description = result.Description,

@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using AWS.APIGateway.Impl;
 using CommandLine;
@@ -45,22 +44,7 @@ namespace AWS.APIGateway
             });
 
             var fileName = options.Files.FirstOrDefault();
-
-            if (Path.GetExtension(fileName).Equals("raml"))
-            {
-                ImportRaml(options, fileName);
-            }
-            else
-            {
-                ImportSwagger(options, fileName);
-            }
-
-            Console.ReadLine();
-        }
-
-        private static void ImportRaml(Options options, string fileName)
-        {
-            throw new NotImplementedException("RAML import has not been implemented");
+            ImportSwagger(options, fileName);
         }
 
         private static void ImportSwagger(Options options, string fileName)
@@ -75,6 +59,10 @@ namespace AWS.APIGateway
                 {
                     importer.DeleteApi(apiId);
                 }
+            }
+            else if (!string.IsNullOrEmpty(options.DeleteApiId))
+            {
+                importer.DeleteApi(options.DeleteApiId);
             }
             else
             {
