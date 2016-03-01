@@ -7,7 +7,7 @@ namespace AWS.APIGateway
     {
         string CreateApi(SwaggerDocument swagger, String name);
         void UpdateApi(string apiId, SwaggerDocument swagger);
-        void Deploy(string apiId, string deploymentStage);
+        void Deploy(string apiId, DeploymentConfig config);
         void DeleteApi(string apiId);
     }
 }

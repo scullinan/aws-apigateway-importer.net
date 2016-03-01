@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 
 namespace AWS.APIGateway
 {
+    [JsonConverter(typeof (VendorExtensionsConverter))]
     public class SwaggerDocument
     {
         public readonly string Swagger = "2.0";
@@ -25,6 +26,7 @@ namespace AWS.APIGateway
         public Dictionary<string, object> VendorExtensions = new Dictionary<string, object>();
     }
 
+    [JsonConverter(typeof (VendorExtensionsConverter))]
     public class Info
     {
         public string Version;
@@ -49,10 +51,10 @@ namespace AWS.APIGateway
         public string Url;
     }
 
+    [JsonConverter(typeof (VendorExtensionsConverter))]
     public class PathItem
     {
-        [JsonProperty("$Ref")]
-        public string Ref;
+        [JsonProperty("$Ref")] public string Ref;
         public Operation Get;
         public Operation Put;
         public Operation Post;
@@ -64,7 +66,7 @@ namespace AWS.APIGateway
         public Dictionary<string, object> VendorExtensions = new Dictionary<string, object>();
     }
 
-    [JsonConverter(typeof(VendorExtensionsConverter))]
+    [JsonConverter(typeof (VendorExtensionsConverter))]
     public class Operation
     {
         public IList<string> Tags;
@@ -82,6 +84,7 @@ namespace AWS.APIGateway
         public Dictionary<string, object> VendorExtensions = new Dictionary<string, object>();
     }
 
+    [JsonConverter(typeof (VendorExtensionsConverter))]
     public class Tag
     {
         public string Name;
@@ -96,10 +99,10 @@ namespace AWS.APIGateway
         public string Url;
     }
 
+    [JsonConverter(typeof (VendorExtensionsConverter))]
     public class Parameter : PartialSchema
     {
-        [JsonProperty("$Ref")]
-        public string Ref;
+        [JsonProperty("$Ref")] public string Ref;
         public string Name;
         public string In;
         public string Description;
@@ -108,10 +111,10 @@ namespace AWS.APIGateway
         public Dictionary<string, object> VendorExtensions = new Dictionary<string, object>();
     }
 
+    [JsonConverter(typeof (VendorExtensionsConverter))]
     public class Schema
     {
-        [JsonProperty("$ref")]
-        public string Ref;
+        [JsonProperty("$ref")] public string Ref;
         public string Format;
         public string Title;
         public string Description;
@@ -188,6 +191,7 @@ namespace AWS.APIGateway
         public bool? Wrapped;
     }
 
+    [JsonConverter(typeof (VendorExtensionsConverter))]
     public class SecurityScheme
     {
         public string Type;
@@ -200,5 +204,4 @@ namespace AWS.APIGateway
         public IDictionary<string, string> Scopes;
         public Dictionary<string, object> VendorExtensions = new Dictionary<string, object>();
     }
-
 }

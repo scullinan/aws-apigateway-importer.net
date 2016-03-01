@@ -6,7 +6,7 @@ namespace AWS.APIGateway
     {
         string ImportApi(string filePath);
         void UpdateApi(string apiId, string filePath);
-        void Deploy(string apiId, string deploymentStage);
+        void Deploy(string apiId, string deploymentConfigFilePath);
         void DeleteApi(string apiId);
     }
 }

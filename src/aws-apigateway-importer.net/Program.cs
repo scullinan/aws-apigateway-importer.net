@@ -9,10 +9,10 @@ namespace AWS.APIGateway
 {
     class Program
     {
+        private static readonly ILog log = LogManager.GetLogger(typeof(Program));
+
         static void Main(string[] args)
         {
-            ILog log = LogManager.GetLogger(typeof (Program));
-
             BasicConfigurator.Configure();
             Options options = null;
             var result = Parser.Default.ParseArguments<Options>(args);
@@ -20,10 +20,10 @@ namespace AWS.APIGateway
             var exitCode = result.MapResult(opt => {
                 options = opt;
 
-                if ((options.ApiId == null && !options.CreateNew) || options.Files == null || !options.Files.Any())
+                if (options.UpdateApiId == null && !options.CreateFiles.Any())
                     return 1;
 
-                if (options.Cleanup && options.ApiId != null)
+                if (options.Cleanup && options.UpdateApiId != null)
                 {
                     log.Error("Test mode is not supported when updating an API");
                     return 1;
@@ -43,7 +43,7 @@ namespace AWS.APIGateway
                 return 1;
             });
 
-            var fileName = options.Files.FirstOrDefault();
+            var fileName = options.CreateFiles.FirstOrDefault();
             ImportSwagger(options, fileName);
         }
 
@@ -51,9 +51,11 @@ namespace AWS.APIGateway
         {
             ISwaggerApiFileImporter importer = new ApiGatewaySwaggerApiFileImporter(new ApiGatewaySdkSwaggerApiImporter()); //ToDo
 
-            if (options.CreateNew)
+            if (options.CreateFiles.Any())
             {
                 var apiId = importer.ImportApi(fileName);
+
+                log.InfoFormat("Api with ID {0} created", apiId);
 
                 if (options.Cleanup)
                 {
@@ -64,14 +66,12 @@ namespace AWS.APIGateway
             {
                 importer.DeleteApi(options.DeleteApiId);
             }
-            else
-            {
-                importer.UpdateApi(options.ApiId, fileName);
-            }
 
-            if (!string.IsNullOrEmpty(options.DeploymentLabel))
+            //ToDo:Update
+            
+            if (!string.IsNullOrEmpty(options.DeploymentConfig))
             {
-                importer.Deploy(options.ApiId, options.DeploymentLabel);
+                importer.Deploy(options.UpdateApiId, options.DeploymentConfig);
             }
         }
     }

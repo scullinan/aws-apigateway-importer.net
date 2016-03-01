@@ -20,7 +20,7 @@ namespace AWS.APIGateway.Impl
         {
             log.InfoFormat("Attempting to create API from Swagger definition. Swagger file: {0}", filePath);
 
-            var swagger = Import(filePath);
+            var swagger = Import<SwaggerDocument>(filePath);
             return importer.CreateApi(swagger, Path.GetFileName(filePath));
         }
 
@@ -28,13 +28,14 @@ namespace AWS.APIGateway.Impl
         {
             log.InfoFormat("Attempting to update API from Swagger definition. API identifier: {0} Swagger file: {1}", apiId, filePath);
 
-            var swagger = Import(filePath);
+            var swagger = Import<SwaggerDocument>(filePath);
             importer.UpdateApi(apiId, swagger);
         }
 
-        public void Deploy(string apiId, string deploymentStage)
+        public void Deploy(string apiId, string deploymentConfigFilePath)
         {
-            importer.Deploy(apiId, deploymentStage);
+            var config = Import<DeploymentConfig>(deploymentConfigFilePath);
+            importer.Deploy(apiId, config);
         }
 
         public void DeleteApi(string apiId)
@@ -42,12 +43,12 @@ namespace AWS.APIGateway.Impl
             importer.DeleteApi(apiId);
         }
 
-        private static SwaggerDocument Import(string filePath)
+        private static T Import<T>(string filePath)
         {
             var serializer = new JsonSerializer {ContractResolver = new CamelCasePropertyNamesContractResolver(), NullValueHandling = NullValueHandling.Ignore };
     
             var sr = new StreamReader(filePath);
-            return serializer.Deserialize<SwaggerDocument>(new JsonTextReader(sr));
+            return serializer.Deserialize<T>(new JsonTextReader(sr));
         }
     }
 }
