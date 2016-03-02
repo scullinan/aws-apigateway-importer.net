@@ -89,3 +89,27 @@ Defined on an Operation:
    }
 }
 ```
+
+Deployment Configuration :
+
+```json
+{
+    "description": "beta deployement",
+    "stageName": "beta",
+    "stageDescription": "Beta version 0.1",
+    "logging": {
+        "enabled": true,
+        "cloudwatchRoleArn": "arn:aws:iam::963735208092:role/ApiGatewayCloudWatch",
+        "metricsEnabled": true,
+        "loggingLevel": "Info",
+        "dataTraceEnabled": false
+    },
+    "caching": {
+        "enabled": false
+    },   
+    "throttling": {
+        "rateLimit": 10000,
+        "burstLimit": 10000
+    }
+}
+```
