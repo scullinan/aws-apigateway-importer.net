@@ -99,7 +99,7 @@ Deployment Configuration :
     "stageDescription": "Beta version 0.1",
     "logging": {
         "enabled": true,
-        "cloudwatchRoleArn": "arn:aws:iam::963735208092:role/ApiGatewayCloudWatch",
+        "cloudwatchRoleArn": "arn:aws:iam::MY_ACCT_ID:role/ApiGatewayCloudWatch",
         "metricsEnabled": true,
         "loggingLevel": "Info",
         "dataTraceEnabled": false
