@@ -20,7 +20,7 @@ namespace AWS.APIGateway
             var exitCode = result.MapResult(opt => {
                 options = opt;
 
-                if (options.UpdateApiId == null && !options.CreateFiles.Any())
+                if (options.UpdateApiId == null && !options.Files.Any())
                     return 1;
 
                 if (options.Cleanup && options.UpdateApiId != null)
@@ -43,7 +43,7 @@ namespace AWS.APIGateway
                 return 1;
             });
 
-            var fileName = options.CreateFiles.FirstOrDefault();
+            var fileName = options.Files.FirstOrDefault();
             ImportSwagger(options, fileName);
         }
 
@@ -51,7 +51,7 @@ namespace AWS.APIGateway
         {
             ISwaggerApiFileImporter importer = new ApiGatewaySwaggerApiFileImporter(new ApiGatewaySdkSwaggerApiImporter()); //ToDo
 
-            if (options.CreateFiles.Any())
+            if (options.Create)
             {
                 var apiId = importer.ImportApi(fileName);
 

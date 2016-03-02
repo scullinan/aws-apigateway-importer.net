@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using CommandLine;
 
 namespace AWS.APIGateway
@@ -6,13 +7,10 @@ namespace AWS.APIGateway
     public class Options
     {
         [Option('c', "create", HelpText = "Create a new API")]
-        public IEnumerable<string> CreateFiles { get; set; }
+        public IList<string> CreateOption { get; set; }
 
         [Option('u', "update", HelpText = "API ID to import swagger into an existing API")]
-        public string UpdateApiId { get; set; }
-
-        [Option('f', "files", HelpText = "Create a new API")]
-        public IEnumerable<string> Files { get; set; }
+        public IList<string> UpdateOption { get; set; }
 
         [Option('d', "delete", HelpText = "API ID to delete")]
         public string DeleteApiId { get; set; }
@@ -25,5 +23,29 @@ namespace AWS.APIGateway
 
         [Option('r', "region", HelpText = "Create a new API (optional)")]
         public string Region { get; set; }
+
+        public bool Create
+        {
+            get { return CreateOption.Any(); }
+        }
+
+        public string UpdateApiId
+        {
+            get
+            {
+                return UpdateOption.Count > 1 ? UpdateOption[0] : null;
+            }
+        }
+
+        public IEnumerable<string> Files
+        {
+            get
+            {
+                if (CreateOption.Any())
+                    return CreateOption;
+
+                return UpdateOption.Count > 1 ? UpdateOption.Skip(1) : Enumerable.Empty<string>();
+            }
+        }
     }
 }

@@ -1,12 +1,16 @@
-﻿namespace AWS.APIGateway
+﻿using Newtonsoft.Json;
+
+namespace AWS.APIGateway
 {
     public class DeploymentConfig
     {
         public string Description { get; set; }
+        [JsonRequired]
         public string StageName { get; set; }
         public string StageDescription { get; set; }
         public LoggingConfig Logging { get; set; }
         public CachingConfig Caching { get; set; }
+        [JsonRequired]
         public ThrottlingConfig Throttling{ get; set; }
 
         public class LoggingConfig

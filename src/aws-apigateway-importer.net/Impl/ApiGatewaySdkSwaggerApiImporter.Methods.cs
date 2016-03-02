@@ -146,10 +146,11 @@ namespace AWS.APIGateway.Impl
             }
 
             //Todo What is SecurityRequirements in Swagger
-            //if (Swagger.getSecurityRequirement != null)
-            //{
-            //    return Swagger.getSecurityRequirement().stream().anyMatch(s->s.getName().equals(securityDefinitionName));
-            //}
+            if (Swagger.Security != null)
+            {
+                return Swagger.Security.Any(x => x.ContainsKey(securityDefinitionName));
+            }
+
             return false;
         }
 
