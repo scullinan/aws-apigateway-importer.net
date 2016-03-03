@@ -41,7 +41,6 @@ namespace AWS.APIGateway.Impl
 
         private void CreateIntegrationResponses(RestApi api, Resource resource, PutIntegrationResponse integration, IDictionary<string, object> integ)
         {
-            // todo: avoid unchecked casts
             var responses = integ.ToDictionary<string, object>("responses");
 
             responses?.ForEach(e =>

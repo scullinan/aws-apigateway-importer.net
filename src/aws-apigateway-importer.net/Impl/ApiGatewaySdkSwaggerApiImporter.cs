@@ -8,10 +8,6 @@ using Newtonsoft.Json;
 
 namespace AWS.APIGateway.Impl
 {
-    public partial class ApiGatewaySdkSwaggerApiImporter
-    {
-
-    }
 
     public partial class ApiGatewaySdkSwaggerApiImporter : ApiGatewaySdkApiImporter, ISwaggerApiImporter
     {
@@ -68,6 +64,21 @@ namespace AWS.APIGateway.Impl
                 RestApiId = apiId
             });
         }
+
+        public string ProvisionApiKey(string apiId, string name, string stage)
+        {
+            var result = Client.CreateApiKey(new CreateApiKeyRequest()
+            {
+                Enabled = true,
+                Name = name,
+                StageKeys = new List<StageKey>()
+                {
+                    new StageKey() {RestApiId = apiId, StageName = stage}
+                }
+            });
+
+            return result.Id;
+        } 
     }
 }
     

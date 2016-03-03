@@ -29,11 +29,14 @@ namespace AWS.APIGateway
                     return 1;
                 }
 
-                var fn = options.Files.First();
-                if (!File.Exists(fn))
-                {
-                    log.ErrorFormat("Could not load file '{0}'", fn);
-                    return 1;
+                if(options.Files.Any())
+                { 
+                    var fn = options.Files.First();
+                    if (!File.Exists(fn))
+                    {
+                        log.ErrorFormat("Could not load file '{0}'", fn);
+                        return 1;
+                    }
                 }
 
                 return 0;
@@ -72,6 +75,12 @@ namespace AWS.APIGateway
             if (!string.IsNullOrEmpty(options.DeploymentConfig))
             {
                 importer.Deploy(options.UpdateApiId, options.DeploymentConfig);
+            }
+
+            if (options.ProvisionConfig.Any())
+            {
+                var apiKey = importer.ProvisionApiKey(options.UpdateApiId, options.ProvisionConfig[0], options.ProvisionConfig[1]);
+                log.InfoFormat("ApiKey {0} created for API id {1}", apiKey, options.UpdateApiId);
             }
         }
     }

@@ -9,5 +9,6 @@ namespace AWS.APIGateway
         void UpdateApi(string apiId, SwaggerDocument swagger);
         void Deploy(string apiId, DeploymentConfig config);
         void DeleteApi(string apiId);
+        string ProvisionApiKey(string apiId, string name, string stage);
     }
 }

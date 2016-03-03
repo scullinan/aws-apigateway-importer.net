@@ -145,7 +145,6 @@ namespace AWS.APIGateway.Impl
                 return op.Security.Any(x => x.ContainsKey(securityDefinitionName));
             }
 
-            //Todo What is SecurityRequirements in Swagger
             if (Swagger.Security != null)
             {
                 return Swagger.Security.Any(x => x.ContainsKey(securityDefinitionName));

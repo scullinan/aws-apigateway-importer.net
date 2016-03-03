@@ -24,6 +24,9 @@ namespace AWS.APIGateway
         [Option('r', "region", HelpText = "Create a new API (optional)")]
         public string Region { get; set; }
 
+        [Option('p', "prov", HelpText = "Stage used to provision a API Key (optional)")]
+        public IList<string> ProvisionConfig { get; set; }
+
         public bool Create
         {
             get { return CreateOption.Any(); }
@@ -33,7 +36,7 @@ namespace AWS.APIGateway
         {
             get
             {
-                return UpdateOption.Count > 1 ? UpdateOption[0] : null;
+                return UpdateOption.Count > 0 ? UpdateOption[0] : null;
             }
         }
 
