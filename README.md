@@ -32,6 +32,13 @@ It will look for configured credentials in environment variables, Java system pr
 
 ```
 
+### Provsion a API key for an existing API & stage
+
+```sh
+./aws-api-import --update API_ID --prov STAGE_NAME 
+
+```
+
 ### Delete an existing API
 
 ```sh
