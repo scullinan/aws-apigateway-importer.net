@@ -5,13 +5,17 @@ namespace AWS.APIGateway
     public class DeploymentConfig
     {
         public string Description { get; set; }
+
         [JsonRequired]
         public string StageName { get; set; }
+
         public string StageDescription { get; set; }
         public LoggingConfig Logging { get; set; }
         public CachingConfig Caching { get; set; }
+        public DomainConfig Domain { get; set; }
+
         [JsonRequired]
-        public ThrottlingConfig Throttling{ get; set; }
+        public ThrottlingConfig Throttling { get; set; }
 
         public class LoggingConfig
         {
@@ -34,6 +38,19 @@ namespace AWS.APIGateway
         {
             public int RateLimit { get; set; }
             public int BurstLimit { get; set; }
+        }
+
+        public class DomainConfig
+        {
+            [JsonRequired]
+            public string DomainName { get; set; }
+            [JsonRequired]
+            public string CetificateName { get; set; }
+            [JsonRequired]
+            public string CetificateBody { get; set; }
+            [JsonRequired]
+            public string CetificatePrivateKey { get; set; }
+            public string CetificateChain { get; set; }
         }
     }
 }

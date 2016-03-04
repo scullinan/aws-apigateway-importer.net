@@ -58,20 +58,19 @@ namespace AWS.APIGateway
             {
                 var apiId = importer.ImportApi(fileName);
 
-                log.InfoFormat("Api with ID {0} created", apiId);
-
                 if (options.Cleanup)
-                {
                     importer.DeleteApi(apiId);
-                }
+                
             }
             else if (!string.IsNullOrEmpty(options.DeleteApiId))
             {
                 importer.DeleteApi(options.DeleteApiId);
             }
+            else if (!string.IsNullOrEmpty(options.UpdateApiId) && options.Files.Any())
+            {
+                importer.UpdateApi(options.UpdateApiId, fileName);
+            }
 
-            //ToDo:Update
-            
             if (!string.IsNullOrEmpty(options.DeploymentConfig))
             {
                 importer.Deploy(options.UpdateApiId, options.DeploymentConfig);

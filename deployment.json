@@ -1,0 +1,26 @@
+{
+    "description": "Deployment Description",
+    "stageName": "Stage Name",
+    "stageDescription": "Stage Description",
+    "logging": {
+        "enabled": true,
+        "cloudwatchRoleArn": "arn:aws:iam::MY_ACCT_ID:role/ApiGatewayCloudWatch",
+        "metricsEnabled": true,
+        "loggingLevel": "Info",
+        "dataTraceEnabled": false
+    },
+    "caching": {
+        "enabled": false
+    },
+    "throttling": {
+        "rateLimit": 500,
+        "burstLimit": 1000
+    },
+    "domain": {
+        "domainName": "",
+        "cetificateName": "",
+        "cetificateBody": "",
+        "cetificatePrivateKey": "",
+        "cetificateChain" :  ""
+    }
+}

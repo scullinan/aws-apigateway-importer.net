@@ -7,6 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "aws-apigateway-importer.net
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".files", ".files", "{30F0370F-1937-4238-BA97-10C734100DF5}"
 	ProjectSection(SolutionItems) = preProject
+		deployment.json = deployment.json
 		README.md = README.md
 		swagger.json = swagger.json
 	EndProjectSection

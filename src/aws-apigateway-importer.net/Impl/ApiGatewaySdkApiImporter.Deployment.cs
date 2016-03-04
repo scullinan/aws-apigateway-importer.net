@@ -33,28 +33,23 @@ namespace AWS.APIGateway.Impl
                         .Operation(Operations.Replace, "/cloudwatchRoleArn", config.Logging.CloudwatchRoleArn)
                         .ToList();
 
-                    Client.UpdateAccount(new UpdateAccountRequest() { PatchOperations = accountOps });
+                    Client.UpdateAccount(new UpdateAccountRequest() {PatchOperations = accountOps});
 
                     builder
-                    .Operation(Operations.Replace, "/*/*/metrics/enabled", config.Logging?.MetricsEnabled.ToString())
-                    .Operation(Operations.Replace, "/*/*/logging/loglevel", config.Logging?.LoggingLevel)
-                    .Operation(Operations.Replace, "/*/*/logging/dataTrace", config.Logging?.DataTraceEnabled.ToString());
+                        .Operation(Operations.Replace, "/*/*/metrics/enabled", config.Logging?.MetricsEnabled.ToString())
+                        .Operation(Operations.Replace, "/*/*/logging/loglevel", config.Logging?.LoggingLevel)
+                        .Operation(Operations.Replace, "/*/*/logging/dataTrace", config.Logging?.DataTraceEnabled.ToString());
                 }
                 else
-                {
                     Log.WarnFormat("CloudWatchRoleArn must be specified for logging");
-                }
             }
 
-            if (config.Caching?.Enabled == true)
-            {
-                builder
-                    .Operation(Operations.Replace, "/*/*/caching/enabled", config.Caching?.Enabled.ToString())
-                    .Operation(Operations.Replace, "/*/*/caching/ttlInSeconds", config.Caching?.CacheTtlInSeconds.ToString())
-                    .Operation(Operations.Replace, "/*/*/caching/dataEncrypted", config.Caching?.CacheDataEncrypted.ToString());
-            }
-
+            //Caching
             builder
+                .Operation(Operations.Replace, "/*/*/caching/enabled", config.Caching?.Enabled.ToString())
+                .Operation(Operations.Replace, "/*/*/caching/ttlInSeconds", config.Caching?.CacheTtlInSeconds.ToString())
+                .Operation(Operations.Replace, "/*/*/caching/dataEncrypted", config.Caching?.CacheDataEncrypted.ToString())
+            //Throttling
                 .Operation(Operations.Replace, "/*/*/throttling/burstLimit", config.Throttling?.BurstLimit.ToString())
                 .Operation(Operations.Replace, "/*/*/throttling/rateLimit", config.Throttling?.RateLimit.ToString());
 
@@ -64,6 +59,23 @@ namespace AWS.APIGateway.Impl
                 StageName = config.StageName,
                 PatchOperations = builder.ToList()
             });
+
+            CreateDomain(config);
+        }
+
+        private void CreateDomain(DeploymentConfig config)
+        {
+            if (config.Domain != null)
+            {
+                Client.CreateDomainName(new CreateDomainNameRequest()
+                {
+                    DomainName = config.Domain.DomainName,
+                    CertificateBody = config.Domain.CetificateBody,
+                    CertificateName = config.Domain.CetificateName,
+                    CertificateChain =  config.Domain.CetificateChain,
+                    CertificatePrivateKey = config.Domain.CetificatePrivateKey
+                });
+            }
         }
     }
 }
