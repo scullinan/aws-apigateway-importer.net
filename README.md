@@ -112,7 +112,10 @@ Deployment Configuration :
         "dataTraceEnabled": false
     },
     "caching": {
-        "enabled": false
+        "enabled": false,
+        "clusterSize": "CLUSTER_SIZE",
+        "cacheTtlInSeconds": 5,
+        "cacheDataEncrypted": false
     },
     "throttling": {
         "rateLimit": 500,
