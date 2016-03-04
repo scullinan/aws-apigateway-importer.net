@@ -21,7 +21,7 @@ It will look for configured credentials in environment variables, Java system pr
 ### Import a new API
 
 ```sh
-./aws-api-import --create path/to/swagger.json
+./aws-api-import --create path/to/swagger.json --deploy path/to/deployment.json
 
 ```
 
