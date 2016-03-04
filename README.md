@@ -126,7 +126,7 @@ Deployment Configuration :
         "cetificateName": "CERTIFICATE_NAME",
         "cetificateBody": "CERTIFICATE_BODY",
         "cetificatePrivateKey": "CERTIFICATE_PRIVATE_KEY",
-        "cetificateChain" :  "CERTIFICATE_CHAIN"
+        "cetificateChain" : "CERTIFICATE_CHAIN"
     }
 }
 ```
