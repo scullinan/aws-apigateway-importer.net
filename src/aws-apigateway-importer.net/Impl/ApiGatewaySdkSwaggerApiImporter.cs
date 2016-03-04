@@ -34,6 +34,8 @@ namespace AWS.APIGateway.Impl
                 CreateModels(api, swagger.Definitions, swagger.Produces);
                 CreateResources(api, rootResource, swagger.BasePath, swagger.Produces, swagger.Paths, true);
 
+                return api.Id;
+
             }
             catch (Exception ex)
             {

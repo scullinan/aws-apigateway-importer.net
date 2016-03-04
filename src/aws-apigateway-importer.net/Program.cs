@@ -53,10 +53,11 @@ namespace AWS.APIGateway
         private static void ImportSwagger(Options options, string fileName)
         {
             ISwaggerApiFileImporter importer = new ApiGatewaySwaggerApiFileImporter(new ApiGatewaySdkSwaggerApiImporter()); //ToDo
+            var apiId = string.Empty; 
 
             if (options.Create)
             {
-                var apiId = importer.ImportApi(fileName);
+                apiId = importer.ImportApi(fileName);
 
                 if (options.Cleanup)
                     importer.DeleteApi(apiId);
@@ -64,16 +65,18 @@ namespace AWS.APIGateway
             }
             else if (!string.IsNullOrEmpty(options.DeleteApiId))
             {
+                apiId = options.DeleteApiId;
                 importer.DeleteApi(options.DeleteApiId);
             }
             else if (!string.IsNullOrEmpty(options.UpdateApiId) && options.Files.Any())
             {
+                apiId = options.UpdateApiId;
                 importer.UpdateApi(options.UpdateApiId, fileName);
             }
 
-            if (!string.IsNullOrEmpty(options.DeploymentConfig))
+            if (!string.IsNullOrEmpty(options.DeploymentConfig) && !string.IsNullOrEmpty(apiId))
             {
-                importer.Deploy(options.UpdateApiId, options.DeploymentConfig);
+                importer.Deploy(apiId, options.DeploymentConfig);
             }
 
             if (options.ProvisionConfig.Any())
