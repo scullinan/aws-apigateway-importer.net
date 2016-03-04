@@ -101,22 +101,29 @@ Deployment Configuration :
 
 ```json
 {
-    "description": "beta deployement",
-    "stageName": "beta",
-    "stageDescription": "Beta version 0.1",
+    "description": "DEPLOYMENT_DESCRIPTION",
+    "stageName": "STAGE_NAME",
+    "stageDescription": "STAGE_DESCRIPTION",
     "logging": {
         "enabled": true,
-        "cloudwatchRoleArn": "arn:aws:iam::MY_ACCT_ID:role/ApiGatewayCloudWatch",
+        "cloudwatchRoleArn": "arn:aws:iam::MY_ACCT_ID:role/ExampleCloudWatch",
         "metricsEnabled": true,
         "loggingLevel": "Info",
         "dataTraceEnabled": false
     },
     "caching": {
         "enabled": false
-    },   
+    },
     "throttling": {
-        "rateLimit": 10000,
-        "burstLimit": 10000
+        "rateLimit": 500,
+        "burstLimit": 1000
+    },
+    "domain": {
+        "domainName": "api.example.com",
+        "cetificateName": "CERTIFICATE_NAME",
+        "cetificateBody": "CERTIFICATE_BODY",
+        "cetificatePrivateKey": "CERTIFICATE_PRIVATE_KEY",
+        "cetificateChain" :  "CERTIFICATE_CHAIN"
     }
 }
 ```
