@@ -81,7 +81,6 @@
     <Compile Include="Sdk\IApiGatewaySdkMethodResponseProvider.cs" />
     <Compile Include="Sdk\IApiGatewaySdkModelProvider.cs" />
     <Compile Include="Sdk\IApiGatewaySdkResourceProvider.cs" />
-    <Compile Include="Sdk\Impl\ApiGatewaySdkApiImporter.cs" />
     <Compile Include="Sdk\Impl\ApiGatewaySdkSwaggerApiImporter.cs" />
     <Compile Include="Sdk\Impl\ApiGatewaySwaggerApiFileImporter.cs" />
     <Compile Include="Extentions.cs" />
