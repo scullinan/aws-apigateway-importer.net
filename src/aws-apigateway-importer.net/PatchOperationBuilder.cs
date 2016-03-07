@@ -14,8 +14,7 @@ namespace ApiGatewayImporter
 
         public PatchOperationBuilder Operation(string op, string path, string value, string from = null)
         {
-            operations.Add(new PatchOperation()
-            {
+            operations.Add(new PatchOperation() {
                 Value = value,
                 Op = op,
                 Path = path,

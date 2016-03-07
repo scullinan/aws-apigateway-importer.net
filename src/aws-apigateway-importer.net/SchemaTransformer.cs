@@ -10,7 +10,7 @@ namespace ApiGatewayImporter
 {
     public class SchemaTransformer
     {
-        ILog log = LogManager.GetLogger(typeof(SchemaTransformer));
+        readonly ILog log = LogManager.GetLogger(typeof(SchemaTransformer));
 
         public string Flatten(string model, string models)
         {

@@ -20,12 +20,12 @@ namespace ApiGatewayImporter.Sdk.Impl
         public void CreateIntegration(RestApi api, Resource resource, Method method,
             Dictionary<string, object> vendorExtensions)
         {
-            if (!vendorExtensions.ContainsKey(Constants.EXTENSION_INTEGRATION))
+            if (!vendorExtensions.ContainsKey(Constants.ExtensionIntegration))
             {
                 return;
             }
 
-            var integ = (JObject) vendorExtensions[Constants.EXTENSION_INTEGRATION];
+            var integ = (JObject) vendorExtensions[Constants.ExtensionIntegration];
             var type = IntegrationType.FindValue(GetStringValue(integ["type"]).ToUpper());
 
             Log.InfoFormat("Creating integration with type {0}", type);

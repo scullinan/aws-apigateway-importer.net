@@ -14,9 +14,9 @@ namespace ApiGatewayImporter.Sdk
         {
             if (methodProduces != null && methodProduces.Any())
             {
-                if (methodProduces.Any(t => t.Equals(Constants.DEFAULT_PRODUCES_CONTENT_TYPE, StringComparison.OrdinalIgnoreCase)))
+                if (methodProduces.Any(t => t.Equals(Constants.DefaultProducesContentType, StringComparison.OrdinalIgnoreCase)))
                 {
-                    return Constants.DEFAULT_PRODUCES_CONTENT_TYPE;
+                    return Constants.DefaultProducesContentType;
                 }
 
                 return methodProduces.FirstOrDefault();
@@ -24,15 +24,15 @@ namespace ApiGatewayImporter.Sdk
 
             if (apiProduces != null && apiProduces.Any())
             {
-                if (apiProduces.Any(t => t.Equals(Constants.DEFAULT_PRODUCES_CONTENT_TYPE, StringComparison.OrdinalIgnoreCase)))
+                if (apiProduces.Any(t => t.Equals(Constants.DefaultProducesContentType, StringComparison.OrdinalIgnoreCase)))
                 {
-                    return Constants.DEFAULT_PRODUCES_CONTENT_TYPE;
+                    return Constants.DefaultProducesContentType;
                 }
 
                 return apiProduces.FirstOrDefault();
             }
 
-            return Constants.DEFAULT_PRODUCES_CONTENT_TYPE;
+            return Constants.DefaultProducesContentType;
         }
 
         public static string GenerateSchema(Schema model, string modelName, IDictionary<string, Schema> definitions)

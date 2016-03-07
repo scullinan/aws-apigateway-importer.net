@@ -17,7 +17,7 @@ namespace ApiGatewayImporter
             Options options = null;
             var result = Parser.Default.ParseArguments<Options>(args);
 
-            var exitCode = result.MapResult(opt => {
+            result.MapResult(opt => {
                 options = opt;
 
                 if (options.UpdateApiId == null && !options.Files.Any())

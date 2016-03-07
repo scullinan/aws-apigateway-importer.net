@@ -131,9 +131,9 @@ namespace ApiGatewayImporter.Sdk.Impl
         {
             var authType = "NONE";
 
-            if (op.VendorExtensions != null && op.VendorExtensions.ContainsKey(Constants.EXTENSION_AUTH))
+            if (op.VendorExtensions != null && op.VendorExtensions.ContainsKey(Constants.ExtensionAuth))
             {
-                var vendorExtension = op.VendorExtensions[Constants.EXTENSION_AUTH] as JObject;
+                var vendorExtension = op.VendorExtensions[Constants.ExtensionAuth] as JObject;
 
                 var authExtension = vendorExtension?.ToObject<Dictionary<string, string>>();
 

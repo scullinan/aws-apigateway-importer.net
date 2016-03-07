@@ -37,15 +37,15 @@ namespace ApiGatewayImporter.Sdk.Impl
                 if (!string.IsNullOrEmpty(config.Logging?.CloudwatchRoleArn))
                 {
                     var accountOps = PatchOperationBuilder.With()
-                        .Operation(Operations.Replace, "/cloudwatchRoleArn", config.Logging.CloudwatchRoleArn)
+                        .Operation(Operations.Replace, Paths.CloudwatchRoleArn, config.Logging.CloudwatchRoleArn)
                         .ToList();
 
                     gateway.UpdateAccount(new UpdateAccountRequest() { PatchOperations = accountOps });
 
                     builder
-                        .Operation(Operations.Replace, "/*/*/metrics/enabled", config.Logging?.MetricsEnabled.ToString())
-                        .Operation(Operations.Replace, "/*/*/logging/loglevel", config.Logging?.LoggingLevel)
-                        .Operation(Operations.Replace, "/*/*/logging/dataTrace", config.Logging?.DataTraceEnabled.ToString());
+                        .Operation(Operations.Replace, Paths.Logging.MetricsEnabled, config.Logging?.MetricsEnabled.ToString())
+                        .Operation(Operations.Replace, Paths.Logging.LogLevel, config.Logging?.LoggingLevel)
+                        .Operation(Operations.Replace, Paths.Logging.DataTrace, config.Logging?.DataTraceEnabled.ToString());
                 }
                 else
                     Log.WarnFormat("CloudWatchRoleArn must be specified for logging");
@@ -53,15 +53,14 @@ namespace ApiGatewayImporter.Sdk.Impl
 
             //Caching
             builder
-                .Operation(Operations.Replace, "/*/*/caching/enabled", config.Caching?.Enabled.ToString())
-                .Operation(Operations.Replace, "/*/*/caching/ttlInSeconds", config.Caching?.CacheTtlInSeconds.ToString())
-                .Operation(Operations.Replace, "/*/*/caching/dataEncrypted", config.Caching?.CacheDataEncrypted.ToString())
+                .Operation(Operations.Replace, Paths.Caching.Enabled, config.Caching?.Enabled.ToString())
+                .Operation(Operations.Replace, Paths.Caching.TtlInSeconds, config.Caching?.CacheTtlInSeconds.ToString())
+                .Operation(Operations.Replace, Paths.Caching.DataEncrypted, config.Caching?.CacheDataEncrypted.ToString())
             //Throttling
-                .Operation(Operations.Replace, "/*/*/throttling/burstLimit", config.Throttling?.BurstLimit.ToString())
-                .Operation(Operations.Replace, "/*/*/throttling/rateLimit", config.Throttling?.RateLimit.ToString());
+                .Operation(Operations.Replace, Paths.Throttling.BurstLimit, config.Throttling?.BurstLimit.ToString())
+                .Operation(Operations.Replace, Paths.Throttling.RateLimit, config.Throttling?.RateLimit.ToString());
 
-            gateway.UpdateStage(new UpdateStageRequest()
-            {
+            gateway.UpdateStage(new UpdateStageRequest() {
                 RestApiId = apiId,
                 StageName = config.StageName,
                 PatchOperations = builder.ToList()
