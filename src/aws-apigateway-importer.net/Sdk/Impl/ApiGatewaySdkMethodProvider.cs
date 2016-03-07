@@ -122,7 +122,6 @@ namespace ApiGatewayImporter.Sdk.Impl
                 RequestParameters = result.RequestParameters
             };
 
-
             methodResponseProvider.CreateMethodResponses(api, resource, method, swagger, modelContentType, op.Responses);
             methodParameterProvider.CreateMethodParameters(api, resource, method, op.Parameters);
             methodIntegrationProvider.CreateIntegration(api, resource, method, op.VendorExtensions);
@@ -214,6 +213,5 @@ namespace ApiGatewayImporter.Sdk.Impl
         {
             return "[^A-Za-z0-9]";
         }
-
     }
 }

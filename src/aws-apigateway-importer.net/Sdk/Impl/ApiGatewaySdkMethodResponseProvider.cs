@@ -98,11 +98,6 @@ namespace ApiGatewayImporter.Sdk.Impl
             return GenerateModelName(response.Description);
         }
 
-        private string GenerateModelName(Parameter param)
-        {
-            return GenerateModelName(param.Description);
-        }
-
         private string GenerateModelName(string description)
         {
             if (string.IsNullOrEmpty(description))
