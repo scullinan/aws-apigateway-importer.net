@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="ApiGatewayImporter.Sdk.Impl.ApiGatewaySdkApiImporter" Collapsed="true">
+    <Position X="6.25" Y="1" Width="3" />
+    <TypeIdentifier>
+      <HashCode>QAAAACBAAEAAAAAIAAACAAgAEggACAAAAAAACAAAAAQ=</HashCode>
+      <FileName>Sdk\Impl\ApiGatewaySdkApiImporter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ApiGatewayImporter.Sdk.Impl.ApiGatewaySwaggerApiFileImporter" Collapsed="true">
+    <Position X="6" Y="3" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAEAAAIAAACgBBEAAAAAAAAAAAACAAAAA=</HashCode>
+      <FileName>Sdk\Impl\ApiGatewaySwaggerApiFileImporter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ApiGatewayImporter.Sdk.Impl.ApiGatewaySdkSwaggerApiImporter" Collapsed="true">
+    <Position X="2.5" Y="3" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AUkCAAAAQAiIEBJIAYAECgEBggAAAAkABJgICiAgAAI=</HashCode>
+      <FileName>Sdk\Impl\ApiGatewaySdkApiImporter.Deployment.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="ApiGatewayImporter.ISwaggerApiImporter">
+    <Position X="2.5" Y="4" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAEAAIAAAAAgABAAAAAAAAAAAAACAAAAA=</HashCode>
+      <FileName>ISwaggerApiImporter.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ApiGatewayImporter.ISwaggerApiFileImporter">
+    <Position X="6" Y="4" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAEAAAAAAAAgABEAAAAAAAAAAAACAAAAA=</HashCode>
+      <FileName>ISwaggerApiFileImporter.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

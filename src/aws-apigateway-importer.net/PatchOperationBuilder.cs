@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Amazon.APIGateway.Model;
 
-namespace AWS.APIGateway
+namespace ApiGatewayImporter
 {
     public class PatchOperationBuilder
     {

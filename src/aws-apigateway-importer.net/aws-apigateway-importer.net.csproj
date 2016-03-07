@@ -7,9 +7,9 @@
     <ProjectGuid>{365747C1-AE08-4795-903F-C25152D2967B}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AWS.APIGateway</RootNamespace>
+    <RootNamespace>ApiGatewayImporter</RootNamespace>
     <AssemblyName>aws-api-import</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
@@ -66,19 +66,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DeploymentConfig.cs" />
-    <Compile Include="Impl\ApiGatewaySdkApiImporter.cs" />
-    <Compile Include="Impl\ApiGatewaySdkSwaggerApiImporter.Common.cs" />
-    <Compile Include="Impl\ApiGatewaySdkApiImporter.Deployment.cs" />
-    <Compile Include="Impl\ApiGatewaySdkSwaggerApiImporter.cs" />
-    <Compile Include="Impl\ApiGatewaySdkSwaggerApiImporter.Methods.cs" />
-    <Compile Include="Impl\ApiGatewaySdkSwaggerApiImporter.Methods.Responses.cs" />
-    <Compile Include="Impl\ApiGatewaySdkSwaggerApiImporter.Models.cs" />
-    <Compile Include="Impl\ApiGatewaySdkSwaggerApiImporter.Resources.cs" />
-    <Compile Include="Impl\ApiGatewaySwaggerApiFileImporter.cs" />
+    <Compile Include="Sdk\IApiGatewaySdkMethodImporter.cs" />
+    <Compile Include="Sdk\Impl\ApiGatewaySdkApiImporter.cs" />
+    <Compile Include="Sdk\Impl\ApiGatewaySdkSwaggerApiImporter.Common.cs" />
+    <Compile Include="Sdk\Impl\ApiGatewaySdkApiImporter.Deployment.cs" />
+    <Compile Include="Sdk\Impl\ApiGatewaySdkSwaggerApiImporter.cs" />
+    <Compile Include="Sdk\Impl\ApiGatewaySdkSwaggerApiImporter.Methods.cs" />
+    <Compile Include="Sdk\Impl\ApiGatewaySdkSwaggerApiImporter.Methods.Responses.cs" />
+    <Compile Include="Sdk\Impl\ApiGatewaySdkSwaggerApiImporter.Models.cs" />
+    <Compile Include="Sdk\Impl\ApiGatewaySdkSwaggerApiImporter.Resources.cs" />
+    <Compile Include="Sdk\Impl\ApiGatewaySwaggerApiFileImporter.cs" />
     <Compile Include="Extentions.cs" />
     <Compile Include="Operations.cs" />
     <Compile Include="PatchOperationBuilder.cs" />
-    <Compile Include="Impl\VendorExtensionsConverter.cs" />
+    <Compile Include="Sdk\Impl\VendorExtensionsConverter.cs" />
     <Compile Include="ISwaggerApiFileImporter.cs" />
     <Compile Include="ISwaggerApiImporter.cs" />
     <Compile Include="Options.cs" />
@@ -89,8 +90,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <Compile Include="Impl\ApiGatewaySdkSwaggerApiImporter.Methods.Parameters.cs" />
-    <Compile Include="Impl\ApiGatewaySdkSwaggerApiImporter.Methods.Integrations.cs" />
+    <Compile Include="Sdk\Impl\ApiGatewaySdkSwaggerApiImporter.Methods.Parameters.cs" />
+    <Compile Include="Sdk\Impl\ApiGatewaySdkSwaggerApiImporter.Methods.Integrations.cs" />
+    <None Include="ClassDiagram.cd" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

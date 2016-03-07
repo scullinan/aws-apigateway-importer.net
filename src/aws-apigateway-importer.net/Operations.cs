@@ -1,4 +1,4 @@
-namespace AWS.APIGateway
+namespace ApiGatewayImporter
 {
     public static class Operations
     {
