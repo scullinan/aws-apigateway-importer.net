@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Amazon.APIGateway.Model;
 
-namespace ApiGatewayImporter.Sdk.Impl
+namespace ApiGatewayImporter.Sdk.Impl.old
 {
     public partial class ApiGatewaySdkSwaggerApiImporter
     {
@@ -69,7 +69,7 @@ namespace ApiGatewayImporter.Sdk.Impl
 
                     Log.InfoFormat("Creating new model referenced from response: {0}", modelName);
 
-                    CreateModel(api, modelName, response.Schema, modelContentType);
+                    modelProvider.CreateModel(api, modelName, response.Schema, Swagger.Definitions, modelContentType);
 
                     input.ResponseModels = new Dictionary<string, string> {[modelContentType] = modelName};
                 }

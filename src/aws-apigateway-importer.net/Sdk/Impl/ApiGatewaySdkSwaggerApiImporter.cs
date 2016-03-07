@@ -1,18 +1,32 @@
 using System;
-using System.Collections.Generic;
 using Amazon.APIGateway.Model;
 using log4net;
 
 namespace ApiGatewayImporter.Sdk.Impl
 {
-
-    public partial class ApiGatewaySdkSwaggerApiImporter : ApiGatewaySdkApiImporter, ISwaggerApiImporter
+    public class ApiGatewaySdkSwaggerApiImporter : ApiGatewaySdkApiImporter, ISwaggerApiImporter
     {
-        ILog log = LogManager.GetLogger(typeof (ApiGatewaySwaggerApiFileImporter));
+        private readonly IApiGatewaySdkModelProvider modelProvider;
+        private readonly IApiGatewaySdkDeploymentProvider deploymentProvider;
+        private readonly IApiGatewaySdkResourceProvider resourceProvider;
+        readonly ILog log = LogManager.GetLogger(typeof (ApiGatewaySwaggerApiFileImporter));
 
-        private static string DEFAULT_PRODUCES_CONTENT_TYPE = "application/json";
-        private static string EXTENSION_AUTH = "x-amazon-apigateway-auth";
-        private static string EXTENSION_INTEGRATION = "x-amazon-apigateway-integration";
+
+        public ApiGatewaySdkSwaggerApiImporter()
+        {
+            this.modelProvider = new ApiGatewaySdkModelProvider(ProcessedModels, Client);
+
+            this.resourceProvider = new ApiGatewaySdkResourceProvider(Client,
+                new ApiGatewaySdkMethodProvider(ProcessedModels,
+                    Client,
+                    modelProvider,
+                    new ApiGatewaySdkMethodResponseProvider(ProcessedModels, Client, modelProvider),
+                    new ApiGatewaySdkMethodParameterProvider(Client),
+                    new ApiGatewaySdkMethodIntegrationProvider(Client)));
+
+            this.deploymentProvider = new ApiGatewaySdkDeploymentProvider(Client);
+        }
+
         protected SwaggerDocument Swagger;
 
         public string CreateApi(SwaggerDocument swagger, string name)
@@ -27,9 +41,9 @@ namespace ApiGatewayImporter.Sdk.Impl
                 var api = response.RestApi();
 
                 var rootResource = GetRootResource(api);
-                DeleteDefaultModels(api);
-                CreateModels(api, swagger.Definitions, swagger.Produces);
-                CreateResources(api, rootResource, swagger.BasePath, swagger.Produces, swagger.Paths, true);
+                modelProvider.DeleteDefaultModels(api);
+                modelProvider.CreateModels(api, swagger.Definitions, swagger.Produces);
+                resourceProvider.CreateResources(api, rootResource, swagger, true);
 
                 return api.Id;
 
@@ -45,13 +59,14 @@ namespace ApiGatewayImporter.Sdk.Impl
         public void UpdateApi(string apiId, SwaggerDocument swagger)
         {
             log.InfoFormat("Updating API {0}", apiId);
+            //Todo
         }
 
         public void Deploy(string apiId, DeploymentConfig config)
         {
             log.InfoFormat("Deploying API {0}", apiId);
 
-            CreateDeployment(apiId, config);
+            deploymentProvider.CreateDeployment(apiId, config);
         }
 
         public void DeleteApi(string apiId)
@@ -66,18 +81,9 @@ namespace ApiGatewayImporter.Sdk.Impl
 
         public string ProvisionApiKey(string apiId, string name, string stage)
         {
-            var result = Client.CreateApiKey(new CreateApiKeyRequest()
-            {
-                Enabled = true,
-                Name = name,
-                StageKeys = new List<StageKey>()
-                {
-                    new StageKey() {RestApiId = apiId, StageName = stage}
-                }
-            });
+            return deploymentProvider.CreateApiKey(apiId, name, stage);
+        }
 
-            return result.Id;
-        } 
     }
 }
     

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Amazon.APIGateway.Model;
 
-namespace ApiGatewayImporter.Sdk.Impl
+namespace ApiGatewayImporter.Sdk.Impl.old
 {
     //Models
     public partial class ApiGatewaySdkSwaggerApiImporter
@@ -20,7 +20,7 @@ namespace ApiGatewayImporter.Sdk.Impl
                 var modelName = definition.Key;
                 var model = definition.Value;
 
-                CreateModel(api, modelName, model, definitions, GetProducesContentType(produces, Enumerable.Empty<string>()));
+                CreateModel(api, modelName, model, definitions, SwaggerHelper.GetProducesContentType(produces, Enumerable.Empty<string>()));
             }
 
         }
@@ -30,14 +30,14 @@ namespace ApiGatewayImporter.Sdk.Impl
             if (modelName == null) throw new ArgumentNullException(nameof(modelName));
             log.InfoFormat("Creating model for api id {0} with name {1}", api.Id, modelName);
 
-            CreateModel(api, modelName, model.Description, GenerateSchema(model, modelName, definitions), modelContentType);
+            CreateModel(api, modelName, model.Description, SwaggerHelper.GenerateSchema(model, modelName, definitions), modelContentType);
         }
 
         private void CreateModel(RestApi api, String modelName, Schema model, string modelContentType)
         {
             Log.InfoFormat("Creating model for api id {0} with name {1}", api.Id, modelName);
 
-            CreateModel(api, modelName, model.Description, GenerateSchema(model, modelName, Swagger.Definitions), modelContentType);
+            CreateModel(api, modelName, model.Description, SwaggerHelper.GenerateSchema(model, modelName, Swagger.Definitions), modelContentType);
         }
     }
 }

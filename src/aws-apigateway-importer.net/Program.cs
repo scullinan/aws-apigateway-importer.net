@@ -52,7 +52,7 @@ namespace ApiGatewayImporter
 
         private static void ImportSwagger(Options options, string fileName)
         {
-            ISwaggerApiFileImporter importer = new ApiGatewaySwaggerApiFileImporter(new ApiGatewaySdkSwaggerApiImporter()); //ToDo
+            ISwaggerApiFileImporter importer = new ApiGatewaySwaggerApiFileImporter(new ApiGatewaySdkSwaggerApiImporter());
             var apiId = string.Empty; 
 
             if (options.Create)

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Amazon.APIGateway.Model;
 
-namespace ApiGatewayImporter.Sdk.Impl
+namespace ApiGatewayImporter.Sdk.Impl.old
 {
     //Resources
     public partial class ApiGatewaySdkSwaggerApiImporter

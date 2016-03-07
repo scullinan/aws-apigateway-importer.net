@@ -1,6 +1,6 @@
 ﻿using Amazon.APIGateway.Model;
 
-namespace ApiGatewayImporter.Sdk.Impl
+namespace ApiGatewayImporter.Sdk.Impl.old
 {
     public partial class ApiGatewaySdkSwaggerApiImporter
     {

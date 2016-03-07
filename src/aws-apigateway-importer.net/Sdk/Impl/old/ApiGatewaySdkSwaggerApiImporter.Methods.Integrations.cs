@@ -3,18 +3,18 @@ using Amazon.APIGateway;
 using Amazon.APIGateway.Model;
 using Newtonsoft.Json.Linq;
 
-namespace ApiGatewayImporter.Sdk.Impl
+namespace ApiGatewayImporter.Sdk.Impl.old
 {
     public partial class ApiGatewaySdkSwaggerApiImporter
     {
         private void CreateIntegration(RestApi api, Resource resource, Method method, IDictionary<string, object> vendorExtensions)
         {
-            if (!vendorExtensions.ContainsKey(EXTENSION_INTEGRATION))
+            if (!vendorExtensions.ContainsKey(Constants.EXTENSION_INTEGRATION))
             {
                 return;
             }
 
-            var integ = (JObject)vendorExtensions[EXTENSION_INTEGRATION];
+            var integ = (JObject)vendorExtensions[Constants.EXTENSION_INTEGRATION];
             var type = IntegrationType.FindValue(GetStringValue(integ["type"]).ToUpper());
 
             Log.InfoFormat("Creating integration with type {0}", type);
