@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Amazon.APIGateway;
 using Amazon.APIGateway.Model;
-using Importer.Swagger;
 using log4net;
 using Newtonsoft.Json.Linq;
 
-namespace Importer.Aws.Impl
+namespace Importer.Swagger.Aws.Impl
 {
     public class ApiGatewaySdkMethodProvider : IApiGatewaySdkMethodProvider
     {

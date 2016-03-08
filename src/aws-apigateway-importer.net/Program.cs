@@ -2,10 +2,7 @@
 using System.Linq;
 using Autofac;
 using CommandLine;
-using Importer.Aws.Impl;
-using Importer.Impl;
 using Importer.Swagger;
-using Importer.Swagger.Impl;
 using log4net;
 using log4net.Config;
 

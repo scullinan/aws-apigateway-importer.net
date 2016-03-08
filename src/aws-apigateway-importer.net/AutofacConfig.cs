@@ -1,6 +1,6 @@
 ﻿using Autofac;
-using Importer.Impl;
 using Importer.Swagger;
+using Importer.Swagger.Aws.Impl;
 using Importer.Swagger.Impl;
 
 namespace Importer

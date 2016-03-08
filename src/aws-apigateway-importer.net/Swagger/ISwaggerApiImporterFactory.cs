@@ -1,7 +1,4 @@
-﻿using Importer.Aws;
-using Importer.Swagger;
-
-namespace Importer
+﻿namespace Importer.Swagger
 {
     public interface ISwaggerApiImporterFactory
     {

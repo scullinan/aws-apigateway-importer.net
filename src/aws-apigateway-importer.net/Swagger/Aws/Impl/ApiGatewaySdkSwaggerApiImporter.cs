@@ -2,10 +2,9 @@ using System;
 using System.Collections.Generic;
 using Amazon.APIGateway;
 using Amazon.APIGateway.Model;
-using Importer.Swagger;
 using log4net;
 
-namespace Importer.Aws.Impl
+namespace Importer.Swagger.Aws.Impl
 {
     public class ApiGatewaySdkSwaggerApiImporter : ISwaggerApiImporter
     {

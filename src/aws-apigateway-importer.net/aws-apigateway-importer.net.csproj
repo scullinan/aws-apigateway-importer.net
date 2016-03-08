@@ -69,27 +69,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Impl\ApiGatewaySdkSwaggerApiImporterFactory.cs" />
+    <Compile Include="Swagger\Aws\Impl\ApiGatewaySdkSwaggerApiImporterFactory.cs" />
     <Compile Include="AutofacConfig.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="DeploymentConfig.cs" />
-    <Compile Include="ISwaggerApiImporterFactory.cs" />
+    <Compile Include="Swagger\ISwaggerApiImporterFactory.cs" />
     <Compile Include="Paths.cs" />
-    <Compile Include="Aws\Impl\ApiGatewaySdkMethodResponseProvider.cs" />
-    <Compile Include="Aws\Impl\ApiGatewaySdkMethodIntegrationProvider.cs" />
-    <Compile Include="Aws\Impl\ApiGatewaySdkMethodParameterProvider.cs" />
-    <Compile Include="Aws\Impl\ApiGatewaySdkMethodProvider.cs" />
-    <Compile Include="Aws\Impl\ApiGatewaySdkResourceProvider.cs" />
-    <Compile Include="Aws\Impl\ApiGatewaySdkDeploymentProvider.cs" />
-    <Compile Include="Aws\Impl\ApiGatewaySdkModelProvider.cs" />
-    <Compile Include="Aws\IApiGatewaySdkDeploymentProvider.cs" />
-    <Compile Include="Aws\IApiGatewaySdkMethodIntegrationProvider.cs" />
-    <Compile Include="Aws\IApiGatewaySdkMethodParameterProvider.cs" />
-    <Compile Include="Aws\IApiGatewaySdkMethodProvider.cs" />
-    <Compile Include="Aws\IApiGatewaySdkMethodResponseProvider.cs" />
-    <Compile Include="Aws\IApiGatewaySdkModelProvider.cs" />
-    <Compile Include="Aws\IApiGatewaySdkResourceProvider.cs" />
-    <Compile Include="Aws\Impl\ApiGatewaySdkSwaggerApiImporter.cs" />
+    <Compile Include="Swagger\Aws\Impl\ApiGatewaySdkMethodResponseProvider.cs" />
+    <Compile Include="Swagger\Aws\Impl\ApiGatewaySdkMethodIntegrationProvider.cs" />
+    <Compile Include="Swagger\Aws\Impl\ApiGatewaySdkMethodParameterProvider.cs" />
+    <Compile Include="Swagger\Aws\Impl\ApiGatewaySdkMethodProvider.cs" />
+    <Compile Include="Swagger\Aws\Impl\ApiGatewaySdkResourceProvider.cs" />
+    <Compile Include="Swagger\Aws\Impl\ApiGatewaySdkDeploymentProvider.cs" />
+    <Compile Include="Swagger\Aws\Impl\ApiGatewaySdkModelProvider.cs" />
+    <Compile Include="Swagger\Aws\IApiGatewaySdkDeploymentProvider.cs" />
+    <Compile Include="Swagger\Aws\IApiGatewaySdkMethodIntegrationProvider.cs" />
+    <Compile Include="Swagger\Aws\IApiGatewaySdkMethodParameterProvider.cs" />
+    <Compile Include="Swagger\Aws\IApiGatewaySdkMethodProvider.cs" />
+    <Compile Include="Swagger\Aws\IApiGatewaySdkMethodResponseProvider.cs" />
+    <Compile Include="Swagger\Aws\IApiGatewaySdkModelProvider.cs" />
+    <Compile Include="Swagger\Aws\IApiGatewaySdkResourceProvider.cs" />
+    <Compile Include="Swagger\Aws\Impl\ApiGatewaySdkSwaggerApiImporter.cs" />
     <Compile Include="Swagger\Impl\SwaggerApiFileImporter.cs" />
     <Compile Include="Extentions.cs" />
     <Compile Include="Operations.cs" />
@@ -100,7 +100,7 @@
     <Compile Include="Options.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SchemaTransformer.cs" />
+    <Compile Include="Swagger\SchemaTransformer.cs" />
     <Compile Include="Swagger\SwaggerHelper.cs" />
     <Compile Include="Swagger\SwaggerDocument.cs" />
   </ItemGroup>

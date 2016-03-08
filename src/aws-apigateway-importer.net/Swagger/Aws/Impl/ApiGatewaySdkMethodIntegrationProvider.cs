@@ -5,7 +5,7 @@ using Amazon.APIGateway.Model;
 using log4net;
 using Newtonsoft.Json.Linq;
 
-namespace Importer.Aws.Impl
+namespace Importer.Swagger.Aws.Impl
 {
     public class ApiGatewaySdkMethodIntegrationProvider : IApiGatewaySdkMethodIntegrationProvider
     {

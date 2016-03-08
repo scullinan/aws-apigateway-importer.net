@@ -1,4 +1,4 @@
-﻿namespace Importer.Aws
+﻿namespace Importer.Swagger.Aws
 {
     public interface IApiGatewaySdkDeploymentProvider
     {

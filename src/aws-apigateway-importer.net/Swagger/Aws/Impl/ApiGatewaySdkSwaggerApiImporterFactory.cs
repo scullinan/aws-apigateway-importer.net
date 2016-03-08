@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Amazon.APIGateway;
-using Importer.Aws.Impl;
-using Importer.Swagger;
-using Importer.Swagger.Impl;
 
-namespace Importer.Impl
+namespace Importer.Swagger.Aws.Impl
 {
     public class ApiGatewaySdkSwaggerApiImporterFactory : ISwaggerApiImporterFactory
     {

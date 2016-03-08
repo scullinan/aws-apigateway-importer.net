@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using Amazon.APIGateway.Model;
-using Importer.Swagger;
 
-namespace Importer.Aws
+namespace Importer.Swagger.Aws
 {
     public interface IApiGatewaySdkMethodResponseProvider
     {

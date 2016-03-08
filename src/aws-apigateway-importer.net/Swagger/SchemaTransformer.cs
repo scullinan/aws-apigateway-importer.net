@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using Importer.Swagger;
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
 using Newtonsoft.Json.Serialization;
 
-namespace Importer
+namespace Importer.Swagger
 {
     public class SchemaTransformer
     {
