@@ -1,48 +1,153 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="ApiGatewayImporter.Sdk.Impl.ApiGatewaySwaggerApiFileImporter" Collapsed="true">
-    <Position X="6" Y="3" Width="3" />
+  <Class Name="Importer.Swagger.Impl.SwaggerApiFileImporter" Collapsed="true">
+    <Position X="0.5" Y="6.25" Width="3.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAEAAAIAAACgBBEAAAAAAAAAAAACAAAAA=</HashCode>
-      <FileName>Sdk\Impl\ApiGatewaySwaggerApiFileImporter.cs</FileName>
+      <FileName>Swagger\Impl\SwaggerApiFileImporter.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="ApiGatewayImporter.Sdk.Impl.ApiGatewaySdkSwaggerApiImporter" Collapsed="true">
-    <Position X="2.5" Y="3" Width="3" />
+  <Class Name="Importer.Swagger.Aws.Impl.ApiGatewaySdkDeploymentProvider" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="0.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAgAAAAgAAAAAAAAAAggAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Swagger\Aws\Impl\ApiGatewaySdkDeploymentProvider.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Importer.Swagger.Aws.Impl.ApiGatewaySdkMethodIntegrationProvider" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="4" Y="0.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAgAAAAAAEAAggAAAAAAAgAAAAAAAA=</HashCode>
+      <FileName>Swagger\Aws\Impl\ApiGatewaySdkMethodIntegrationProvider.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Importer.Swagger.Aws.Impl.ApiGatewaySdkMethodParameterProvider" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="7.5" Y="0.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAgAIAAAAAAAAgAAAAAABAAAAAAAAI=</HashCode>
+      <FileName>Swagger\Aws\Impl\ApiGatewaySdkMethodParameterProvider.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Importer.Swagger.Aws.Impl.ApiGatewaySdkMethodProvider" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="1.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AQgAAAQAQAAAAAJgAQAAAAAAAggAAAgAAAAICAAAAgA=</HashCode>
+      <FileName>Swagger\Aws\Impl\ApiGatewaySdkMethodProvider.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Importer.Swagger.Aws.Impl.ApiGatewaySdkMethodResponseProvider" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="4" Y="1.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAkAAAAAAACAAAAgAAAAAAAAAggAAAgAAIAAAAAAAAA=</HashCode>
+      <FileName>Swagger\Aws\Impl\ApiGatewaySdkMethodResponseProvider.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Importer.Swagger.Aws.Impl.ApiGatewaySdkModelProvider" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="7.5" Y="1.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEAAAAAgAAAAAAgAAggAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Swagger\Aws\Impl\ApiGatewaySdkModelProvider.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Importer.Swagger.Aws.Impl.ApiGatewaySdkResourceProvider" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="2.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAACBAAAAAAAAgAAAAiAAAEAAACAAAAAAACgAAAAA=</HashCode>
+      <FileName>Swagger\Aws\Impl\ApiGatewaySdkResourceProvider.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Importer.Swagger.Aws.Impl.ApiGatewaySdkSwaggerApiImporter" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="7.5" Y="6.25" Width="3.25" />
     <TypeIdentifier>
       <HashCode>QAAAAABAAAAAEAAIAAASKgABAAgAAAAAAAAAACAAAAA=</HashCode>
-      <FileName>Sdk\Impl\ApiGatewaySdkSwaggerApiImporter.cs</FileName>
+      <FileName>Swagger\Aws\Impl\ApiGatewaySdkSwaggerApiImporter.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="ApiGatewayImporter.ApiGatewaySdkSwaggerApiImporterFactory" Collapsed="true">
-    <Position X="9.5" Y="3" Width="3.25" />
+  <Class Name="Importer.Swagger.Aws.Impl.ApiGatewaySdkSwaggerApiImporterFactory" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="4" Y="6.25" Width="3.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAgBAAEAAQAgAAAAAAAA=</HashCode>
-      <FileName>ApiGatewaySdkSwaggerApiImporterFactory.cs</FileName>
+      <FileName>Swagger\Aws\Impl\ApiGatewaySdkSwaggerApiImporterFactory.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Interface Name="ApiGatewayImporter.ISwaggerApiImporter">
-    <Position X="2.5" Y="4" Width="3" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAEAAIAAAAAgABAAAAAAAAAAAAACAAAAA=</HashCode>
-      <FileName>Sdk\ISwaggerApiImporter.cs</FileName>
-    </TypeIdentifier>
-  </Interface>
-  <Interface Name="ApiGatewayImporter.ISwaggerApiFileImporter">
-    <Position X="6" Y="4" Width="3" />
+  <Interface Name="Importer.Swagger.ISwaggerApiFileImporter" Collapsed="true">
+    <Position X="0.5" Y="7" Width="3.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAEAAAAAAAAgABEAAAAAAAAAAAACAAAAA=</HashCode>
-      <FileName>Sdk\ISwaggerApiFileImporter.cs</FileName>
+      <FileName>Swagger\ISwaggerApiFileImporter.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="ApiGatewayImporter.ISwaggerApiImporterFactory">
-    <Position X="9.5" Y="4" Width="3.25" />
+  <Interface Name="Importer.Swagger.ISwaggerApiImporter" Collapsed="true">
+    <Position X="7.5" Y="7" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAEAAIAAAAAgABAAAAAAAAAAAAACAAAAA=</HashCode>
+      <FileName>Swagger\ISwaggerApiImporter.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Importer.Swagger.ISwaggerApiImporterFactory" Collapsed="true">
+    <Position X="4" Y="7" Width="3.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
-      <FileName>ISwaggerApiImporterFactory.cs</FileName>
+      <FileName>Swagger\ISwaggerApiImporterFactory.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Importer.Swagger.Aws.IApiGatewaySdkDeploymentProvider" Collapsed="true">
+    <Position X="0.5" Y="3.25" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAgAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Swagger\Aws\IApiGatewaySdkDeploymentProvider.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Importer.Swagger.Aws.IApiGatewaySdkMethodIntegrationProvider" Collapsed="true">
+    <Position X="4" Y="3.25" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAA=</HashCode>
+      <FileName>Swagger\Aws\IApiGatewaySdkMethodIntegrationProvider.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Importer.Swagger.Aws.IApiGatewaySdkMethodParameterProvider" Collapsed="true">
+    <Position X="7.5" Y="3.25" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAA=</HashCode>
+      <FileName>Swagger\Aws\IApiGatewaySdkMethodParameterProvider.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Importer.Swagger.Aws.IApiGatewaySdkMethodProvider" Collapsed="true">
+    <Position X="0.5" Y="4" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Swagger\Aws\IApiGatewaySdkMethodProvider.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Importer.Swagger.Aws.IApiGatewaySdkMethodResponseProvider" Collapsed="true">
+    <Position X="4" Y="4" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAA=</HashCode>
+      <FileName>Swagger\Aws\IApiGatewaySdkMethodResponseProvider.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Importer.Swagger.Aws.IApiGatewaySdkModelProvider" Collapsed="true">
+    <Position X="7.5" Y="4" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Swagger\Aws\IApiGatewaySdkModelProvider.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Importer.Swagger.Aws.IApiGatewaySdkResourceProvider" Collapsed="true">
+    <Position X="0.5" Y="4.75" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAA=</HashCode>
+      <FileName>Swagger\Aws\IApiGatewaySdkResourceProvider.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Font Name="Segoe UI" Size="9" />
