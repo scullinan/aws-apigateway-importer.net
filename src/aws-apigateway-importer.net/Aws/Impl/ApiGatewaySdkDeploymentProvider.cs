@@ -3,7 +3,7 @@ using Amazon.APIGateway;
 using Amazon.APIGateway.Model;
 using log4net;
 
-namespace ApiGatewayImporter.Sdk.Impl
+namespace Importer.Aws.Impl
 {
     public class ApiGatewaySdkDeploymentProvider : IApiGatewaySdkDeploymentProvider
     {

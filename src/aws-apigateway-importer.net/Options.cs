@@ -2,7 +2,7 @@
 using System.Linq;
 using CommandLine;
 
-namespace ApiGatewayImporter
+namespace Importer
 {
     public class Options
     {

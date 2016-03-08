@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using Amazon.APIGateway;
 using Amazon.APIGateway.Model;
+using Importer.Swagger;
 using log4net;
 
-namespace ApiGatewayImporter.Sdk.Impl
+namespace Importer.Aws.Impl
 {
     public class ApiGatewaySdkMethodParameterProvider : IApiGatewaySdkMethodParameterProvider
     {

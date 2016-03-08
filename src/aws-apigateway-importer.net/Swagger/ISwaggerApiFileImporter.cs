@@ -1,4 +1,4 @@
-﻿namespace ApiGatewayImporter
+﻿namespace Importer.Swagger
 {
     public interface ISwaggerApiFileImporter
     {

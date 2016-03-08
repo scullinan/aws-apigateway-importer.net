@@ -1,4 +1,4 @@
-﻿namespace ApiGatewayImporter.Sdk
+﻿namespace Importer.Aws
 {
     public interface IApiGatewaySdkDeploymentProvider
     {

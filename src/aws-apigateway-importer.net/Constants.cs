@@ -1,4 +1,4 @@
-namespace ApiGatewayImporter
+namespace Importer
 {
     public static class Constants
     {

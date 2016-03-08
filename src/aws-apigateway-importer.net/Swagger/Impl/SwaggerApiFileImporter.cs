@@ -3,14 +3,14 @@ using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace ApiGatewayImporter.Sdk.Impl
+namespace Importer.Swagger.Impl
 {
-    public class ApiGatewaySwaggerApiFileImporter : ISwaggerApiFileImporter
+    public class SwaggerApiFileImporter : ISwaggerApiFileImporter
     {
         private readonly ISwaggerApiImporter importer;
-        ILog log = LogManager.GetLogger(typeof(ApiGatewaySwaggerApiFileImporter));
+        ILog log = LogManager.GetLogger(typeof(SwaggerApiFileImporter));
 
-        public ApiGatewaySwaggerApiFileImporter(ISwaggerApiImporter importer)
+        public SwaggerApiFileImporter(ISwaggerApiImporter importer)
         {
             this.importer = importer;
         }

@@ -1,7 +1,7 @@
-﻿ using System.Collections.Generic;
- using Amazon.APIGateway.Model;
+﻿using Amazon.APIGateway.Model;
+using Importer.Swagger;
 
-namespace ApiGatewayImporter.Sdk
+namespace Importer.Aws
 {
     public interface IApiGatewaySdkResourceProvider
     {

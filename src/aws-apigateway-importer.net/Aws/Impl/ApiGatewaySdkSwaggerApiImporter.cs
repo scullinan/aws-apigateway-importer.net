@@ -2,36 +2,28 @@ using System;
 using System.Collections.Generic;
 using Amazon.APIGateway;
 using Amazon.APIGateway.Model;
+using Importer.Swagger;
 using log4net;
 
-namespace ApiGatewayImporter.Sdk.Impl
+namespace Importer.Aws.Impl
 {
     public class ApiGatewaySdkSwaggerApiImporter : ISwaggerApiImporter
     {
-        protected AmazonAPIGatewayClient Client;
+        protected IAmazonAPIGateway Gateway;
         protected ILog Log = LogManager.GetLogger(typeof(ApiGatewaySdkSwaggerApiImporter));
         protected HashSet<string> ProcessedModels = new HashSet<string>();
 
         private readonly IApiGatewaySdkModelProvider modelProvider;
         private readonly IApiGatewaySdkDeploymentProvider deploymentProvider;
         private readonly IApiGatewaySdkResourceProvider resourceProvider;
-        readonly ILog log = LogManager.GetLogger(typeof (ApiGatewaySwaggerApiFileImporter));
+        readonly ILog log = LogManager.GetLogger(typeof (ApiGatewaySdkSwaggerApiImporter));
 
-
-        public ApiGatewaySdkSwaggerApiImporter()
+        public ApiGatewaySdkSwaggerApiImporter(IAmazonAPIGateway gateway, IApiGatewaySdkModelProvider modelProvider, IApiGatewaySdkResourceProvider resourceProvider, IApiGatewaySdkDeploymentProvider deploymentProvider)
         {
-            Client = new AmazonAPIGatewayClient();
-
-            this.modelProvider = new ApiGatewaySdkModelProvider(ProcessedModels, Client);
-            this.resourceProvider = new ApiGatewaySdkResourceProvider(Client,
-                new ApiGatewaySdkMethodProvider(ProcessedModels,
-                    Client,
-                    modelProvider,
-                    new ApiGatewaySdkMethodResponseProvider(ProcessedModels, Client, modelProvider),
-                    new ApiGatewaySdkMethodParameterProvider(Client),
-                    new ApiGatewaySdkMethodIntegrationProvider(Client)));
-
-            this.deploymentProvider = new ApiGatewaySdkDeploymentProvider(Client);
+            Gateway = gateway;
+            this.modelProvider = modelProvider;
+            this.resourceProvider = resourceProvider;
+            this.deploymentProvider = deploymentProvider;
         }
 
         public string CreateApi(SwaggerDocument swagger, string name)
@@ -46,7 +38,7 @@ namespace ApiGatewayImporter.Sdk.Impl
                 Description = swagger.Info.Description
             };
 
-            var response = Client.CreateRestApi(request);
+            var response = Gateway.CreateRestApi(request);
 
             try
             {
@@ -86,7 +78,7 @@ namespace ApiGatewayImporter.Sdk.Impl
         {
             log.InfoFormat("Deleting API {0}", apiId);
 
-            Client.DeleteRestApi(new DeleteRestApiRequest() {
+            Gateway.DeleteRestApi(new DeleteRestApiRequest() {
                 RestApiId = apiId
             });
         }
@@ -113,7 +105,7 @@ namespace ApiGatewayImporter.Sdk.Impl
         {
             var resourceList = new List<Resource>();
 
-            var resources = Client.GetResources(new GetResourcesRequest()
+            var resources = Gateway.GetResources(new GetResourcesRequest()
             {
                 RestApiId = api.Id,
                 Limit = 500

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Amazon.APIGateway.Model;
 
-namespace ApiGatewayImporter.Sdk
+namespace Importer.Aws
 {
     public interface IApiGatewaySdkMethodIntegrationProvider
     {

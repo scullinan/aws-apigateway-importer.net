@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace ApiGatewayImporter
+namespace Importer
 {
     public class DeploymentConfig
     {

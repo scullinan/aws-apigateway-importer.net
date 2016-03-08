@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
-using ApiGatewayImporter.Sdk.Impl;
 using Newtonsoft.Json;
 
-namespace ApiGatewayImporter
+namespace Importer.Swagger
 {
     [JsonConverter(typeof (VendorExtensionsConverter))]
     public class SwaggerDocument

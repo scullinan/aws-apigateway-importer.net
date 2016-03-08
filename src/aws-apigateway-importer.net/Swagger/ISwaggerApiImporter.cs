@@ -1,6 +1,6 @@
 using System;
 
-namespace ApiGatewayImporter
+namespace Importer.Swagger
 {
     public interface ISwaggerApiImporter
     {
