@@ -1,21 +1,31 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+using System;
+using System.Collections.Generic;
 using Amazon.APIGateway;
 using Amazon.APIGateway.Model;
+using log4net;
 using Newtonsoft.Json.Linq;
 
-namespace AWS.APIGateway.Impl
+namespace Importer.Aws.Impl
 {
-    public partial class ApiGatewaySdkSwaggerApiImporter
+    public class ApiGatewaySdkMethodIntegrationProvider : IApiGatewaySdkMethodIntegrationProvider
     {
-        private void CreateIntegration(RestApi api, Resource resource, Method method, IDictionary<string, object> vendorExtensions)
+        private readonly IAmazonAPIGateway gateway;
+        protected ILog Log = LogManager.GetLogger(typeof (ApiGatewaySdkMethodIntegrationProvider));
+
+        public ApiGatewaySdkMethodIntegrationProvider(IAmazonAPIGateway gateway)
         {
-            if (!vendorExtensions.ContainsKey(EXTENSION_INTEGRATION))
+            this.gateway = gateway;
+        }
+
+        public void CreateIntegration(RestApi api, Resource resource, Method method,
+            Dictionary<string, object> vendorExtensions)
+        {
+            if (!vendorExtensions.ContainsKey(Constants.ExtensionIntegration))
             {
                 return;
             }
 
-            var integ = (JObject)vendorExtensions[EXTENSION_INTEGRATION];
+            var integ = (JObject) vendorExtensions[Constants.ExtensionIntegration];
             var type = IntegrationType.FindValue(GetStringValue(integ["type"]).ToUpper());
 
             Log.InfoFormat("Creating integration with type {0}", type);
@@ -30,16 +40,17 @@ namespace AWS.APIGateway.Impl
                 HttpMethod = GetStringValue(integ["httpMethod"]),
                 IntegrationHttpMethod = GetStringValue(integ["httpMethod"]),
                 RequestParameters = integ["requestParameters"]?.ToObject<Dictionary<string, string>>(),
-                RequestTemplates =  integ["requestTemplates"]?.ToObject<Dictionary<string, string>>(),
+                RequestTemplates = integ["requestTemplates"]?.ToObject<Dictionary<string, string>>(),
                 CacheNamespace = GetStringValue(integ["cacheNamespace"]),
                 CacheKeyParameters = integ["cacheKeyParameters"]?.ToObject<List<string>>()
             };
 
-            var integration = Client.PutIntegration(request);
+            var integration = gateway.PutIntegration(request);
             CreateIntegrationResponses(api, resource, integration, integ.ToDictionary());
         }
 
-        private void CreateIntegrationResponses(RestApi api, Resource resource, PutIntegrationResponse integration, IDictionary<string, object> integ)
+        private void CreateIntegrationResponses(RestApi api, Resource resource, PutIntegrationResponse integration,
+            IDictionary<string, object> integ)
         {
             var responses = integ.ToDictionary<string, object>("responses");
 
@@ -65,9 +76,14 @@ namespace AWS.APIGateway.Impl
                         StatusCode = status
                     };
 
-                    Client.PutIntegrationResponse(request);
+                    gateway.PutIntegrationResponse(request);
                 }
             });
+        }
+
+        private string GetStringValue(object obj)
+        {
+            return obj == null ? null : Convert.ToString(obj); // use null value instead of "null"
         }
     }
 }

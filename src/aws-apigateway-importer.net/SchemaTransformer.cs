@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using Importer.Swagger;
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
 using Newtonsoft.Json.Serialization;
 
-namespace AWS.APIGateway
+namespace Importer
 {
     public class SchemaTransformer
     {
-        ILog log = LogManager.GetLogger(typeof(SchemaTransformer));
+        readonly ILog log = LogManager.GetLogger(typeof(SchemaTransformer));
 
         public string Flatten(string model, string models)
         {

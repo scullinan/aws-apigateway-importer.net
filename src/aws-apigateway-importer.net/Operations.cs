@@ -1,12 +1,12 @@
-namespace AWS.APIGateway
+namespace Importer
 {
     public static class Operations
     {
-        public static string Add = "add";
-        public static string Remove = "remove";
-        public static string Replace = "replace";
-        public static string Move = "move";
-        public static string Copy = "copy";
-        public static string Test = "test";
+        public const string Add = "add";
+        public const string Remove = "remove";
+        public const string Replace = "replace";
+        public const string Move = "move";
+        public const string Copy = "copy";
+        public const string Test = "test";
     }
 }

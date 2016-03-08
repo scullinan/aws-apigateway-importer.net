@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 
-namespace AWS.APIGateway.Impl
+namespace Importer.Swagger
 {
     public class VendorExtensionsConverter : JsonConverter
     {

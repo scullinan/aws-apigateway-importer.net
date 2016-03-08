@@ -1,21 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using Amazon.APIGateway;
 using Amazon.APIGateway.Model;
+using Importer.Swagger;
+using log4net;
 using Newtonsoft.Json.Linq;
 
-namespace AWS.APIGateway.Impl
+namespace Importer.Aws.Impl
 {
-    //Methods
-    public partial class ApiGatewaySdkSwaggerApiImporter
+    public class ApiGatewaySdkMethodProvider : IApiGatewaySdkMethodProvider
     {
-        private void CreateMethods(RestApi api, Resource resource, PathItem path, IList<string> apiProduces)
+        private readonly IApiGatewaySdkModelProvider modelProvider;
+        private readonly IApiGatewaySdkMethodResponseProvider methodResponseProvider;
+        private readonly IApiGatewaySdkMethodParameterProvider methodParameterProvider;
+        private readonly IApiGatewaySdkMethodIntegrationProvider methodIntegrationProvider;
+        private readonly HashSet<string> processedModels;
+        private readonly IAmazonAPIGateway gateway;
+        protected ILog Log = LogManager.GetLogger(typeof(ApiGatewaySdkMethodProvider));
+
+        public ApiGatewaySdkMethodProvider(HashSet<string> processedModels,
+            IAmazonAPIGateway gateway,
+            IApiGatewaySdkModelProvider modelProvider, 
+            IApiGatewaySdkMethodResponseProvider methodResponseProvider, 
+            IApiGatewaySdkMethodParameterProvider methodParameterProvider, 
+            IApiGatewaySdkMethodIntegrationProvider methodIntegrationProvider)
+        {
+            this.processedModels = processedModels;
+            this.gateway = gateway;
+            this.modelProvider = modelProvider;
+            this.methodResponseProvider = methodResponseProvider;
+            this.methodParameterProvider = methodParameterProvider;
+            this.methodIntegrationProvider = methodIntegrationProvider;
+        }
+
+        public void CreateMethods(RestApi api, SwaggerDocument swagger, Resource resource, PathItem path, IList<string> apiProduces)
         {
             var ops = GetOperations(path);
 
-            ops.ForEach(x => { 
-                CreateMethod(api, resource, x.Key, x.Value, GetProducesContentType(apiProduces, x.Value.Produces));
+            ops.ForEach(x => {
+                CreateMethod(api, swagger, resource, x.Key, x.Value, SwaggerHelper.GetProducesContentType(apiProduces, x.Value.Produces));
                 Log.InfoFormat("Creating method for api id {0} and resource id {1} with method {2}", api.Id, resource.Id, x.Key);
             });
         }
@@ -42,12 +66,12 @@ namespace AWS.APIGateway.Impl
             }
         }
 
-        public void CreateMethod(RestApi api, Resource resource, string httpMethod, Operation op, string modelContentType)
+        public void CreateMethod(RestApi api, SwaggerDocument swagger, Resource resource, string httpMethod, Operation op, string modelContentType)
         {
             var input = new PutMethodRequest
             {
                 AuthorizationType = GetAuthorizationType(op),
-                ApiKeyRequired = IsApiKeyRequired(op),
+                ApiKeyRequired = IsApiKeyRequired(swagger, op),
                 RestApiId = api.Id,
                 ResourceId = resource.Id
             };
@@ -59,11 +83,11 @@ namespace AWS.APIGateway.Impl
                 var inputModel = GetInputModel(p);
 
                 input.RequestModels = new Dictionary<string, string>();
-                
+
                 // model already imported
                 if (inputModel != null)
                 {
-                    ProcessedModels.Add(inputModel);
+                    processedModels.Add(inputModel);
 
                     Log.InfoFormat("Found input model reference {0}", inputModel);
                     input.RequestModels[modelContentType] = inputModel;
@@ -79,14 +103,14 @@ namespace AWS.APIGateway.Impl
                         throw new ArgumentException("Body parameter '{0}' + must have a schema defined", p.Name);
                     }
 
-                    CreateModel(api, modelName, p.Schema, Swagger.Definitions, modelContentType);
+                    modelProvider.CreateModel(api, modelName, p.Schema, swagger.Definitions, modelContentType);
                     input.RequestModels[modelContentType] = modelName;
                 }
             });
 
             // create method
             input.HttpMethod = httpMethod.ToUpper();
-            var result = Client.PutMethod(input);
+            var result = gateway.PutMethod(input);
 
             var method = new Method()
             {
@@ -99,19 +123,18 @@ namespace AWS.APIGateway.Impl
                 RequestParameters = result.RequestParameters
             };
 
-
-            CreateMethodResponses(api, resource, method, modelContentType, op.Responses);
-            CreateMethodParameters(api, resource, method, op.Parameters);
-            CreateIntegration(api, resource, method, op.VendorExtensions);
+            methodResponseProvider.CreateMethodResponses(api, resource, method, swagger, modelContentType, op.Responses);
+            methodParameterProvider.CreateMethodParameters(api, resource, method, op.Parameters);
+            methodIntegrationProvider.CreateIntegration(api, resource, method, op.VendorExtensions);
         }
 
         private string GetAuthorizationType(Operation op)
         {
             var authType = "NONE";
 
-            if (op.VendorExtensions != null && op.VendorExtensions.ContainsKey(EXTENSION_AUTH))
+            if (op.VendorExtensions != null && op.VendorExtensions.ContainsKey(Constants.ExtensionAuth))
             {
-                var vendorExtension = op.VendorExtensions[EXTENSION_AUTH] as JObject;
+                var vendorExtension = op.VendorExtensions[Constants.ExtensionAuth] as JObject;
 
                 var authExtension = vendorExtension?.ToObject<Dictionary<string, string>>();
 
@@ -124,13 +147,13 @@ namespace AWS.APIGateway.Impl
             return authType;
         }
 
-        private bool IsApiKeyRequired(Operation op)
+        private bool IsApiKeyRequired(SwaggerDocument swagger, Operation op)
         {
             var apiKeySecurityDefinition = default(KeyValuePair<string, SecurityScheme>);
 
-            if (Swagger.SecurityDefinitions != null)
+            if (swagger.SecurityDefinitions != null)
             {
-                apiKeySecurityDefinition = Swagger.SecurityDefinitions.FirstOrDefault(x => x.Value.Type.Equals("apiKey"));
+                apiKeySecurityDefinition = swagger.SecurityDefinitions.FirstOrDefault(x => x.Value.Type.Equals("apiKey"));
             }
 
             if (apiKeySecurityDefinition.Equals(default(KeyValuePair<string, SecurityScheme>)))
@@ -145,9 +168,9 @@ namespace AWS.APIGateway.Impl
                 return op.Security.Any(x => x.ContainsKey(securityDefinitionName));
             }
 
-            if (Swagger.Security != null)
+            if (swagger.Security != null)
             {
-                return Swagger.Security.Any(x => x.ContainsKey(securityDefinitionName));
+                return swagger.Security.Any(x => x.ContainsKey(securityDefinitionName));
             }
 
             return false;
@@ -170,11 +193,6 @@ namespace AWS.APIGateway.Impl
             return string.Empty;
         }
 
-        string GenerateModelName(Response response)
-        {
-            return GenerateModelName(response.Description);
-        }
-
         private string GenerateModelName(Parameter param)
         {
             return GenerateModelName(param.Description);
@@ -195,37 +213,6 @@ namespace AWS.APIGateway.Impl
         private string GetModelNameSanitizeRegex()
         {
             return "[^A-Za-z0-9]";
-        }
-
-        private Model GetModel(RestApi api, Response response)
-        {
-
-            string modelName;
-
-            // if the response references a proper model, look for a model matching the model name
-            if (response.Schema != null && response.Schema.Type.Equals("ref"))
-            {
-                modelName = response.Schema.Ref;
-            }
-            else
-            {
-                // if the response has an embedded schema, look for a model matching the generated name
-                modelName = GenerateModelName(response);
-            }
-
-            try
-            {
-                var result = Client.GetModel(new GetModelRequest() { RestApiId = api.Id, ModelName = modelName });
-                return new Model()
-                {
-                    Description = result.Description,
-                    ContentType = result.ContentType,
-                    
-                };
-            }
-            catch (Exception ignored) { }
-
-            return null;
         }
     }
 }

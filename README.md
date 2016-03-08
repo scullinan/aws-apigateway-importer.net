@@ -18,7 +18,7 @@ This tool requires AWS credentials to be configured in at least one of the locat
 
 It will look for configured credentials in environment variables, Java system properties, [AWS SDK/CLI](http://aws.amazon.com/cli) profile credentials, and EC2 instance profile credentials.
 
-### Import a new API
+### Import and deploy a new API
 
 ```sh
 ./aws-api-import --create path/to/swagger.json --deploy path/to/deployment.json

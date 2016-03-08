@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Amazon.APIGateway.Model;
 
-namespace AWS.APIGateway
+namespace Importer
 {
     public class PatchOperationBuilder
     {
@@ -14,8 +14,7 @@ namespace AWS.APIGateway
 
         public PatchOperationBuilder Operation(string op, string path, string value, string from = null)
         {
-            operations.Add(new PatchOperation()
-            {
+            operations.Add(new PatchOperation() {
                 Value = value,
                 Op = op,
                 Path = path,

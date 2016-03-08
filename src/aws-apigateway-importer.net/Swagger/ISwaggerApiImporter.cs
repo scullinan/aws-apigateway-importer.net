@@ -1,7 +1,6 @@
 using System;
-using System.Threading.Tasks;
 
-namespace AWS.APIGateway
+namespace Importer.Swagger
 {
     public interface ISwaggerApiImporter
     {

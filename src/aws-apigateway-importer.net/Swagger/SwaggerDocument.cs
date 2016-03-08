@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
-using AWS.APIGateway.Impl;
 using Newtonsoft.Json;
 
-namespace AWS.APIGateway
+namespace Importer.Swagger
 {
     [JsonConverter(typeof (VendorExtensionsConverter))]
     public class SwaggerDocument

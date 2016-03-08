@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="ApiGatewayImporter.Sdk.Impl.ApiGatewaySwaggerApiFileImporter" Collapsed="true">
+    <Position X="6" Y="3" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAEAAAIAAACgBBEAAAAAAAAAAAACAAAAA=</HashCode>
+      <FileName>Sdk\Impl\ApiGatewaySwaggerApiFileImporter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ApiGatewayImporter.Sdk.Impl.ApiGatewaySdkSwaggerApiImporter" Collapsed="true">
+    <Position X="2.5" Y="3" Width="3" />
+    <TypeIdentifier>
+      <HashCode>QAAAAABAAAAAEAAIAAASKgABAAgAAAAAAAAAACAAAAA=</HashCode>
+      <FileName>Sdk\Impl\ApiGatewaySdkSwaggerApiImporter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ApiGatewayImporter.ApiGatewaySdkSwaggerApiImporterFactory" Collapsed="true">
+    <Position X="9.5" Y="3" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAgBAAEAAQAgAAAAAAAA=</HashCode>
+      <FileName>ApiGatewaySdkSwaggerApiImporterFactory.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="ApiGatewayImporter.ISwaggerApiImporter">
+    <Position X="2.5" Y="4" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAEAAIAAAAAgABAAAAAAAAAAAAACAAAAA=</HashCode>
+      <FileName>Sdk\ISwaggerApiImporter.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ApiGatewayImporter.ISwaggerApiFileImporter">
+    <Position X="6" Y="4" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAEAAAAAAAAgABEAAAAAAAAAAAACAAAAA=</HashCode>
+      <FileName>Sdk\ISwaggerApiFileImporter.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ApiGatewayImporter.ISwaggerApiImporterFactory">
+    <Position X="9.5" Y="4" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>ISwaggerApiImporterFactory.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

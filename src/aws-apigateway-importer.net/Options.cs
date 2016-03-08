@@ -2,7 +2,7 @@
 using System.Linq;
 using CommandLine;
 
-namespace AWS.APIGateway
+namespace Importer
 {
     public class Options
     {

@@ -1,23 +1,31 @@
 ﻿using System.IO;
 using System.Linq;
-using AWS.APIGateway.Impl;
+using Autofac;
 using CommandLine;
+using Importer.Aws.Impl;
+using Importer.Impl;
+using Importer.Swagger;
+using Importer.Swagger.Impl;
 using log4net;
 using log4net.Config;
 
-namespace AWS.APIGateway
+namespace Importer
 {
     class Program
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(Program));
+        private static IContainer Container { get; set; }
 
         static void Main(string[] args)
         {
             BasicConfigurator.Configure();
+            var builder = new ContainerBuilder();
+            Container = AutofacConfig.Configure(builder);
+
             Options options = null;
             var result = Parser.Default.ParseArguments<Options>(args);
 
-            var exitCode = result.MapResult(opt => {
+            result.MapResult(opt => {
                 options = opt;
 
                 if (options.UpdateApiId == null && !options.Files.Any())
@@ -52,7 +60,8 @@ namespace AWS.APIGateway
 
         private static void ImportSwagger(Options options, string fileName)
         {
-            ISwaggerApiFileImporter importer = new ApiGatewaySwaggerApiFileImporter(new ApiGatewaySdkSwaggerApiImporter()); //ToDo
+            var importer = Container.Resolve<ISwaggerApiFileImporter>();
+
             var apiId = string.Empty; 
 
             if (options.Create)
