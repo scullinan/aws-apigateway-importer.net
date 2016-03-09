@@ -1,10 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "aws-apigateway-importer.net", "src\aws-apigateway-importer.net\aws-apigateway-importer.net.csproj", "{365747C1-AE08-4795-903F-C25152D2967B}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".files", ".files", "{30F0370F-1937-4238-BA97-10C734100DF5}"
 	ProjectSection(SolutionItems) = preProject
 		LICENSE = LICENSE
@@ -13,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".files", ".files", "{30F037
 	ProjectSection(FolderGlobals) = preProject
 		__JSONSchema = https://github.com/OAI/OpenAPI-Specification/blob/master/schemas/v2.0/schema.json
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Importer", "src\Importer\Importer.csproj", "{365747C1-AE08-4795-903F-C25152D2967B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
