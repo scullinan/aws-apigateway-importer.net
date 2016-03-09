@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Amazon;
 using Amazon.APIGateway;
+using Amazon.Runtime;
 
 namespace Importer.Swagger.Aws.Impl
 {
@@ -47,7 +49,7 @@ namespace Importer.Swagger.Aws.Impl
 
         private IAmazonAPIGateway CreateClient()
         {
-            return new AmazonAPIGatewayClient();
+            return new AmazonAPIGatewayClient(new StoredProfileAWSCredentials("dev"), RegionEndpoint.EUWest1);
         }
     }
 }

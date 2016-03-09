@@ -10,7 +10,7 @@ namespace Importer.Swagger.Aws.Impl
     {
         protected IAmazonAPIGateway Gateway;
         protected ILog Log = LogManager.GetLogger(typeof(ApiGatewaySdkSwaggerApiImporter));
-        protected HashSet<string> ProcessedModels = new HashSet<string>();
+        
 
         private readonly IApiGatewaySdkModelProvider modelProvider;
         private readonly IApiGatewaySdkDeploymentProvider deploymentProvider;
@@ -27,8 +27,6 @@ namespace Importer.Swagger.Aws.Impl
 
         public string CreateApi(SwaggerDocument swagger, string name)
         {
-            ProcessedModels.Clear();
-
             Log.InfoFormat("Creating API with Name {0}", name);
 
             var request = new CreateRestApiRequest
