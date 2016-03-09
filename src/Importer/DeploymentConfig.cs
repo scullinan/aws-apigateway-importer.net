@@ -30,8 +30,8 @@ namespace Importer
         {
             public bool Enabled { get; set; }
             public string ClusterSize { get; set; }
-            public int CacheTtlInSeconds { get; set; }
-            public int CacheDataEncrypted { get; set; }
+            public int TtlInSeconds { get; set; }
+            public bool DataEncrypted { get; set; }
         }
 
         public class ThrottlingConfig

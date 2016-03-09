@@ -55,7 +55,7 @@ namespace Importer.Swagger.Impl
 
         private static T Import<T>(string filePath)
         {
-            var serializer = new JsonSerializer {ContractResolver = new CamelCasePropertyNamesContractResolver(), NullValueHandling = NullValueHandling.Ignore };
+            var serializer = new JsonSerializer { ContractResolver = new CamelCasePropertyNamesContractResolver(), NullValueHandling = NullValueHandling.Ignore };
     
             var sr = new StreamReader(filePath);
             return serializer.Deserialize<T>(new JsonTextReader(sr));

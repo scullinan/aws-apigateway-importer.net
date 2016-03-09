@@ -30,6 +30,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Moq, Version=4.2.1510.2205, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
+      <HintPath>..\packages\Moq.4.2.1510.2205\lib\net40\Moq.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="nunit.framework, Version=3.2.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\NUnit.3.2.0\lib\net45\nunit.framework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -40,6 +48,34 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Swagger\SwaggerApiFileImporterTest.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Swagger\Aws\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="Resources\apigateway.json" />
+    <Content Include="Resources\basic.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\deployment.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="Resources\large.json" />
+    <None Include="Resources\petstore-expanded.json" />
+    <None Include="Resources\petstore-minimal.json" />
+    <None Include="Resources\petstore-simple.json" />
+    <None Include="Resources\petstore-with-external-docs.json" />
+    <None Include="Resources\petstore.json" />
+    <None Include="Resources\test.json" />
+    <None Include="Resources\uber.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\src\Importer\Importer.csproj">
+      <Project>{365747c1-ae08-4795-903f-c25152d2967b}</Project>
+      <Name>Importer</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

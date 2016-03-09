@@ -54,8 +54,8 @@ namespace Importer.Swagger.Aws.Impl
             //Caching
             builder
                 .Operation(Operations.Replace, Paths.Caching.Enabled, config.Caching?.Enabled.ToString())
-                .Operation(Operations.Replace, Paths.Caching.TtlInSeconds, config.Caching?.CacheTtlInSeconds.ToString())
-                .Operation(Operations.Replace, Paths.Caching.DataEncrypted, config.Caching?.CacheDataEncrypted.ToString())
+                .Operation(Operations.Replace, Paths.Caching.TtlInSeconds, config.Caching?.TtlInSeconds.ToString())
+                .Operation(Operations.Replace, Paths.Caching.DataEncrypted, config.Caching?.DataEncrypted.ToString())
             //Throttling
                 .Operation(Operations.Replace, Paths.Throttling.BurstLimit, config.Throttling?.BurstLimit.ToString())
                 .Operation(Operations.Replace, Paths.Throttling.RateLimit, config.Throttling?.RateLimit.ToString());

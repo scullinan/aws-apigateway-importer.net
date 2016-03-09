@@ -114,8 +114,8 @@ Deployment Configuration :
     "caching": {
         "enabled": false,
         "clusterSize": "CLUSTER_SIZE",
-        "cacheTtlInSeconds": 5,
-        "cacheDataEncrypted": false
+        "ttlInSeconds": 5,
+        "dataEncrypted": false
     },
     "throttling": {
         "rateLimit": 500,
