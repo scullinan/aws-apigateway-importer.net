@@ -11,7 +11,6 @@ namespace Importer.Swagger.Aws.Impl
         protected IAmazonAPIGateway Gateway;
         protected ILog Log = LogManager.GetLogger(typeof(ApiGatewaySdkSwaggerApiImporter));
         
-
         private readonly IApiGatewaySdkModelProvider modelProvider;
         private readonly IApiGatewaySdkDeploymentProvider deploymentProvider;
         private readonly IApiGatewaySdkResourceProvider resourceProvider;
@@ -43,7 +42,7 @@ namespace Importer.Swagger.Aws.Impl
 
                 var rootResource = this.GetRootResource(api);
                 modelProvider.DeleteDefaultModels(api);
-                modelProvider.CreateModels(api, swagger.Definitions, swagger.Produces);
+                modelProvider.CreateModels(api, swagger);
                 resourceProvider.CreateResources(api, rootResource, swagger, true);
 
                 return api.Id;

@@ -5,7 +5,7 @@ namespace Importer.Swagger.Aws
 {
     public interface IApiGatewaySdkModelProvider
     {
-        void CreateModels(RestApi api, IDictionary<string, Schema> definitions, IList<string> produces);
+        void CreateModels(RestApi api, SwaggerDocument swagger);
         void CreateModel(RestApi api, string modelName, Schema model, IDictionary<string, Schema> definitions, string modelContentType);
         void DeleteDefaultModels(RestApi api);
     }

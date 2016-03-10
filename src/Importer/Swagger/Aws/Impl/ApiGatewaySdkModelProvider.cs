@@ -19,19 +19,19 @@ namespace Importer.Swagger.Aws.Impl
             this.gateway = gateway;
         }
 
-        public void CreateModels(RestApi api, IDictionary<string, Schema> definitions, IList<string> produces)
+        public void CreateModels(RestApi api, SwaggerDocument swagger)
         {
-            if (definitions == null)
+            if (swagger.Definitions == null)
             {
                 return;
             }
 
-            foreach (var definition in definitions)
+            foreach (var definition in swagger.Definitions)
             {
                 var modelName = definition.Key;
                 var model = definition.Value;
 
-                CreateModel(api, modelName, model, definitions, SwaggerHelper.GetProducesContentType(produces, Enumerable.Empty<string>()));
+                CreateModel(api, modelName, model, swagger.Definitions, SwaggerHelper.GetProducesContentType(swagger.Produces, Enumerable.Empty<string>()));
             }
         }
 

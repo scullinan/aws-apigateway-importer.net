@@ -68,7 +68,9 @@
   <ItemGroup />
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Resources\apigateway.json" />
+    <Content Include="Resources\apigateway.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\basic.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
