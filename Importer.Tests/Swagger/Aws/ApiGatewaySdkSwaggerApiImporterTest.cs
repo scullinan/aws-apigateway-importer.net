@@ -50,6 +50,31 @@ namespace Importer.Tests.Swagger.Aws
             Assert.That(apiId, Is.EqualTo(result));
         }
 
+        [Test]
+        public void DeleteApiTest()
+        {
+            underTest.DeleteApi(apiId);
+            gatewayMock.Verify(x => x.DeleteRestApi(It.IsAny<DeleteRestApiRequest>()), Times.Once);
+        }
+
+        [Test]
+        public void DeployApiTest()
+        {
+            var filePath = TestHelper.GetResourceFilePath("deployment.json");
+            var deploymentConfig = Import<DeploymentConfig>(filePath);
+
+            underTest.Deploy(apiId, deploymentConfig);
+
+            deploymentProviderMock.Verify(x => x.CreateDeployment(apiId, deploymentConfig), Times.Once);
+        }
+
+        [Test]
+        public void ProvisionApiKeyTest()
+        {
+            underTest.ProvisionApiKey(apiId, It.IsAny<string>(), It.IsAny<string>());
+            deploymentProviderMock.Verify(x => x.CreateApiKey(apiId, It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+        }
+
         private static T Import<T>(string filePath)
         {
             var serializer = new JsonSerializer { ContractResolver = new CamelCasePropertyNamesContractResolver(), NullValueHandling = NullValueHandling.Ignore };

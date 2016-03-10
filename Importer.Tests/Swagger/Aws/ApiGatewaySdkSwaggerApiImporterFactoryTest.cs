@@ -15,21 +15,21 @@ namespace Importer.Tests.Swagger.Aws
         }
 
         [Test]
-        public void CreateImporterTesttWithDefaultVersion()
+        public void CreateImporterTesttWithDefaultVersionTest()
         {
             var importer = underTest.Create();
             Assert.That(importer.GetType(), Is.EqualTo(typeof(ApiGatewaySdkSwaggerApiImporter)));
         }
 
         [Test]
-        public void CreatImporterTestWithSepcifiedVersion()
+        public void CreatImporterTestWithSepcifiedVersionTest()
         {
             var importer = underTest.Create("v2.0");
             Assert.That(importer.GetType(), Is.EqualTo(typeof(ApiGatewaySdkSwaggerApiImporter)));
         }
 
         [Test]
-        public void CreateImporterTestWithSepcifiedVersion()
+        public void CreateImporterTestWithSepcifiedVersionTest()
         {
             Assert.Throws<NotSupportedException>(() => underTest.Create("v2.1"));
         }
