@@ -41,5 +41,19 @@ namespace Importer.Tests.Swagger.Aws
             underTest.CreateDomain(config);
             gatewayMock.Verify(x => x.CreateDomainName(It.IsAny<CreateDomainNameRequest>()), Times.Once);
         }
+
+        [Test]
+        public void CreateApiKeyTest()
+        {
+            var key = "590e100a45a0437d9bc23ad332f5ccee";
+
+            gatewayMock.Setup(x => x.CreateApiKey(It.IsAny<CreateApiKeyRequest>()))
+               .Returns(new CreateApiKeyResponse() { Id = key });
+
+            var apiKey = underTest.CreateApiKey(apiId, "apikey-name", "stage-name");
+
+            Assert.That(apiKey, Is.EqualTo(key));
+            gatewayMock.Verify(x => x.CreateApiKey(It.IsAny<CreateApiKeyRequest>()), Times.Once);
+        }
     }
 }
