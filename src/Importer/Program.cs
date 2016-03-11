@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Linq;
 using Autofac;
 using CommandLine;
@@ -8,6 +9,7 @@ using log4net.Config;
 
 namespace Importer
 {
+    [ExcludeFromCodeCoverage]
     class Program
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(Program));

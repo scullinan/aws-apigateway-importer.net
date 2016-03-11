@@ -121,7 +121,7 @@ namespace Importer.Swagger.Aws.Impl
             string modelName;
 
             // if the response references a proper model, look for a model matching the model name
-            if (response.Schema != null && response.Schema.Type.Equals("ref"))
+            if (response.Schema?.Type != null && response.Schema.Type.Equals("ref"))
             {
                 modelName = response.Schema.Ref;
             }

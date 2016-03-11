@@ -60,7 +60,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Swagger\Aws\ApiGatewaySdkMethodIntegrationProviderTest.cs" />
+    <Compile Include="Swagger\Aws\ApiGatewaySdkMethodParameterProviderTest.cs" />
     <Compile Include="Swagger\Aws\ApiGatewaySdkMethodProviderTest.cs" />
+    <Compile Include="Swagger\Aws\ApiGatewaySdkMethodResponseProviderTest.cs" />
     <Compile Include="Swagger\Aws\ApiGatewaySdkModelProviderTest.cs" />
     <Compile Include="Swagger\Aws\ApiGatewaySdkResourceProviderTest.cs" />
     <Compile Include="Swagger\Aws\ApiGatewaySdkSwaggerApiImporterFactoryTest.cs" />

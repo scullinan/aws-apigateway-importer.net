@@ -41,7 +41,7 @@ namespace Importer.Tests.Swagger.Aws
         }
 
         [Test]
-        public void TestCreateMethods()
+        public void CreateMethodsTest()
         {
             var swagger = TestHelper.Import<SwaggerDocument>("apigateway.json");
             var restApi = new RestApi() { Id = apiId };
