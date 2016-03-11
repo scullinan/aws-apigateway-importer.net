@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Reflection;
+using Amazon.APIGateway.Model;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -28,6 +29,11 @@ namespace Importer.Tests
 
             var sr = new StreamReader(path);
             return serializer.Deserialize<T>(new JsonTextReader(sr));
+        }
+
+        public static Resource GetRootResource()
+        {
+            return new Resource() { Id = "id123", Path = "/" };
         }
     }
 }

@@ -18,7 +18,7 @@ namespace Importer.Swagger.Aws.Impl
         }
 
         public void CreateIntegration(RestApi api, Resource resource, Method method,
-            Dictionary<string, object> vendorExtensions)
+            IDictionary<string, object> vendorExtensions)
         {
             if (!vendorExtensions.ContainsKey(Constants.ExtensionIntegration))
             {

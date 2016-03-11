@@ -43,29 +43,7 @@ namespace Importer.Swagger.Aws.Impl
             });
         }
 
-        private IDictionary<string, Operation> GetOperations(PathItem path)
-        {
-            IDictionary<string, Operation> ops = new Dictionary<string, Operation>();
-
-            AddOp(ops, "get", path.Get);
-            AddOp(ops, "post", path.Post);
-            AddOp(ops, "put", path.Put);
-            AddOp(ops, "delete", path.Delete);
-            AddOp(ops, "options", path.Options);
-            AddOp(ops, "patch", path.Patch);
-
-            return ops;
-        }
-
-        private void AddOp(IDictionary<string, Operation> ops, string method, Operation operation)
-        {
-            if (operation != null)
-            {
-                ops[method] = operation;
-            }
-        }
-
-        public void CreateMethod(RestApi api, SwaggerDocument swagger, Resource resource, string httpMethod, Operation op, string modelContentType)
+        private void CreateMethod(RestApi api, SwaggerDocument swagger, Resource resource, string httpMethod, Operation op, string modelContentType)
         {
             var input = new PutMethodRequest
             {
@@ -125,6 +103,28 @@ namespace Importer.Swagger.Aws.Impl
             methodResponseProvider.CreateMethodResponses(api, resource, method, swagger, modelContentType, op.Responses);
             methodParameterProvider.CreateMethodParameters(api, resource, method, op.Parameters);
             methodIntegrationProvider.CreateIntegration(api, resource, method, op.VendorExtensions);
+        }
+
+        private IDictionary<string, Operation> GetOperations(PathItem path)
+        {
+            IDictionary<string, Operation> ops = new Dictionary<string, Operation>();
+
+            AddOp(ops, "get", path.Get);
+            AddOp(ops, "post", path.Post);
+            AddOp(ops, "put", path.Put);
+            AddOp(ops, "delete", path.Delete);
+            AddOp(ops, "options", path.Options);
+            AddOp(ops, "patch", path.Patch);
+
+            return ops;
+        }
+
+        private void AddOp(IDictionary<string, Operation> ops, string method, Operation operation)
+        {
+            if (operation != null)
+            {
+                ops[method] = operation;
+            }
         }
 
         private string GetAuthorizationType(Operation op)

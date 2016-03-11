@@ -3,7 +3,6 @@ using System.Linq;
 using Amazon.APIGateway;
 using Amazon.APIGateway.Model;
 using Importer.Swagger;
-using Importer.Swagger.Aws;
 using Importer.Swagger.Aws.Impl;
 using Moq;
 using NUnit.Framework;
@@ -59,8 +58,8 @@ namespace Importer.Tests.Swagger.Aws
         public void DeleteDefaultModelsTest()
         {
             gatewayMock.Setup(x => x.GetModels(It.IsAny<GetModelsRequest>())).Returns(new GetModelsResponse() { Items = new List<Model>() {
-                new Model() {Name = "model1" },
-                new Model() {Name = "model2" }
+                new Model() { Name = "model1" },
+                new Model() { Name = "model2" }
             }});
 
             var restApi = new RestApi() { Id = apiId };

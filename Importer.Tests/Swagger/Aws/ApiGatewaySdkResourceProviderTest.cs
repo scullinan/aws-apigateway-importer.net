@@ -35,7 +35,7 @@ namespace Importer.Tests.Swagger.Aws
 
             var swagger = TestHelper.Import<SwaggerDocument>("apigateway.json");
             var restApi = new RestApi() { Id = apiId };
-            var rootResource = GetRootResource();
+            var rootResource = TestHelper.GetRootResource();
 
             underTest.CreateResources(restApi, rootResource, swagger, true);
             
@@ -43,9 +43,6 @@ namespace Importer.Tests.Swagger.Aws
             sdkMethodProviderMock.Verify(x => x.CreateMethods(It.IsAny<RestApi>(), swagger, It.IsAny<Resource>(), It.IsAny<PathItem>(), swagger.Produces), Times.Exactly(2));
         }
 
-        private Resource GetRootResource()
-        {
-            return new Resource() { Id = "id123", Path = "/" };
-        }
+        
     }
 }
