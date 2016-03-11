@@ -60,7 +60,7 @@ namespace Importer.Swagger.Aws.Impl
         {
             log.InfoFormat("Updating API {0}", apiId);
             
-            //Todo
+            //ToDo
         }
 
         public void Deploy(string apiId, DeploymentConfig config)

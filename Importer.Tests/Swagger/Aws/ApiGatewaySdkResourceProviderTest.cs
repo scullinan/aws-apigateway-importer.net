@@ -40,12 +40,12 @@ namespace Importer.Tests.Swagger.Aws
             underTest.CreateResources(restApi, rootResource, swagger, true);
             
             gatewayMock.Verify(x => x.CreateResource(It.IsAny<CreateResourceRequest>()), Times.AtLeast(1));
-            sdkMethodProviderMock.Verify(x => x.CreateMethods(It.IsAny<RestApi>(), swagger, It.IsAny<Resource>(), It.IsAny<PathItem>(), swagger.Produces), Times.AtLeast(1));
+            sdkMethodProviderMock.Verify(x => x.CreateMethods(It.IsAny<RestApi>(), swagger, It.IsAny<Resource>(), It.IsAny<PathItem>(), swagger.Produces), Times.Exactly(2));
         }
 
         private Resource GetRootResource()
         {
-            return new Resource() {Id = "id123", Path = "/"};
+            return new Resource() { Id = "id123", Path = "/" };
         }
     }
 }

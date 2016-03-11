@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -118,10 +119,13 @@ namespace Importer.Swagger
          */
         private void FindReferences(JToken node, IDictionary<JToken, JToken> refNodes)
         {
-            var refNode = node["$ref"];
-            if (refNode != null)
+            if (node.Contains("$ref"))
             {
-                refNodes[refNode] = node;
+                var refNode = node["$ref"];
+                if (refNode != null)
+                {
+                    refNodes[refNode] = node;
+                }
             }
 
             foreach (JToken child in node.Children())

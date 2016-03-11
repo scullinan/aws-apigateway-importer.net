@@ -72,21 +72,14 @@ namespace Importer.Swagger.Aws.Impl
                 }
                 catch (Exception)
                 {
-                    // ignored
-                } // todo: temporary catch until API fix
+                   // ignored
+                } // ToDo: temporary catch until API fix
             });
         }
 
         private List<Model> BuildModelList(RestApi api)
         {
             var modelList = new List<Model>();
-
-            var resources = gateway.GetModels(new GetModelsRequest()
-            {
-                RestApiId = api.Id,
-                Limit = 500
-
-            });
 
             var response = gateway.GetModels(new GetModelsRequest()
             {

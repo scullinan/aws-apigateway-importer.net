@@ -183,7 +183,7 @@ namespace Importer.Swagger.Aws.Impl
             if (p.Schema.Ref != null)
                 return p.Schema.Ref;
 
-            //Todo:What is this? based on input
+            //ToDo:What is this? based on input
             //if (model instanceof RefModel) {
             //    String modelName = ((RefModel)model).getSimpleRef();   // assumption: complex ref?
             //    return Optional.of(modelName);
