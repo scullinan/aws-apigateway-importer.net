@@ -59,6 +59,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PatchOperationBuilderTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Swagger\Aws\ApiGatewaySdkDeploymentProviderTest.cs" />
     <Compile Include="Swagger\Aws\ApiGatewaySdkMethodIntegrationProviderTest.cs" />
