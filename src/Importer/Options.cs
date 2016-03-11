@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using CommandLine;
 
 namespace Importer
 {
+    [ExcludeFromCodeCoverage]
     public class Options
     {
         [Option('c', "create", HelpText = "Create a new API")]

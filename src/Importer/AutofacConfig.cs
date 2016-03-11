@@ -1,10 +1,12 @@
-﻿using Autofac;
+﻿using System.Diagnostics.CodeAnalysis;
+using Autofac;
 using Importer.Swagger;
 using Importer.Swagger.Aws.Impl;
 using Importer.Swagger.Impl;
 
 namespace Importer
 {
+    [ExcludeFromCodeCoverage]
     public class AutofacConfig
     {
         public static IContainer Configure(ContainerBuilder builder)
