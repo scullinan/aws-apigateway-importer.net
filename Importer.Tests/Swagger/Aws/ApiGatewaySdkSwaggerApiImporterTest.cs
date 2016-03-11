@@ -33,8 +33,7 @@ namespace Importer.Tests.Swagger.Aws
         [Test]
         public void CreateApiTest()
         {
-            var filePath = TestHelper.GetResourceFilePath("apigateway.json");
-            var swagger = Import<SwaggerDocument>(filePath);
+            var swagger = TestHelper.Import<SwaggerDocument>("apigateway.json");
 
             gatewayMock.Setup(x => x.CreateRestApi(It.IsAny<CreateRestApiRequest>())).Returns(new CreateRestApiResponse() { Id = apiId });
             gatewayMock.Setup(x => x.GetResources(It.IsAny<GetResourcesRequest>())).Returns(new GetResourcesResponse());
@@ -60,8 +59,7 @@ namespace Importer.Tests.Swagger.Aws
         [Test]
         public void DeployApiTest()
         {
-            var filePath = TestHelper.GetResourceFilePath("deployment.json");
-            var deploymentConfig = Import<DeploymentConfig>(filePath);
+            var deploymentConfig = TestHelper.Import<DeploymentConfig>("deployment.json");
 
             underTest.Deploy(apiId, deploymentConfig);
 
@@ -75,12 +73,6 @@ namespace Importer.Tests.Swagger.Aws
             deploymentProviderMock.Verify(x => x.CreateApiKey(apiId, It.IsAny<string>(), It.IsAny<string>()), Times.Once);
         }
 
-        private static T Import<T>(string filePath)
-        {
-            var serializer = new JsonSerializer { ContractResolver = new CamelCasePropertyNamesContractResolver(), NullValueHandling = NullValueHandling.Ignore };
-
-            var sr = new StreamReader(filePath);
-            return serializer.Deserialize<T>(new JsonTextReader(sr));
-        }
+        
     }
 }

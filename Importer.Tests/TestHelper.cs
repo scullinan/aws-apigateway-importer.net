@@ -1,5 +1,7 @@
 ﻿using System.IO;
 using System.Reflection;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Importer.Tests
 {
@@ -14,6 +16,18 @@ namespace Importer.Tests
             var location = Assembly.GetExecutingAssembly().Location;
             var directory = new FileInfo(location).Directory;
             return Path.Combine(directory.FullName, $@"Resources\{swaggerFileName}");
+        }
+
+        public static T Import<T>(string swaggerFileName)
+        {
+            var location = Assembly.GetExecutingAssembly().Location;
+            var directory = new FileInfo(location).Directory;
+            var path = Path.Combine(directory.FullName, $@"Resources\{swaggerFileName}");
+
+            var serializer = new JsonSerializer { ContractResolver = new CamelCasePropertyNamesContractResolver(), NullValueHandling = NullValueHandling.Ignore };
+
+            var sr = new StreamReader(path);
+            return serializer.Deserialize<T>(new JsonTextReader(sr));
         }
     }
 }
