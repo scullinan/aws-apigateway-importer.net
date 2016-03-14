@@ -49,6 +49,12 @@ namespace Importer.Swagger.Aws.Impl
             });
         }
 
+        public void UpdateMethodResponses(RestApi api, Resource resource, Method method, SwaggerDocument swagger,
+            string modelContentType, IDictionary<string, Response> responses)
+        {
+            throw new NotImplementedException();
+        }
+
         private PutMethodResponseRequest GetCreateResponseInput(RestApi api, SwaggerDocument swagger, string modelContentType, Response response)
         {
 

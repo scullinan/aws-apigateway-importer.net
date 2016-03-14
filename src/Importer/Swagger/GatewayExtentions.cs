@@ -18,5 +18,19 @@ namespace Importer.Swagger
 
             return true;
         }
+
+        public static bool DoesMethodExists(this IAmazonAPIGateway gateway, string apiId, string httpMethod, string resourceId)
+        {
+            try
+            {
+                var response = gateway.GetMethod(new GetMethodRequest() { RestApiId = apiId, HttpMethod = httpMethod, ResourceId = resourceId });
+            }
+            catch (NotFoundException ex)
+            {
+                return false;
+            }
+
+            return true;
+        }
     }
 }

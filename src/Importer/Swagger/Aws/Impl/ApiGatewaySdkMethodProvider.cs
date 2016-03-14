@@ -45,7 +45,61 @@ namespace Importer.Swagger.Aws.Impl
 
         public void UpdateMethods(RestApi api, SwaggerDocument swagger)
         {
-            throw new NotImplementedException();
+            foreach (var pathItem in swagger.Paths)
+            {
+                var fullPath = BuildResourcePath(swagger.BasePath, pathItem.Key);
+                var path = pathItem.Value;
+
+                var ops = GetOperations(path);
+
+                foreach (var item in ops)
+                {
+                    var httpMethod = item.Key;
+                    var op = item.Value;
+
+                    // resolve the resource based on path - the resource is guaranteed to exist by this point
+                    var resource = GetResource(api, fullPath);
+
+                    var modelContentType = SwaggerHelper.GetProducesContentType(swagger.Produces, op.Produces);
+
+                    if (gateway.DoesMethodExists(api.Id, httpMethod, resource.Id))
+                    {
+                        UpdateMethod(api, swagger, resource, httpMethod, op, modelContentType);
+                    }
+                    else {
+                        CreateMethod(api, swagger, resource, httpMethod, op, modelContentType);
+                    }
+                }
+            }
+        }
+
+        private void UpdateMethod(RestApi api, SwaggerDocument swagger, Resource resource, string httpMethod, Operation op, string modelContentType)
+        {
+            var operations = PatchOperationBuilder.With()
+                .Operation(Operations.Replace, "/authorizationType", GetAuthorizationType(op))
+                .Operation(Operations.Replace, "/apiKeyRequired", IsApiKeyRequired(swagger, op).ToString()).ToList();
+            
+            var result = gateway.UpdateMethod(new UpdateMethodRequest() {
+                RestApiId = api.Id,
+                HttpMethod = httpMethod,
+                ResourceId = resource.Id,
+                PatchOperations = operations
+            });
+
+            var method = new Method()
+            {
+                HttpMethod = result.HttpMethod,
+                ApiKeyRequired = result.ApiKeyRequired,
+                AuthorizationType = result.AuthorizationType,
+                MethodIntegration = result.MethodIntegration,
+                MethodResponses = result.MethodResponses,
+                RequestModels = result.RequestModels,
+                RequestParameters = result.RequestParameters
+            };
+
+            methodResponseProvider.UpdateMethodResponses(api, resource, method, swagger, modelContentType, op.Responses);
+            methodParameterProvider.UpdateMethodParameters(api, resource, method, op.Parameters);
+            methodIntegrationProvider.CreateIntegration(api, resource, method, op.VendorExtensions);
         }
 
         private void CreateMethod(RestApi api, SwaggerDocument swagger, Resource resource, string httpMethod, Operation op, string modelContentType)
@@ -217,6 +271,69 @@ namespace Importer.Swagger.Aws.Impl
         private string GetModelNameSanitizeRegex()
         {
             return "[^A-Za-z0-9]";
+        }
+
+        private string BuildResourcePath(string basePath, string resourcePath)
+        {
+            if (basePath == null)
+            {
+                basePath = string.Empty;
+            }
+            var path = TrimSlashes(basePath);
+
+            if (!string.IsNullOrEmpty(path))
+            {
+                path = "/" + path;
+            }
+            var result = (path + "/" + TrimSlashes(resourcePath)).TrimEnd('/');
+
+
+            if (string.IsNullOrEmpty(result))
+            {
+                result = "/";
+            }
+
+            return result;
+        }
+
+        private string TrimSlashes(string str)
+        {
+            return str.TrimStart('/').TrimEnd('/');
+        }
+
+        private Resource GetResource(RestApi api, string fullPath)
+        {
+            foreach (Resource r in  BuildResourceList(api))
+            {
+                if (r.Path.Equals(fullPath))
+                {
+                    return r;
+                }
+            }
+
+            return null;
+        }
+
+        private List<Resource> BuildResourceList(RestApi api)
+        {
+            var resourceList = new List<Resource>();
+
+            var resources = gateway.GetResources(new GetResourcesRequest()
+            {
+                RestApiId = api.Id,
+                Limit = 500
+            });
+
+            resourceList.AddRange(resources.Items);
+
+            //ToDo:Travese next link
+            //while (resources.._isLinkAvailable("next")) {
+            //{
+            //    resources = resources.getNext();
+            //    resourceList.addAll(resources.getItem());
+            //}
+
+            return resourceList;
         }
     }
 }

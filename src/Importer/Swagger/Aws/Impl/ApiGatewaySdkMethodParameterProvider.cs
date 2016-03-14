@@ -43,6 +43,11 @@ namespace Importer.Swagger.Aws.Impl
             });
         }
 
+        public void UpdateMethodParameters(RestApi api, Resource resource, Method method, IList<Parameter> parameters)
+        {
+            throw new System.NotImplementedException();
+        }
+
         private string GetParameterLocation(Parameter p)
         {
             switch (p.In)
