@@ -77,6 +77,48 @@ namespace Importer.Swagger.Aws.Impl
             });
         }
 
+        public void UpdateModels(RestApi api, SwaggerDocument swagger)
+        {
+            if(swagger.Definitions == null)
+                return;
+
+            foreach (var definition in swagger.Definitions)
+            {
+                var modelName = definition.Key;
+                var model = definition.Value;
+
+                if (gateway.DoesModelExists(api.Id, modelName))
+                {
+                    UpdateModel(api, modelName, model, swagger.Definitions);       
+                }
+                else
+                {
+                    CreateModel(api, modelName, model, swagger.Definitions, SwaggerHelper.GetProducesContentType(swagger.Produces, Enumerable.Empty<string>()));
+                }
+            }
+        }
+
+        private void UpdateModel(RestApi api, string modelName, Schema model, IDictionary<string, Schema> definitions)
+        {
+            Log.InfoFormat("Updating model for api id {0} with name {1}", api.Id, modelName);
+
+            var schema = SwaggerHelper.GenerateSchema(model, modelName, definitions);
+
+            if (schema == null) throw new ArgumentNullException(nameof(schema));
+            processedModels.Add(modelName);
+
+            var operations = PatchOperationBuilder.With()
+                .Operation(Operations.Replace, "/schema", schema)
+                .ToList();
+
+            gateway.UpdateModel(new UpdateModelRequest()
+            {
+                RestApiId = api.Id,
+                ModelName = modelName,
+                PatchOperations = operations
+            });
+        }
+
         private List<Model> BuildModelList(RestApi api)
         {
             var modelList = new List<Model>();

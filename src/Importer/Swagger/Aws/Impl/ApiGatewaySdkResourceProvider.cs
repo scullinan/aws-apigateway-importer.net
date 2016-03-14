@@ -44,6 +44,11 @@ namespace Importer.Swagger.Aws.Impl
             }
         }
 
+        public void UpdateResources(RestApi api, Resource rootResource, SwaggerDocument swagger)
+        {
+            throw new System.NotImplementedException();
+        }
+
         private Resource CreateResource(RestApi api, string parentResourceId, string part)
         {
             Resource existingResource = GetResource(api, parentResourceId, part);

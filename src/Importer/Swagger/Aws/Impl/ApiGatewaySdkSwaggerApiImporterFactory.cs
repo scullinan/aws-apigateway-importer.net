@@ -44,7 +44,7 @@ namespace Importer.Swagger.Aws.Impl
             var resourceProvider = new ApiGatewaySdkResourceProvider(gateway, methodProvider);
             var deploymentProvider = new ApiGatewaySdkDeploymentProvider(gateway);
 
-            return new ApiGatewaySdkSwaggerApiImporter(gateway, modelProvider, resourceProvider, deploymentProvider);
+            return new ApiGatewaySdkSwaggerApiImporter(gateway, modelProvider, resourceProvider, methodProvider, deploymentProvider);
         }
 
         private IAmazonAPIGateway CreateClient()

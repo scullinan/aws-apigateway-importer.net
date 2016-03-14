@@ -43,6 +43,11 @@ namespace Importer.Swagger.Aws.Impl
             });
         }
 
+        public void UpdateMethods(RestApi api, SwaggerDocument swagger)
+        {
+            throw new NotImplementedException();
+        }
+
         private void CreateMethod(RestApi api, SwaggerDocument swagger, Resource resource, string httpMethod, Operation op, string modelContentType)
         {
             var input = new PutMethodRequest
