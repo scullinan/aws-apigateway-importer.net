@@ -14,13 +14,14 @@ namespace Importer.Swagger.Aws.Impl
         private readonly IApiGatewaySdkModelProvider modelProvider;
         private readonly IApiGatewaySdkDeploymentProvider deploymentProvider;
         private readonly IApiGatewaySdkResourceProvider resourceProvider;
-        readonly ILog log = LogManager.GetLogger(typeof (ApiGatewaySdkSwaggerApiImporter));
+        private readonly IApiGatewaySdkMethodProvider methodProvider;
 
-        public ApiGatewaySdkSwaggerApiImporter(IAmazonAPIGateway gateway, IApiGatewaySdkModelProvider modelProvider, IApiGatewaySdkResourceProvider resourceProvider, IApiGatewaySdkDeploymentProvider deploymentProvider)
+        public ApiGatewaySdkSwaggerApiImporter(IAmazonAPIGateway gateway, IApiGatewaySdkModelProvider modelProvider, IApiGatewaySdkResourceProvider resourceProvider, IApiGatewaySdkMethodProvider methodProvider, IApiGatewaySdkDeploymentProvider deploymentProvider)
         {
             Gateway = gateway;
             this.modelProvider = modelProvider;
             this.resourceProvider = resourceProvider;
+            this.methodProvider = methodProvider;
             this.deploymentProvider = deploymentProvider;
         }
 
@@ -46,11 +47,10 @@ namespace Importer.Swagger.Aws.Impl
                 resourceProvider.CreateResources(api, rootResource, swagger, true);
 
                 return api.Id;
-
             }
             catch (Exception ex)
             {
-                log.Error("Error creating API, rolling back", ex);
+                Log.Error("Error creating API, rolling back", ex);
             }
 
             return string.Empty;
@@ -58,21 +58,30 @@ namespace Importer.Swagger.Aws.Impl
 
         public void UpdateApi(string apiId, SwaggerDocument swagger)
         {
-            log.InfoFormat("Updating API {0}", apiId);
-            
-            //ToDo
+            Log.InfoFormat("Updating API {0}", apiId);
+
+            var api = GetApi(apiId);
+            var rootResource = GetRootResource(api);
+
+            modelProvider.UpdateModels(api, swagger);
+            resourceProvider.UpdateResources(api, rootResource, swagger);
+            methodProvider.UpdateMethods(api, swagger);
+
+            methodProvider.CleanupMethods(api, swagger);
+            resourceProvider.CleanupResources(api, swagger);
+            modelProvider.CleanupModels(api);
         }
 
         public void Deploy(string apiId, DeploymentConfig config)
         {
-            log.InfoFormat("Deploying API {0}", apiId);
+            Log.InfoFormat("Deploying API {0}", apiId);
 
             deploymentProvider.CreateDeployment(apiId, config);
         }
 
         public void DeleteApi(string apiId)
         {
-            log.InfoFormat("Deleting API {0}", apiId);
+            Log.InfoFormat("Deleting API {0}", apiId);
 
             Gateway.DeleteRestApi(new DeleteRestApiRequest() {
                 RestApiId = apiId
@@ -117,6 +126,12 @@ namespace Importer.Swagger.Aws.Impl
             //}
 
             return resourceList;
+        }
+
+        private RestApi GetApi(string apiId)
+        {
+            var api = Gateway.GetRestApi(new GetRestApiRequest() {RestApiId = apiId});
+            return new RestApi() { Id = api.Id, Name = api.Name };
         }
     }
 }

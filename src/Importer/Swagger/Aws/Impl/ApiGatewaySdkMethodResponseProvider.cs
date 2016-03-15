@@ -49,6 +49,22 @@ namespace Importer.Swagger.Aws.Impl
             });
         }
 
+        public void UpdateMethodResponses(RestApi api, Resource resource, Method method, SwaggerDocument swagger, string modelContentType, IDictionary<string, Response> responses)
+        {
+            foreach (var response in method.MethodResponses.Values)
+            {
+                gateway.DeleteMethodResponse(new DeleteMethodResponseRequest()
+                {
+                    RestApiId = api.Id,
+                    ResourceId = resource.Id,
+                    HttpMethod = method.HttpMethod,
+                    StatusCode = response.StatusCode
+                });
+            }
+
+            CreateMethodResponses(api, resource, method, swagger, modelContentType, responses);
+        }
+
         private PutMethodResponseRequest GetCreateResponseInput(RestApi api, SwaggerDocument swagger, string modelContentType, Response response)
         {
 
@@ -93,7 +109,7 @@ namespace Importer.Swagger.Aws.Impl
             return input;
         }
 
-        string GenerateModelName(Response response)
+        private string GenerateModelName(Response response)
         {
             return GenerateModelName(response.Description);
         }

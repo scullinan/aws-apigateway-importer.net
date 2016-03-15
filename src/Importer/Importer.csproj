@@ -73,6 +73,7 @@
     <Compile Include="AutofacConfig.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="DeploymentConfig.cs" />
+    <Compile Include="Swagger\GatewayExtentions.cs" />
     <Compile Include="Swagger\ISwaggerApiImporterFactory.cs" />
     <Compile Include="Paths.cs" />
     <Compile Include="Swagger\Aws\Impl\ApiGatewaySdkMethodResponseProvider.cs" />

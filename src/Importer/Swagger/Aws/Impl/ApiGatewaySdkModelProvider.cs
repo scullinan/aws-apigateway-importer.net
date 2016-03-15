@@ -63,17 +63,70 @@ namespace Importer.Swagger.Aws.Impl
             list.ForEach(model =>  {
                 Log.InfoFormat("Removing default model {0}", model.Name);
 
-                try
+                //
+                //{
+                gateway.DeleteModel(new DeleteModelRequest() {
+                    RestApiId = api.Id,
+                    ModelName = model.Name
+                });
+            });
+        }
+
+        public void UpdateModels(RestApi api, SwaggerDocument swagger)
+        {
+            if(swagger.Definitions == null)
+                return;
+
+            foreach (var definition in swagger.Definitions)
+            {
+                var modelName = definition.Key;
+                var model = definition.Value;
+
+                if (gateway.DoesModelExists(api.Id, modelName))
                 {
-                    gateway.DeleteModel(new DeleteModelRequest() {
-                        RestApiId = api.Id,
-                        ModelName = model.Name
-                    });
+                    UpdateModel(api, modelName, model, swagger.Definitions);       
                 }
-                catch (Exception)
+                else
                 {
-                   // ignored
-                } // ToDo: temporary catch until API fix
+                    CreateModel(api, modelName, model, swagger.Definitions, SwaggerHelper.GetProducesContentType(swagger.Produces, Enumerable.Empty<string>()));
+                }
+            }
+        }
+
+        public void CleanupModels(RestApi api)
+        {
+            var existingModels = BuildModelList(api);
+            var modelsToDelete = existingModels.Where(x => !processedModels.Contains(x.Name));
+
+            modelsToDelete.ForEach(x =>
+            {
+                Log.InfoFormat("Removing deleted model {0}" + x.Name);
+                gateway.DeleteModel(new DeleteModelRequest()
+                {
+                    RestApiId = api.Id,
+                    ModelName = x.Name
+                });
+            });
+        }
+
+        private void UpdateModel(RestApi api, string modelName, Schema model, IDictionary<string, Schema> definitions)
+        {
+            Log.InfoFormat("Updating model for api id {0} with name {1}", api.Id, modelName);
+
+            var schema = SwaggerHelper.GenerateSchema(model, modelName, definitions);
+
+            if (schema == null) throw new ArgumentNullException(nameof(schema));
+            processedModels.Add(modelName);
+
+            var operations = PatchOperationBuilder.With()
+                .Operation(Operations.Replace, "/schema", schema)
+                .ToList();
+
+            gateway.UpdateModel(new UpdateModelRequest()
+            {
+                RestApiId = api.Id,
+                ModelName = modelName,
+                PatchOperations = operations
             });
         }
 

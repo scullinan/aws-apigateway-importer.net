@@ -12,7 +12,7 @@ namespace Importer
             return new PatchOperationBuilder();
         }
 
-        public PatchOperationBuilder Operation(string op, string path, string value, string from = null)
+        public PatchOperationBuilder Operation(string op, string path, string value = null, string from = null)
         {
             operations.Add(new PatchOperation() {
                 Value = value,

@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Amazon.APIGateway;
 using Amazon.APIGateway.Model;
+using Amazon.Runtime.Internal.Util;
 using Importer.Swagger.Impl;
 using log4net;
 
@@ -20,8 +23,7 @@ namespace Importer.Swagger.Aws.Impl
 
         public void CreateResources(RestApi api, Resource rootResource, SwaggerDocument swagger, bool createMethods)
         {
-            //build path tree, , 
-
+            //build path tree
             foreach (var path in swagger.Paths)
             {
                 // create the resource tree
@@ -42,6 +44,19 @@ namespace Importer.Swagger.Aws.Impl
                     methodProvider.CreateMethods(api, swagger, parentResource, path.Value, swagger.Produces);
                 }
             }
+        }
+
+        public void UpdateResources(RestApi api, Resource rootResource, SwaggerDocument swagger)
+        {
+            CreateResources(api, rootResource, swagger, false);
+        }
+
+        public void CleanupResources(RestApi api, SwaggerDocument swagger)
+        {
+            log.Info("Cleaning up removed resources");
+            
+            var paths = BuildResourceListFromSwagger(swagger.Paths.Keys, swagger.BasePath);
+            CleanupResources(api, paths);
         }
 
         private Resource CreateResource(RestApi api, string parentResourceId, string part)
@@ -70,23 +85,34 @@ namespace Importer.Swagger.Aws.Impl
                 };
             }
 
-            var result = gateway.GetResource(new GetResourceRequest()
-            {
-                RestApiId = api.Id,
-                ResourceId = parentResourceId
-            });
-
             return new Resource()
             {
-                ParentId = result.ParentId,
-                PathPart = result.PathPart,
-                Id = result.Id,
-                Path = result.Path,
-                ResourceMethods = result.ResourceMethods
+                Id = existingResource.Id,
+                ParentId = existingResource.ParentId,
+                PathPart = existingResource.PathPart,
+                Path = existingResource.Path,
+                ResourceMethods = existingResource.ResourceMethods
             };
         }
 
-        /* Build the full resource path, including base path, add any missing leading '/', remove any trailing '/',
+        private void CleanupResources(RestApi api, List<string> paths)
+        {
+            log.Info("Cleaning up removed resources");
+
+            var resources = BuildResourceList(api);
+            var deleteResources = resources.Where(x => !paths.Contains(x.PathPart) && !x.Path.Equals("/"));
+            foreach (var resource in deleteResources)
+            {
+                log.Info("Removing deleted resource {0}" + resource.Path);
+                gateway.DeleteResource(new DeleteResourceRequest()
+                {
+                    RestApiId = api.Id,
+                    ResourceId = resource.Id
+                });
+            }
+        }
+
+       /*Build the full resource path, including base path, add any missing leading '/', remove any trailing '/',
        and remove any double '/'
        @param basePath the base path
        @param resourcePath the resource path
@@ -157,6 +183,24 @@ namespace Importer.Swagger.Aws.Impl
             //}
 
             return resourceList;
+        }
+
+        private List<string> BuildResourceListFromSwagger(IEnumerable<string> paths, string basePath)
+        {
+            if (string.IsNullOrEmpty(basePath))
+            {
+                basePath = "/";
+            }
+
+            var resourceSet = new List<string>();
+
+            foreach (var path in paths)
+            {
+                resourceSet.AddRange(path.Split('/'));
+            }
+
+            resourceSet.AddRange(basePath.Split('/'));
+            return resourceSet; //.Where(x => !string.IsNullOrEmpty(x)).ToList();
         }
     }
 }

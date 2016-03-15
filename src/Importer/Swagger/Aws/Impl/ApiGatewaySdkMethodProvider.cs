@@ -43,6 +43,87 @@ namespace Importer.Swagger.Aws.Impl
             });
         }
 
+        public void UpdateMethods(RestApi api, SwaggerDocument swagger)
+        {
+            foreach (var pathItem in swagger.Paths)
+            {
+                var fullPath = BuildResourcePath(swagger.BasePath, pathItem.Key);
+                var path = pathItem.Value;
+
+                var ops = GetOperations(path);
+
+                foreach (var item in ops)
+                {
+                    var httpMethod = item.Key;
+                    var op = item.Value;
+
+                    // resolve the resource based on path - the resource is guaranteed to exist by this point
+                    var resource = GetResource(api, fullPath);
+
+                    var modelContentType = SwaggerHelper.GetProducesContentType(swagger.Produces, op.Produces);
+
+                    if (gateway.DoesMethodExists(api.Id, httpMethod, resource.Id))
+                    {
+                        UpdateMethod(api, swagger, resource, httpMethod, op, modelContentType);
+                    }
+                    else {
+                        CreateMethod(api, swagger, resource, httpMethod, op, modelContentType);
+                    }
+                }
+            }
+        }
+
+        public void CleanupMethods(RestApi api, SwaggerDocument swagger)
+        {
+            foreach (var resource in BuildResourceList(api))
+            {
+                foreach (var method in resource.ResourceMethods)
+                {
+                    var httpMethod = method.Key;
+
+                    if (!IsMethodInSwagger(resource.Path, httpMethod, swagger.BasePath, swagger.Paths))
+                    {
+                        Log.InfoFormat("Removing deleted method {0} for resource {1}", httpMethod, resource.Id);
+
+                        gateway.DeleteMethod(new DeleteMethodRequest() {
+                            RestApiId = api.Id,
+                            ResourceId = resource.Id,
+                            HttpMethod = httpMethod.ToUpper()
+                        });
+                    }
+                }
+            }
+        }
+
+        private void UpdateMethod(RestApi api, SwaggerDocument swagger, Resource resource, string httpMethod, Operation op, string modelContentType)
+        {
+            var operations = PatchOperationBuilder.With()
+                .Operation(Operations.Replace, "/authorizationType", GetAuthorizationType(op))
+                .Operation(Operations.Replace, "/apiKeyRequired", IsApiKeyRequired(swagger, op).ToString()).ToList();
+            
+            var result = gateway.UpdateMethod(new UpdateMethodRequest() {
+                RestApiId = api.Id,
+                HttpMethod = httpMethod.ToUpper(),
+                ResourceId = resource.Id,
+                PatchOperations = operations
+            });
+
+            var method = new Method()
+            {
+                HttpMethod = result.HttpMethod,
+                ApiKeyRequired = result.ApiKeyRequired,
+                AuthorizationType = result.AuthorizationType,
+                MethodIntegration = result.MethodIntegration,
+                MethodResponses = result.MethodResponses,
+                RequestModels = result.RequestModels,
+                RequestParameters = result.RequestParameters
+            };
+
+            methodResponseProvider.UpdateMethodResponses(api, resource, method, swagger, modelContentType, op.Responses);
+            methodParameterProvider.UpdateMethodParameters(api, resource, method, op.Parameters);
+            methodIntegrationProvider.CreateIntegration(api, resource, method, op.VendorExtensions);
+        }
+
         private void CreateMethod(RestApi api, SwaggerDocument swagger, Resource resource, string httpMethod, Operation op, string modelContentType)
         {
             var input = new PutMethodRequest
@@ -158,7 +239,7 @@ namespace Importer.Swagger.Aws.Impl
             if (apiKeySecurityDefinition.Equals(default(KeyValuePair<string, SecurityScheme>)))
             {
                 return false;
-            }
+            } 
 
             var securityDefinitionName = apiKeySecurityDefinition.Key;
 
@@ -212,6 +293,82 @@ namespace Importer.Swagger.Aws.Impl
         private string GetModelNameSanitizeRegex()
         {
             return "[^A-Za-z0-9]";
+        }
+
+        private string BuildResourcePath(string basePath, string resourcePath)
+        {
+            if (basePath == null)
+            {
+                basePath = string.Empty;
+            }
+            var path = TrimSlashes(basePath);
+
+            if (!string.IsNullOrEmpty(path))
+            {
+                path = "/" + path;
+            }
+            var result = (path + "/" + TrimSlashes(resourcePath)).TrimEnd('/');
+
+
+            if (string.IsNullOrEmpty(result))
+            {
+                result = "/";
+            }
+
+            return result;
+        }
+
+        private string TrimSlashes(string str)
+        {
+            return str.TrimStart('/').TrimEnd('/');
+        }
+
+        private Resource GetResource(RestApi api, string fullPath)
+        {
+            foreach (Resource r in  BuildResourceList(api))
+            {
+                if (r.Path.Equals(fullPath))
+                {
+                    return r;
+                }
+            }
+
+            return null;
+        }
+
+        private List<Resource> BuildResourceList(RestApi api)
+        {
+            var resourceList = new List<Resource>();
+
+            var resources = gateway.GetResources(new GetResourcesRequest()
+            {
+                RestApiId = api.Id
+            });
+
+            resourceList.AddRange(resources.Items);
+
+            //ToDo:Travese next link
+            //while (resources.._isLinkAvailable("next")) {
+            //{
+            //    resources = resources.getNext();
+            //    resourceList.addAll(resources.getItem());
+            //}
+
+            return resourceList;
+        }
+
+        private bool IsMethodInSwagger(string path, string httpMethod, string basePath, IDictionary<string, PathItem> paths)
+        {
+            foreach (var pathItem in paths)
+            {
+                var operations = GetOperations(pathItem.Value);
+                var fullPath = BuildResourcePath(basePath, pathItem.Key);
+
+                if (fullPath.Equals(path) && operations.ContainsKey(httpMethod.ToLower()))
+                    return true;
+            }
+            
+            return false;
         }
     }
 }

@@ -17,6 +17,7 @@ namespace Importer.Tests.Swagger.Aws
         private Mock<IAmazonAPIGateway> gatewayMock;
         private Mock<IApiGatewaySdkModelProvider> sdkModelProviderMock;
         private Mock<IApiGatewaySdkResourceProvider> resourceProviderMock;
+        private Mock<IApiGatewaySdkMethodProvider> methodProviderMock;
         private Mock<IApiGatewaySdkDeploymentProvider> deploymentProviderMock;
         private string apiId = "pwfy7quvxh";
 
@@ -26,8 +27,9 @@ namespace Importer.Tests.Swagger.Aws
             sdkModelProviderMock = new Mock<IApiGatewaySdkModelProvider>();
             resourceProviderMock = new Mock<IApiGatewaySdkResourceProvider>();
             deploymentProviderMock = new Mock<IApiGatewaySdkDeploymentProvider>();
+            methodProviderMock = new Mock<IApiGatewaySdkMethodProvider>();
 
-            underTest = new ApiGatewaySdkSwaggerApiImporter(gatewayMock.Object, sdkModelProviderMock.Object, resourceProviderMock.Object, deploymentProviderMock.Object);
+            underTest = new ApiGatewaySdkSwaggerApiImporter(gatewayMock.Object, sdkModelProviderMock.Object, resourceProviderMock.Object, methodProviderMock.Object, deploymentProviderMock.Object);
         }
 
         [Test]

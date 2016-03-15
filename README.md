@@ -1,6 +1,6 @@
 # Amazon API Gateway Importer.Net 
 ##### Based on [Amazon API Gateway Importer][aws-apigateway-importer]
-The **Amazon API Gateway Importer** lets you create or update [Amazon API Gateway][service-page] APIs from a Swagger representation.
+The **Amazon API Gateway Importer** lets you create or update [Amazon API Gateway][service-page] APIs from a Swagger (aka [OpenAPI Specification][oai]) representation. 
 
 To learn more about API Gateway, please see the [service documentation][service-docs] or the [API documentation][api-docs].
 
@@ -8,6 +8,7 @@ To learn more about API Gateway, please see the [service documentation][service-
 [service-docs]: http://docs.aws.amazon.com/apigateway/latest/developerguide/
 [api-docs]: http://docs.aws.amazon.com/apigateway/api-reference
 [aws-apigateway-importer]: https://github.com/awslabs/aws-apigateway-importer
+[oai]: https://github.com/OAI/OpenAPI-Specification
 
 ## Usage
 
