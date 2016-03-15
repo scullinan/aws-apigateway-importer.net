@@ -27,14 +27,16 @@ namespace Importer.Swagger.Aws.Impl
 
                         Log.InfoFormat("Creating method parameter for api {0} and method {1} with name {2}", api.Id, method.HttpMethod, expression);
 
+                        var operations = PatchOperationBuilder.With()
+                            .Operation(Operations.Add, "/requestParameters/" + expression, p.Required.ToString())
+                            .ToList();
+
                         var request = new UpdateMethodRequest
                         {
                             RestApiId = api.Id,
                             ResourceId = resource.Id,
                             HttpMethod = method.HttpMethod,
-                            PatchOperations = new List<PatchOperation>() {
-                                CreateAddOperation("/requestParameters/" + expression, p.Required.ToString())
-                            }
+                            PatchOperations = operations
                         };
 
                         gateway.UpdateMethod(request);
@@ -45,7 +47,25 @@ namespace Importer.Swagger.Aws.Impl
 
         public void UpdateMethodParameters(RestApi api, Resource resource, Method method, IList<Parameter> parameters)
         {
-            throw new System.NotImplementedException();
+            if (method.RequestParameters != null)
+            {
+                foreach (var parameter in method.RequestParameters.Keys)
+                {
+                    var operations = PatchOperationBuilder.With()
+                        .Operation(Operations.Remove, "/requestParameters/" + parameter)
+                        .ToList();
+
+                    gateway.UpdateMethod(new UpdateMethodRequest()
+                    {
+                        RestApiId = api.Id,
+                        ResourceId = resource.Id,
+                        HttpMethod = method.HttpMethod,
+                        PatchOperations = operations
+                    });
+                }
+            }
+
+            CreateMethodParameters(api, resource, method, parameters);
         }
 
         private string GetParameterLocation(Parameter p)
@@ -69,18 +89,6 @@ namespace Importer.Swagger.Aws.Impl
         {
             string loc = GetParameterLocation(p);
             return string.Format("method.request.{0}.{1}", loc, p.Name);
-        }
-
-        public static PatchOperation CreateAddOperation(string path, string value)
-        {
-            var op = new PatchOperation
-            {
-                Op = "add",
-                Path = path,
-                Value = value
-            };
-
-            return op;
         }
     }
 }

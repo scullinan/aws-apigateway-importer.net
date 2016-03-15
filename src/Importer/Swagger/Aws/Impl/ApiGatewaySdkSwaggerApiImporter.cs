@@ -62,9 +62,14 @@ namespace Importer.Swagger.Aws.Impl
 
             var api = GetApi(apiId);
             var rootResource = GetRootResource(api);
+
             modelProvider.UpdateModels(api, swagger);
             resourceProvider.UpdateResources(api, rootResource, swagger);
             methodProvider.UpdateMethods(api, swagger);
+
+            methodProvider.CleanupMethods(api, swagger);
+            resourceProvider.CleanupResources(api, swagger);
+            modelProvider.CleanupModels(api);
         }
 
         public void Deploy(string apiId, DeploymentConfig config)

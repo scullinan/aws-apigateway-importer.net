@@ -73,6 +73,28 @@ namespace Importer.Swagger.Aws.Impl
             }
         }
 
+        public void CleanupMethods(RestApi api, SwaggerDocument swagger)
+        {
+            foreach (var resource in BuildResourceList(api))
+            {
+                foreach (var method in resource.ResourceMethods)
+                {
+                    var httpMethod = method.Key;
+
+                    if (!IsMethodInSwagger(resource.Path, httpMethod, swagger.BasePath, swagger.Paths))
+                    {
+                        Log.InfoFormat("Removing deleted method {0} for resource {1}", httpMethod, resource.Id);
+
+                        gateway.DeleteMethod(new DeleteMethodRequest() {
+                            RestApiId = api.Id,
+                            ResourceId = resource.Id,
+                            HttpMethod = httpMethod.ToUpper()
+                        });
+                    }
+                }
+            }
+        }
+
         private void UpdateMethod(RestApi api, SwaggerDocument swagger, Resource resource, string httpMethod, Operation op, string modelContentType)
         {
             var operations = PatchOperationBuilder.With()
@@ -81,7 +103,7 @@ namespace Importer.Swagger.Aws.Impl
             
             var result = gateway.UpdateMethod(new UpdateMethodRequest() {
                 RestApiId = api.Id,
-                HttpMethod = httpMethod,
+                HttpMethod = httpMethod.ToUpper(),
                 ResourceId = resource.Id,
                 PatchOperations = operations
             });
@@ -217,7 +239,7 @@ namespace Importer.Swagger.Aws.Impl
             if (apiKeySecurityDefinition.Equals(default(KeyValuePair<string, SecurityScheme>)))
             {
                 return false;
-            }
+            } 
 
             var securityDefinitionName = apiKeySecurityDefinition.Key;
 
@@ -320,8 +342,7 @@ namespace Importer.Swagger.Aws.Impl
 
             var resources = gateway.GetResources(new GetResourcesRequest()
             {
-                RestApiId = api.Id,
-                Limit = 500
+                RestApiId = api.Id
             });
 
             resourceList.AddRange(resources.Items);
@@ -334,6 +355,20 @@ namespace Importer.Swagger.Aws.Impl
             //}
 
             return resourceList;
+        }
+
+        private bool IsMethodInSwagger(string path, string httpMethod, string basePath, IDictionary<string, PathItem> paths)
+        {
+            foreach (var pathItem in paths)
+            {
+                var operations = GetOperations(pathItem.Value);
+                var fullPath = BuildResourcePath(basePath, pathItem.Key);
+
+                if (fullPath.Equals(path) && operations.ContainsKey(httpMethod.ToLower()))
+                    return true;
+            }
+            
+            return false;
         }
     }
 }

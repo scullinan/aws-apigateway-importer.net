@@ -7,5 +7,6 @@ namespace Importer.Swagger.Aws
     {
         void CreateMethods(RestApi api, SwaggerDocument swagger, Resource resource, PathItem path, IList<string> apiProduces);
         void UpdateMethods(RestApi api, SwaggerDocument swagger);
+        void CleanupMethods(RestApi api, SwaggerDocument swagger);
     }
 }

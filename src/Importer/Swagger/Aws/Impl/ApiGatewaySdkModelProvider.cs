@@ -63,17 +63,12 @@ namespace Importer.Swagger.Aws.Impl
             list.ForEach(model =>  {
                 Log.InfoFormat("Removing default model {0}", model.Name);
 
-                try
-                {
-                    gateway.DeleteModel(new DeleteModelRequest() {
-                        RestApiId = api.Id,
-                        ModelName = model.Name
-                    });
-                }
-                catch (Exception)
-                {
-                   // ignored
-                } // ToDo: temporary catch until API fix
+                //
+                //{
+                gateway.DeleteModel(new DeleteModelRequest() {
+                    RestApiId = api.Id,
+                    ModelName = model.Name
+                });
             });
         }
 
@@ -96,6 +91,22 @@ namespace Importer.Swagger.Aws.Impl
                     CreateModel(api, modelName, model, swagger.Definitions, SwaggerHelper.GetProducesContentType(swagger.Produces, Enumerable.Empty<string>()));
                 }
             }
+        }
+
+        public void CleanupModels(RestApi api)
+        {
+            var existingModels = BuildModelList(api);
+            var modelsToDelete = existingModels.Where(x => !processedModels.Contains(x.Name));
+
+            modelsToDelete.ForEach(x =>
+            {
+                Log.InfoFormat("Removing deleted model {0}" + x.Name);
+                gateway.DeleteModel(new DeleteModelRequest()
+                {
+                    RestApiId = api.Id,
+                    ModelName = x.Name
+                });
+            });
         }
 
         private void UpdateModel(RestApi api, string modelName, Schema model, IDictionary<string, Schema> definitions)

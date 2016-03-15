@@ -23,7 +23,7 @@ namespace Importer.Swagger
         {
             try
             {
-                var response = gateway.GetMethod(new GetMethodRequest() { RestApiId = apiId, HttpMethod = httpMethod, ResourceId = resourceId });
+                var response = gateway.GetMethod(new GetMethodRequest() { RestApiId = apiId, HttpMethod = httpMethod.ToUpper(), ResourceId = resourceId });
             }
             catch (NotFoundException ex)
             {
