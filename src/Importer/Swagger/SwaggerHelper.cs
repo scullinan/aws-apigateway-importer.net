@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -56,6 +57,22 @@ namespace Importer.Swagger
             {
                 throw new ArgumentException("Could not process model", e);
             }
+        }
+
+        public static string GetModelName(string @refPath)
+        {
+            if (!string.IsNullOrEmpty(@refPath))
+            {
+                var modelName = @refPath;
+                return modelName.Substring(modelName.LastIndexOf('/') + 1);
+            }
+
+            return string.Empty;
+        }
+
+        public static string SanitizeModelName(string modelName)
+        {
+            return Regex.Replace(modelName, "[^a-zA-Z0-9_.]+", "", RegexOptions.Compiled);
         }
     }
 }

@@ -29,7 +29,7 @@ namespace Importer.Swagger.Aws.Impl
 
             foreach (var definition in swagger.Definitions)
             {
-                var modelName = SanitizeModelName(definition.Key); //Remove any special charcters
+                var modelName = SwaggerHelper.SanitizeModelName(definition.Key); //Remove any special charcters
                 var model = definition.Value;
 
                 CreateModel(api, modelName, model, swagger.Definitions, SwaggerHelper.GetProducesContentType(swagger.Produces, Enumerable.Empty<string>()));
@@ -148,11 +148,6 @@ namespace Importer.Swagger.Aws.Impl
             //}
 
             return modelList;
-        }
-
-        public static string SanitizeModelName(string modelName)
-        {
-            return Regex.Replace(modelName, "[^a-zA-Z0-9_.]+", "", RegexOptions.Compiled);
         }
     }
 }

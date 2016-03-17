@@ -258,13 +258,7 @@ namespace Importer.Swagger.Aws.Impl
 
         private string GetInputModel(Parameter p)
         {
-            if (!string.IsNullOrEmpty(p.Schema.Ref))
-            {
-                var modelName = p.Schema.Ref;
-                return modelName.Substring(modelName.LastIndexOf('/') + 1);
-            }
-           
-            return string.Empty;
+            return SwaggerHelper.GetModelName(p.Schema.Ref);
         }
 
         private string GenerateModelName(Parameter param)

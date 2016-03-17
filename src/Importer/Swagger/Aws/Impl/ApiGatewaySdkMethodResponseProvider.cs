@@ -85,7 +85,7 @@ namespace Importer.Swagger.Aws.Impl
             if (modelOpt != null)
             {
                 input.ResponseModels = new Dictionary<string, string>();
-                var modelName = modelOpt.Name;
+                var modelName = SwaggerHelper.GetModelName(modelOpt.Name);
 
                 input.ResponseModels[modelContentType] = modelName;
                 this.processedModels.Add(modelName);
@@ -112,23 +112,20 @@ namespace Importer.Swagger.Aws.Impl
         private string GenerateModelName(Response response)
         {
             return GenerateModelName(response.Description);
+            //return SwaggerHelper.SanitizeModelName(GenerateModelName(response.Schema.Ref));
         }
 
-        private string GenerateModelName(string description)
+        private string GenerateModelName(string modelName)
         {
-            if (string.IsNullOrEmpty(description))
+            if (string.IsNullOrEmpty(modelName))
             {
                 Log.Warn("No description found for model, will generate a unique model name");
                 return "model" + Guid.NewGuid().ToString().Substring(0, 8);
             }
 
             // note: generating model name based on sanitized description
-            return description.Replace(GetModelNameSanitizeRegex(), "");
-        }
-
-        private string GetModelNameSanitizeRegex()
-        {
-            return "[^A-Za-z0-9]";
+            //return modelName.Replace("[^A-Za-z0-9]", "");
+            return SwaggerHelper.SanitizeModelName(modelName);
         }
 
         private Model GetModel(RestApi api, Response response)

@@ -49,10 +49,8 @@ namespace Importer.Swagger.Aws.Impl
 
         private IAmazonAPIGateway CreateClient()
         {
-            AWSConfigs.LoggingConfig.LogTo = LoggingOptions.Log4Net;
-            return new AmazonAPIGatewayClient(
-                    new BasicAWSCredentials("AKIAIGYB4N3BKVIVPECA", "omdudNgGTnVQtUnWnfuvROuplsWzGKh//V1Vbtry"),
-                    RegionEndpoint.EUWest1);
+            //AWSConfigs.LoggingConfig.LogTo = LoggingOptions.Log4Net;
+            return new AmazonAPIGatewayClient();
         }
     }
 }

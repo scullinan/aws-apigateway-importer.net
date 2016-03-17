@@ -107,7 +107,9 @@
     <Compile Include="Swagger\SwaggerDocument.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="ClassDiagram.cd" />
     <None Include="packages.config" />
   </ItemGroup>
