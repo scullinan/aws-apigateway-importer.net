@@ -34,7 +34,9 @@ namespace Importer.Swagger.Aws.Impl
         {
             var gateway = CreateClient();
 
-            var modelProvider = new ApiGatewaySdkModelProvider(processedModels, gateway);
+            var modelNameResolver = new ModelNameResolver();
+            var modelProvider = new ApiGatewaySdkModelProvider(processedModels, gateway, modelNameResolver);
+           
 
             var methodResponseProvider = new ApiGatewaySdkMethodResponseProvider(processedModels, gateway, modelProvider);
             var methodParameterProvider = new ApiGatewaySdkMethodParameterProvider(gateway);
@@ -49,7 +51,9 @@ namespace Importer.Swagger.Aws.Impl
 
         private IAmazonAPIGateway CreateClient()
         {
-            //AWSConfigs.LoggingConfig.LogTo = LoggingOptions.Log4Net;
+            AWSConfigs.LoggingConfig.LogTo = LoggingOptions.Log4Net;
+            AWSConfigs.LoggingConfig.LogMetrics = true;
+            AWSConfigs.LoggingConfig.LogResponses = ResponseLoggingOption.OnError;
             return new AmazonAPIGatewayClient();
         }
     }

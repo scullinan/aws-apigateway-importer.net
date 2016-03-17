@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Amazon.APIGateway;
 using Amazon.APIGateway.Model;
+using Amazon.Runtime.Internal.Util;
 using Importer.Swagger;
 using Importer.Swagger.Aws;
 using Importer.Swagger.Aws.Impl;

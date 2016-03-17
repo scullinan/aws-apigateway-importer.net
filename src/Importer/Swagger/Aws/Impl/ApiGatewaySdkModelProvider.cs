@@ -14,11 +14,14 @@ namespace Importer.Swagger.Aws.Impl
         private readonly IAmazonAPIGateway gateway;
         protected ILog Log = LogManager.GetLogger(typeof(ApiGatewaySdkModelProvider));
 
-        public ApiGatewaySdkModelProvider(HashSet<string> processedModels, IAmazonAPIGateway gateway)
+        public ApiGatewaySdkModelProvider(HashSet<string> processedModels, IAmazonAPIGateway gateway, IModelNameResolver modelNameResolver)
         {
             this.processedModels = processedModels;
             this.gateway = gateway;
+            this.NameResolver = modelNameResolver;
         }
+
+        public IModelNameResolver NameResolver { get; }
 
         public void CreateModels(RestApi api, SwaggerDocument swagger)
         {
@@ -29,7 +32,7 @@ namespace Importer.Swagger.Aws.Impl
 
             foreach (var definition in swagger.Definitions)
             {
-                var modelName = SwaggerHelper.SanitizeModelName(definition.Key); //Remove any special charcters
+                var modelName = NameResolver.Sanitize(definition.Key); //Remove any special charcters
                 var model = definition.Value;
 
                 CreateModel(api, modelName, model, swagger.Definitions, SwaggerHelper.GetProducesContentType(swagger.Produces, Enumerable.Empty<string>()));
@@ -78,7 +81,7 @@ namespace Importer.Swagger.Aws.Impl
 
             foreach (var definition in swagger.Definitions)
             {
-                var modelName = definition.Key;
+                var modelName = NameResolver.Sanitize(definition.Key);
                 var model = definition.Value;
 
                 if (gateway.DoesModelExists(api.Id, modelName))

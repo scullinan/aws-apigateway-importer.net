@@ -138,7 +138,7 @@ namespace Importer.Swagger.Aws.Impl
             op.Parameters.Where(x => x.In.Equals("body")).ForEach(p => {
                 //BodyParameter bodyParam = (BodyParameter)p;
 
-                var inputModel = GetInputModel(p);
+                var inputModel = modelProvider.NameResolver.GetModelName(p.Schema.Ref);
 
                 input.RequestModels = new Dictionary<string, string>();
 
@@ -153,7 +153,7 @@ namespace Importer.Swagger.Aws.Impl
                 else
                 {
                     // create new model from nested schema
-                    string modelName = GenerateModelName(p);
+                    var modelName = modelProvider.NameResolver.GetModelName(p.Schema.Ref);
                     Log.InfoFormat("Creating new model referenced from parameter: {0}", modelName);
 
                     if (p.Schema == null)
@@ -253,29 +253,6 @@ namespace Importer.Swagger.Aws.Impl
             }
 
             return false;
-        }
-
-
-        private string GetInputModel(Parameter p)
-        {
-            return SwaggerHelper.GetModelName(p.Schema.Ref);
-        }
-
-        private string GenerateModelName(Parameter param)
-        {
-            return GenerateModelName(param.Description);
-        }
-
-        private string GenerateModelName(string description)
-        {
-            if (string.IsNullOrEmpty(description))
-            {
-                Log.Warn("No description found for model, will generate a unique model name");
-                return "model" + Guid.NewGuid().ToString().Substring(0, 8);
-            }
-
-            // note: generating model name based on sanitized description
-            return description.Replace("[^A-Za-z0-9]", "");
         }
 
         private string BuildResourcePath(string basePath, string resourcePath)
