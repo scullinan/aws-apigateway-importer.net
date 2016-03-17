@@ -95,35 +95,6 @@ namespace Importer.Swagger.Aws.Impl
             }
         }
 
-        private void UpdateMethod(RestApi api, SwaggerDocument swagger, Resource resource, string httpMethod, Operation op, string modelContentType)
-        {
-            var operations = PatchOperationBuilder.With()
-                .Operation(Operations.Replace, "/authorizationType", GetAuthorizationType(op))
-                .Operation(Operations.Replace, "/apiKeyRequired", IsApiKeyRequired(swagger, op).ToString()).ToList();
-            
-            var result = gateway.UpdateMethod(new UpdateMethodRequest() {
-                RestApiId = api.Id,
-                HttpMethod = httpMethod.ToUpper(),
-                ResourceId = resource.Id,
-                PatchOperations = operations
-            });
-
-            var method = new Method()
-            {
-                HttpMethod = result.HttpMethod,
-                ApiKeyRequired = result.ApiKeyRequired,
-                AuthorizationType = result.AuthorizationType,
-                MethodIntegration = result.MethodIntegration,
-                MethodResponses = result.MethodResponses,
-                RequestModels = result.RequestModels,
-                RequestParameters = result.RequestParameters
-            };
-
-            methodResponseProvider.UpdateMethodResponses(api, resource, method, swagger, modelContentType, op.Responses);
-            methodParameterProvider.UpdateMethodParameters(api, resource, method, op.Parameters);
-            methodIntegrationProvider.CreateIntegration(api, resource, method, op.VendorExtensions);
-        }
-
         private void CreateMethod(RestApi api, SwaggerDocument swagger, Resource resource, string httpMethod, Operation op, string modelContentType)
         {
             var input = new PutMethodRequest
@@ -139,7 +110,6 @@ namespace Importer.Swagger.Aws.Impl
                 //BodyParameter bodyParam = (BodyParameter)p;
 
                 var inputModel = modelProvider.NameResolver.GetModelName(p.Schema.Ref);
-
                 input.RequestModels = new Dictionary<string, string>();
 
                 // model already imported
@@ -152,14 +122,12 @@ namespace Importer.Swagger.Aws.Impl
                 }
                 else
                 {
+                    if (p.Schema == null)
+                        throw new ArgumentException("Body parameter '{0}' + must have a schema defined", p.Name);
+
                     // create new model from nested schema
                     var modelName = modelProvider.NameResolver.GetModelName(p.Schema.Ref);
                     Log.InfoFormat("Creating new model referenced from parameter: {0}", modelName);
-
-                    if (p.Schema == null)
-                    {
-                        throw new ArgumentException("Body parameter '{0}' + must have a schema defined", p.Name);
-                    }
 
                     modelProvider.CreateModel(api, modelName, p.Schema, swagger.Definitions, modelContentType);
                     input.RequestModels[modelContentType] = modelName;
@@ -182,6 +150,36 @@ namespace Importer.Swagger.Aws.Impl
 
             methodResponseProvider.CreateMethodResponses(api, resource, method, swagger, modelContentType, op.Responses);
             methodParameterProvider.CreateMethodParameters(api, resource, method, op.Parameters);
+            methodIntegrationProvider.CreateIntegration(api, resource, method, op.VendorExtensions);
+        }
+
+        private void UpdateMethod(RestApi api, SwaggerDocument swagger, Resource resource, string httpMethod, Operation op, string modelContentType)
+        {
+            var operations = PatchOperationBuilder.With()
+                .Operation(Operations.Replace, "/authorizationType", GetAuthorizationType(op))
+                .Operation(Operations.Replace, "/apiKeyRequired", IsApiKeyRequired(swagger, op).ToString()).ToList();
+
+            var result = gateway.UpdateMethod(new UpdateMethodRequest()
+            {
+                RestApiId = api.Id,
+                HttpMethod = httpMethod.ToUpper(),
+                ResourceId = resource.Id,
+                PatchOperations = operations
+            });
+
+            var method = new Method()
+            {
+                HttpMethod = result.HttpMethod,
+                ApiKeyRequired = result.ApiKeyRequired,
+                AuthorizationType = result.AuthorizationType,
+                MethodIntegration = result.MethodIntegration,
+                MethodResponses = result.MethodResponses,
+                RequestModels = result.RequestModels,
+                RequestParameters = result.RequestParameters
+            };
+
+            methodResponseProvider.UpdateMethodResponses(api, resource, method, swagger, modelContentType, op.Responses);
+            methodParameterProvider.UpdateMethodParameters(api, resource, method, op.Parameters);
             methodIntegrationProvider.CreateIntegration(api, resource, method, op.VendorExtensions);
         }
 

@@ -124,7 +124,7 @@ namespace Importer.Swagger.Aws.Impl
 
             try
             {
-                var result = gateway.GetModel(new GetModelRequest() { RestApiId = api.Id, ModelName = modelName });
+                var result = gateway.GetModel(new GetModelRequest() {RestApiId = api.Id, ModelName = modelName});
                 return new Model()
                 {
                     Id = result.Id,
@@ -134,8 +134,11 @@ namespace Importer.Swagger.Aws.Impl
                     Name = result.Name
                 };
             }
-            catch (Exception ignored) { }
-
+            catch (NotFoundException)
+            {
+                Log.InfoFormat("Cannot find model {0}", modelName);
+            }
+            
             return null;
         }
     }
