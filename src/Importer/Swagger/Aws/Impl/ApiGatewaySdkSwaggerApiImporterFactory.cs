@@ -52,8 +52,6 @@ namespace Importer.Swagger.Aws.Impl
         private IAmazonAPIGateway CreateClient()
         {
             AWSConfigs.LoggingConfig.LogTo = LoggingOptions.Log4Net;
-            AWSConfigs.LoggingConfig.LogMetrics = true;
-            AWSConfigs.LoggingConfig.LogResponses = ResponseLoggingOption.OnError;
             return new AmazonAPIGatewayClient();
         }
     }

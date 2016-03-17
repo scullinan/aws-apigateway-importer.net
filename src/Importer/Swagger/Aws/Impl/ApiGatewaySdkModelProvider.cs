@@ -81,7 +81,7 @@ namespace Importer.Swagger.Aws.Impl
 
             foreach (var definition in swagger.Definitions)
             {
-                var modelName = NameResolver.Sanitize(definition.Key);
+                var modelName = definition.Key;
                 var model = definition.Value;
 
                 if (gateway.DoesModelExists(api.Id, modelName))
