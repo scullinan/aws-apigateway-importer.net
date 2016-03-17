@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Importer.Swagger
 {
@@ -37,8 +38,16 @@ namespace Importer.Swagger
         {
             try
             {
-                var modelSchema = JsonConvert.SerializeObject(model);
-                var models = JsonConvert.SerializeObject(definitions);
+                var settings = new JsonSerializerSettings()
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                    ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                    DateFormatHandling = DateFormatHandling.IsoDateFormat
+                };
+
+                var modelSchema = JsonConvert.SerializeObject(model, settings);
+                var models = JsonConvert.SerializeObject(definitions, settings);
+
                 var schema = new SchemaTransformer().Flatten(modelSchema, models);
 
                 return schema;

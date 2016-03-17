@@ -69,6 +69,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Swagger\AwsApiGatewayJsonIgnoreAttribute.cs" />
     <Compile Include="Swagger\Aws\Impl\ApiGatewaySdkSwaggerApiImporterFactory.cs" />
     <Compile Include="AutofacConfig.cs" />
     <Compile Include="Constants.cs" />

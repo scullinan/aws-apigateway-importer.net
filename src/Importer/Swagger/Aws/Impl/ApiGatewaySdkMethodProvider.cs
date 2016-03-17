@@ -170,8 +170,7 @@ namespace Importer.Swagger.Aws.Impl
             input.HttpMethod = httpMethod.ToUpper();
             var result = gateway.PutMethod(input);
 
-            var method = new Method()
-            {
+            var method = new Method() {
                 HttpMethod = result.HttpMethod,
                 ApiKeyRequired = result.ApiKeyRequired,
                 AuthorizationType = result.AuthorizationType,
@@ -259,17 +258,12 @@ namespace Importer.Swagger.Aws.Impl
 
         private string GetInputModel(Parameter p)
         {
-            var model = p.Schema;
-
-            if (p.Schema.Ref != null)
-                return p.Schema.Ref;
-
-            //ToDo:What is this? based on input
-            //if (model instanceof RefModel) {
-            //    String modelName = ((RefModel)model).getSimpleRef();   // assumption: complex ref?
-            //    return Optional.of(modelName);
-            //}
-
+            if (!string.IsNullOrEmpty(p.Schema.Ref))
+            {
+                var modelName = p.Schema.Ref;
+                return modelName.Substring(modelName.LastIndexOf('/') + 1);
+            }
+           
             return string.Empty;
         }
 
@@ -287,12 +281,7 @@ namespace Importer.Swagger.Aws.Impl
             }
 
             // note: generating model name based on sanitized description
-            return description.Replace(GetModelNameSanitizeRegex(), "");
-        }
-
-        private string GetModelNameSanitizeRegex()
-        {
-            return "[^A-Za-z0-9]";
+            return description.Replace("[^A-Za-z0-9]", "");
         }
 
         private string BuildResourcePath(string basePath, string resourcePath)

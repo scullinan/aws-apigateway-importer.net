@@ -200,7 +200,7 @@ namespace Importer.Swagger.Aws.Impl
             }
 
             resourceSet.AddRange(basePath.Split('/'));
-            return resourceSet; //.Where(x => !string.IsNullOrEmpty(x)).ToList();
+            return resourceSet;
         }
     }
 }

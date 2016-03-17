@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Amazon.APIGateway;
 using Amazon.APIGateway.Model;
 using log4net;
@@ -28,7 +29,7 @@ namespace Importer.Swagger.Aws.Impl
 
             foreach (var definition in swagger.Definitions)
             {
-                var modelName = definition.Key;
+                var modelName = SanitizeModelName(definition.Key); //Remove any special charcters
                 var model = definition.Value;
 
                 CreateModel(api, modelName, model, swagger.Definitions, SwaggerHelper.GetProducesContentType(swagger.Produces, Enumerable.Empty<string>()));
@@ -63,8 +64,6 @@ namespace Importer.Swagger.Aws.Impl
             list.ForEach(model =>  {
                 Log.InfoFormat("Removing default model {0}", model.Name);
 
-                //
-                //{
                 gateway.DeleteModel(new DeleteModelRequest() {
                     RestApiId = api.Id,
                     ModelName = model.Name
@@ -100,7 +99,7 @@ namespace Importer.Swagger.Aws.Impl
 
             modelsToDelete.ForEach(x =>
             {
-                Log.InfoFormat("Removing deleted model {0}" + x.Name);
+                Log.InfoFormat("Removing deleted model {0}", x.Name);
                 gateway.DeleteModel(new DeleteModelRequest()
                 {
                     RestApiId = api.Id,
@@ -149,6 +148,11 @@ namespace Importer.Swagger.Aws.Impl
             //}
 
             return modelList;
+        }
+
+        public static string SanitizeModelName(string modelName)
+        {
+            return Regex.Replace(modelName, "[^a-zA-Z0-9_.]+", "", RegexOptions.Compiled);
         }
     }
 }
