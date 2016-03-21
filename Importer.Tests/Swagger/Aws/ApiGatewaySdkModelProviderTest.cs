@@ -3,6 +3,7 @@ using System.Linq;
 using Amazon.APIGateway;
 using Amazon.APIGateway.Model;
 using Importer.Swagger;
+using Importer.Swagger.Aws;
 using Importer.Swagger.Aws.Impl;
 using Moq;
 using NUnit.Framework;
@@ -14,6 +15,7 @@ namespace Importer.Tests.Swagger.Aws
     {
         private ApiGatewaySdkModelProvider underTest;
         private Mock<IAmazonAPIGateway> gatewayMock;
+        private Mock<IModelNameResolver> resolverMock;
         private string apiId = "pwfy7quvxh";
         private HashSet<string> processedModels;
 
@@ -21,8 +23,10 @@ namespace Importer.Tests.Swagger.Aws
         {
             processedModels = new HashSet<string>();
             gatewayMock = new Mock<IAmazonAPIGateway>();
-
-            underTest = new ApiGatewaySdkModelProvider(processedModels, gatewayMock.Object);
+            resolverMock = new Mock<IModelNameResolver>();
+            gatewayMock.Setup(x => x.GetModel(It.IsAny<GetModelRequest>())).Returns(new GetModelResponse());
+            resolverMock.Setup(x => x.Sanitize(It.IsAny<string>())).Returns("model_name");
+            underTest = new ApiGatewaySdkModelProvider(processedModels, gatewayMock.Object, resolverMock.Object);
         }
 
         [Test]
@@ -44,7 +48,8 @@ namespace Importer.Tests.Swagger.Aws
             //Re Init
             processedModels = new HashSet<string>();
             gatewayMock = new Mock<IAmazonAPIGateway>();
-            underTest = new ApiGatewaySdkModelProvider(processedModels, gatewayMock.Object);
+            resolverMock = new Mock<IModelNameResolver>();
+            underTest = new ApiGatewaySdkModelProvider(processedModels, gatewayMock.Object, resolverMock.Object);
 
             var definition = swagger.Definitions.FirstOrDefault();
             var modelName = definition.Key;

@@ -29,7 +29,8 @@ namespace Importer.Swagger
                 if (property.PropertyName == "vendorExtensions")
                 {
                     var extentions = jObject.Properties().Where(x => x.Name.StartsWith("x-"));
-                    var target = extentions.ToDictionary<JProperty, string, object>(extention => extention.Name, extention => extention.Value);
+                    var target = extentions.ToDictionary<JProperty, string, object>(extention => extention.Name,
+                        extention => extention.Value);
 
                     property.ValueProvider.SetValue(existingValue, target);
                 }
@@ -52,7 +53,7 @@ namespace Importer.Swagger
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            var jsonContract = (JsonObjectContract)serializer.ContractResolver.ResolveContract(value.GetType());
+            var jsonContract = (JsonObjectContract) serializer.ContractResolver.ResolveContract(value.GetType());
 
             writer.WriteStartObject();
 
@@ -62,9 +63,9 @@ namespace Importer.Swagger
                 if (propValue == null && serializer.NullValueHandling == NullValueHandling.Ignore)
                     continue;
 
-                if (jsonProp.PropertyName == "VendorExtensions")
+                if (jsonProp.PropertyName == "vendorExtensions")
                 {
-                    var vendorExtensions = (IDictionary<string, object>)propValue;
+                    var vendorExtensions = (IDictionary<string, object>) propValue;
                     if (vendorExtensions.Any())
                     {
                         foreach (var entry in vendorExtensions)
@@ -76,8 +77,11 @@ namespace Importer.Swagger
                 }
                 else
                 {
-                    writer.WritePropertyName(jsonProp.PropertyName);
-                    serializer.Serialize(writer, propValue);
+                    if (!jsonProp.AttributeProvider.GetAttributes(typeof (AwsApiGatewayJsonIgnoreAttribute), false).Any())
+                    {
+                        writer.WritePropertyName(jsonProp.PropertyName);
+                        serializer.Serialize(writer, propValue);
+                    }
                 }
             }
 

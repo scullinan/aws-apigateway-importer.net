@@ -95,13 +95,72 @@ namespace Importer.Swagger.Aws.Impl
             }
         }
 
+        private void CreateMethod(RestApi api, SwaggerDocument swagger, Resource resource, string httpMethod, Operation op, string modelContentType)
+        {
+            var input = new PutMethodRequest
+            {
+                AuthorizationType = GetAuthorizationType(op),
+                ApiKeyRequired = IsApiKeyRequired(swagger, op),
+                RestApiId = api.Id,
+                ResourceId = resource.Id
+            };
+
+            // set input model if present in body
+            op.Parameters.Where(x => x.In.Equals("body")).ForEach(p => {
+                //BodyParameter bodyParam = (BodyParameter)p;
+
+                var inputModel = modelProvider.NameResolver.GetModelName(p.Schema.Ref);
+                input.RequestModels = new Dictionary<string, string>();
+
+                // model already imported
+                if (inputModel != null)
+                {
+                    processedModels.Add(inputModel);
+
+                    Log.InfoFormat("Found input model reference {0}", inputModel);
+                    input.RequestModels[modelContentType] = inputModel;
+                }
+                else
+                {
+                    if (p.Schema == null)
+                        throw new ArgumentException("Body parameter '{0}' + must have a schema defined", p.Name);
+
+                    // create new model from nested schema
+                    var modelName = modelProvider.NameResolver.GetModelName(p.Schema.Ref);
+                    Log.InfoFormat("Creating new model referenced from parameter: {0}", modelName);
+
+                    modelProvider.CreateModel(api, modelName, p.Schema, swagger.Definitions, modelContentType);
+                    input.RequestModels[modelContentType] = modelName;
+                }
+            });
+
+            // create method
+            input.HttpMethod = httpMethod.ToUpper();
+            var result = gateway.PutMethod(input);
+
+            var method = new Method() {
+                HttpMethod = result.HttpMethod,
+                ApiKeyRequired = result.ApiKeyRequired,
+                AuthorizationType = result.AuthorizationType,
+                MethodIntegration = result.MethodIntegration,
+                MethodResponses = result.MethodResponses,
+                RequestModels = result.RequestModels,
+                RequestParameters = result.RequestParameters
+            };
+
+            methodResponseProvider.CreateMethodResponses(api, resource, method, swagger, modelContentType, op.Responses);
+            methodParameterProvider.CreateMethodParameters(api, resource, method, op.Parameters);
+            methodIntegrationProvider.CreateIntegration(api, resource, method, op.VendorExtensions);
+        }
+
         private void UpdateMethod(RestApi api, SwaggerDocument swagger, Resource resource, string httpMethod, Operation op, string modelContentType)
         {
             var operations = PatchOperationBuilder.With()
                 .Operation(Operations.Replace, "/authorizationType", GetAuthorizationType(op))
                 .Operation(Operations.Replace, "/apiKeyRequired", IsApiKeyRequired(swagger, op).ToString()).ToList();
-            
-            var result = gateway.UpdateMethod(new UpdateMethodRequest() {
+
+            var result = gateway.UpdateMethod(new UpdateMethodRequest()
+            {
                 RestApiId = api.Id,
                 HttpMethod = httpMethod.ToUpper(),
                 ResourceId = resource.Id,
@@ -121,68 +180,6 @@ namespace Importer.Swagger.Aws.Impl
 
             methodResponseProvider.UpdateMethodResponses(api, resource, method, swagger, modelContentType, op.Responses);
             methodParameterProvider.UpdateMethodParameters(api, resource, method, op.Parameters);
-            methodIntegrationProvider.CreateIntegration(api, resource, method, op.VendorExtensions);
-        }
-
-        private void CreateMethod(RestApi api, SwaggerDocument swagger, Resource resource, string httpMethod, Operation op, string modelContentType)
-        {
-            var input = new PutMethodRequest
-            {
-                AuthorizationType = GetAuthorizationType(op),
-                ApiKeyRequired = IsApiKeyRequired(swagger, op),
-                RestApiId = api.Id,
-                ResourceId = resource.Id
-            };
-
-            // set input model if present in body
-            op.Parameters.Where(x => x.In.Equals("body")).ForEach(p => {
-                //BodyParameter bodyParam = (BodyParameter)p;
-
-                var inputModel = GetInputModel(p);
-
-                input.RequestModels = new Dictionary<string, string>();
-
-                // model already imported
-                if (inputModel != null)
-                {
-                    processedModels.Add(inputModel);
-
-                    Log.InfoFormat("Found input model reference {0}", inputModel);
-                    input.RequestModels[modelContentType] = inputModel;
-                }
-                else
-                {
-                    // create new model from nested schema
-                    string modelName = GenerateModelName(p);
-                    Log.InfoFormat("Creating new model referenced from parameter: {0}", modelName);
-
-                    if (p.Schema == null)
-                    {
-                        throw new ArgumentException("Body parameter '{0}' + must have a schema defined", p.Name);
-                    }
-
-                    modelProvider.CreateModel(api, modelName, p.Schema, swagger.Definitions, modelContentType);
-                    input.RequestModels[modelContentType] = modelName;
-                }
-            });
-
-            // create method
-            input.HttpMethod = httpMethod.ToUpper();
-            var result = gateway.PutMethod(input);
-
-            var method = new Method()
-            {
-                HttpMethod = result.HttpMethod,
-                ApiKeyRequired = result.ApiKeyRequired,
-                AuthorizationType = result.AuthorizationType,
-                MethodIntegration = result.MethodIntegration,
-                MethodResponses = result.MethodResponses,
-                RequestModels = result.RequestModels,
-                RequestParameters = result.RequestParameters
-            };
-
-            methodResponseProvider.CreateMethodResponses(api, resource, method, swagger, modelContentType, op.Responses);
-            methodParameterProvider.CreateMethodParameters(api, resource, method, op.Parameters);
             methodIntegrationProvider.CreateIntegration(api, resource, method, op.VendorExtensions);
         }
 
@@ -254,45 +251,6 @@ namespace Importer.Swagger.Aws.Impl
             }
 
             return false;
-        }
-
-
-        private string GetInputModel(Parameter p)
-        {
-            var model = p.Schema;
-
-            if (p.Schema.Ref != null)
-                return p.Schema.Ref;
-
-            //ToDo:What is this? based on input
-            //if (model instanceof RefModel) {
-            //    String modelName = ((RefModel)model).getSimpleRef();   // assumption: complex ref?
-            //    return Optional.of(modelName);
-            //}
-
-            return string.Empty;
-        }
-
-        private string GenerateModelName(Parameter param)
-        {
-            return GenerateModelName(param.Description);
-        }
-
-        private string GenerateModelName(string description)
-        {
-            if (string.IsNullOrEmpty(description))
-            {
-                Log.Warn("No description found for model, will generate a unique model name");
-                return "model" + Guid.NewGuid().ToString().Substring(0, 8);
-            }
-
-            // note: generating model name based on sanitized description
-            return description.Replace(GetModelNameSanitizeRegex(), "");
-        }
-
-        private string GetModelNameSanitizeRegex()
-        {
-            return "[^A-Za-z0-9]";
         }
 
         private string BuildResourcePath(string basePath, string resourcePath)

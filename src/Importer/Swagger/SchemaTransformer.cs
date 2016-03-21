@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -18,7 +17,7 @@ namespace Importer.Swagger
             return GetFlattened(Deserialize(model), Deserialize(models));
         }
 
-        private void BuildSchemaReferenceMap(JToken model, JToken models, IDictionary<string, string> modelMap)
+        private void BuildSchemaReferenceMap(JObject model, JObject models, IDictionary<string, string> modelMap)
         {
             IDictionary<JToken, JToken> refs = new Dictionary<JToken, JToken>();
             FindReferences(model, refs);
@@ -26,21 +25,30 @@ namespace Importer.Swagger
             foreach (JToken @ref in refs.Keys)
             {
                 var canonicalRef = @ref.ToString();
-                var schemaName = GetSchemaName(canonicalRef);
-                var subSchema = GetSchema(schemaName, models);
 
-                // replace reference values with inline definitions
-                ReplaceRef((JObject)refs[@ref], schemaName);
+                try
+                {
+                    var schemaName = GetSchemaName(canonicalRef);
+                    var subSchema = GetSchema(schemaName, models);
 
-                BuildSchemaReferenceMap(subSchema, models, modelMap);
+                    // replace reference values with inline definitions
+                    ReplaceRef((JObject) refs[@ref], schemaName);
 
-                modelMap[schemaName] = SerializeExisting(subSchema);
+                    BuildSchemaReferenceMap(subSchema, models, modelMap);
+                    modelMap[schemaName] = SerializeExisting(subSchema);
+                }
+                catch (Exception ex)
+                {
+                    continue;
+                }
             }
         }
 
-        private JToken GetSchema(string schemaName, JToken models)
+        private JObject GetSchema(string schemaName, JObject models)
         {
-            return models[schemaName];
+            var token = models.GetValue(schemaName, StringComparison.CurrentCultureIgnoreCase);
+            
+            return (JObject)token;
         }
 
         private string GetFlattened(JObject model, JObject models)
@@ -93,7 +101,7 @@ namespace Importer.Swagger
      * Add schema references as inline definitions to the root schema
      */
 
-        private void ReplaceRefs(JObject root, IDictionary<string, string> schemaMap)
+        private void ReplaceRefs(JToken root, IDictionary<string, string> schemaMap)
         {
             var definitionsNode = new JObject();
 
@@ -119,7 +127,8 @@ namespace Importer.Swagger
          */
         private void FindReferences(JToken node, IDictionary<JToken, JToken> refNodes)
         {
-            if (node.Contains("$ref"))
+            
+            try
             {
                 var refNode = node["$ref"];
                 if (refNode != null)
@@ -127,6 +136,11 @@ namespace Importer.Swagger
                     refNodes[refNode] = node;
                 }
             }
+            catch (Exception ex)
+            {
+                var innerException = ex.InnerException;
+            }
+            
 
             foreach (JToken child in node.Children())
             {
@@ -154,7 +168,7 @@ namespace Importer.Swagger
          * Attempt to serialize an existing schema
          * If this fails something is seriously wrong, because this schema has already been saved by the control plane
          */
-        private string SerializeExisting(JToken root)
+        private string SerializeExisting(JObject root)
         {
             try
             {
@@ -172,7 +186,7 @@ namespace Importer.Swagger
 
             try
             {
-                schemaName = refVal.Substring(refVal.LastIndexOf("/") + 1, refVal.Length);
+                schemaName = refVal.Substring(refVal.LastIndexOf("/") + 1);
             }
             catch (Exception e)
             {

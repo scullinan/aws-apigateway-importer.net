@@ -139,6 +139,7 @@ namespace Importer.Swagger
         public IDictionary<string, Schema> Properties;
         public Schema AdditionalProperties;
         public string Ddiscriminator;
+        [AwsApiGatewayJsonIgnore]
         public bool? ReadOnly;
         public Xml Xml;
         public ExternalDocs ExternalDocs;

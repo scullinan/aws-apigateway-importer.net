@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Amazon.APIGateway.Model;
 using Newtonsoft.Json.Linq;
 
@@ -50,13 +51,14 @@ namespace Importer
             return result;
         }
 
-        public static Dictionary<TKey, TValue> ToDictionary<TKey, TValue>(this IDictionary<string, object> dictionary,
-            string key)
+        public static Dictionary<TKey, TValue> ToDictionary<TKey, TValue>(this IDictionary<string, object> dictionary, string key)
         {
             if (dictionary.ContainsKey(key))
                 return dictionary[key] as Dictionary<TKey, TValue>;
 
             return null;
         }
+
+        
     }
 }

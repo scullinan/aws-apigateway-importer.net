@@ -69,6 +69,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Swagger\AwsApiGatewayJsonIgnoreAttribute.cs" />
+    <Compile Include="Swagger\Aws\Impl\ModelNameResolver.cs" />
+    <Compile Include="Swagger\Aws\IModelNameResolver.cs" />
     <Compile Include="Swagger\Aws\Impl\ApiGatewaySdkSwaggerApiImporterFactory.cs" />
     <Compile Include="AutofacConfig.cs" />
     <Compile Include="Constants.cs" />
@@ -106,7 +109,9 @@
     <Compile Include="Swagger\SwaggerDocument.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="ClassDiagram.cd" />
     <None Include="packages.config" />
   </ItemGroup>

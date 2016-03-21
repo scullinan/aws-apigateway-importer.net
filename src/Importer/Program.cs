@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using Autofac;
@@ -55,6 +56,8 @@ namespace Importer
 
             var fileName = options.Files.FirstOrDefault();
             ImportSwagger(options, fileName);
+
+            Console.ReadLine();
         }
 
         private static void ImportSwagger(Options options, string fileName)

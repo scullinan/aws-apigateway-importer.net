@@ -25,7 +25,12 @@ namespace Importer.Tests
             var directory = new FileInfo(location).Directory;
             var path = Path.Combine(directory.FullName, $@"Resources\{swaggerFileName}");
 
-            var serializer = new JsonSerializer { ContractResolver = new CamelCasePropertyNamesContractResolver(), NullValueHandling = NullValueHandling.Ignore };
+            var serializer = new JsonSerializer
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                NullValueHandling = NullValueHandling.Ignore,
+                DateFormatHandling = DateFormatHandling.IsoDateFormat
+            };
 
             var sr = new StreamReader(path);
             return serializer.Deserialize<T>(new JsonTextReader(sr));

@@ -23,10 +23,8 @@ namespace Importer.Swagger.Aws.Impl
         public void CreateMethodResponses(RestApi api, Resource resource, Method method, SwaggerDocument swagger, string modelContentType, IDictionary<string, Response> responses)
         {
             if (responses == null)
-            {
                 return;
-            }
-
+            
             // add responses from swagger
             responses.ForEach(x => {
 
@@ -38,7 +36,7 @@ namespace Importer.Swagger.Aws.Impl
                 {
                     Log.InfoFormat("Creating method response for api {0} and method {1} and status {2}", api.Id, method.HttpMethod, x.Key);
 
-                    var request = GetCreateResponseInput(api, swagger, modelContentType, x.Value);
+                    var request = GetCreateResponseInput(api, swagger, resource, method, modelContentType, x.Value);
                     request.RestApiId = api.Id;
                     request.ResourceId = resource.Id;
                     request.StatusCode = x.Key;
@@ -65,10 +63,9 @@ namespace Importer.Swagger.Aws.Impl
             CreateMethodResponses(api, resource, method, swagger, modelContentType, responses);
         }
 
-        private PutMethodResponseRequest GetCreateResponseInput(RestApi api, SwaggerDocument swagger, string modelContentType, Response response)
+        private PutMethodResponseRequest GetCreateResponseInput(RestApi api, SwaggerDocument swagger, Resource resource, Method method, string modelContentType, Response response)
         {
-
-            PutMethodResponseRequest input = new PutMethodResponseRequest();
+            var input = new PutMethodResponseRequest();
 
             // add response headers
             if (response.Headers != null)
@@ -77,18 +74,19 @@ namespace Importer.Swagger.Aws.Impl
                 response.Headers.ForEach(x =>
                 {
                     input.ResponseParameters["method.response.header." + x.Key] = x.Value.Required;
-                }); //ToDo Required?
+                });
             }
 
             // if the schema references an existing model, use that model for the response
-            Model modelOpt = GetModel(api, response);
+            var modelOpt = GetModel(api, resource, method, response);
+
             if (modelOpt != null)
             {
                 input.ResponseModels = new Dictionary<string, string>();
                 var modelName = modelOpt.Name;
 
                 input.ResponseModels[modelContentType] = modelName;
-                this.processedModels.Add(modelName);
+                processedModels.Add(modelName);
                 Log.InfoFormat("Found reference to existing model {0}", modelName);
             }
             else
@@ -96,12 +94,11 @@ namespace Importer.Swagger.Aws.Impl
                 // generate a model based on the schema if the model doesn't already exist
                 if (response.Schema != null)
                 {
-                    string modelName = GenerateModelName(response);
+                    var modelName = modelProvider.NameResolver.GetModelName(resource.PathPart, method.HttpMethod, response);
 
                     Log.InfoFormat("Creating new model referenced from response: {0}", modelName);
 
                     modelProvider.CreateModel(api, modelName, response.Schema, swagger.Definitions, modelContentType);
-
                     input.ResponseModels = new Dictionary<string, string> { [modelContentType] = modelName };
                 }
             }
@@ -109,29 +106,7 @@ namespace Importer.Swagger.Aws.Impl
             return input;
         }
 
-        private string GenerateModelName(Response response)
-        {
-            return GenerateModelName(response.Description);
-        }
-
-        private string GenerateModelName(string description)
-        {
-            if (string.IsNullOrEmpty(description))
-            {
-                Log.Warn("No description found for model, will generate a unique model name");
-                return "model" + Guid.NewGuid().ToString().Substring(0, 8);
-            }
-
-            // note: generating model name based on sanitized description
-            return description.Replace(GetModelNameSanitizeRegex(), "");
-        }
-
-        private string GetModelNameSanitizeRegex()
-        {
-            return "[^A-Za-z0-9]";
-        }
-
-        private Model GetModel(RestApi api, Response response)
+        private Model GetModel(RestApi api, Resource resource, Method method, Response response)
         {
 
             string modelName;
@@ -139,26 +114,31 @@ namespace Importer.Swagger.Aws.Impl
             // if the response references a proper model, look for a model matching the model name
             if (response.Schema?.Type != null && response.Schema.Type.Equals("ref"))
             {
-                modelName = response.Schema.Ref;
+                modelName = modelProvider.NameResolver.GetModelName(response.Schema.Ref);
             }
             else
             {
                 // if the response has an embedded schema, look for a model matching the generated name
-                modelName = GenerateModelName(response);
+                modelName = modelProvider.NameResolver.GetModelName(resource.PathPart, method.HttpMethod, response);
             }
 
             try
             {
-                var result = gateway.GetModel(new GetModelRequest() { RestApiId = api.Id, ModelName = modelName });
+                var result = gateway.GetModel(new GetModelRequest() {RestApiId = api.Id, ModelName = modelName});
                 return new Model()
                 {
+                    Id = result.Id,
                     Description = result.Description,
                     ContentType = result.ContentType,
-
+                    Schema = result.Schema,
+                    Name = result.Name
                 };
             }
-            catch (Exception ignored) { }
-
+            catch (NotFoundException)
+            {
+                Log.InfoFormat("Cannot find model {0}", modelName);
+            }
+            
             return null;
         }
     }
