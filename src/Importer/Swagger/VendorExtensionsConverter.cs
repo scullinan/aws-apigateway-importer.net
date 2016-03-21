@@ -82,10 +82,6 @@ namespace Importer.Swagger
                         writer.WritePropertyName(jsonProp.PropertyName);
                         serializer.Serialize(writer, propValue);
                     }
-                    else
-                    {
-                        string s = string.Empty;
-                    }
                 }
             }
 

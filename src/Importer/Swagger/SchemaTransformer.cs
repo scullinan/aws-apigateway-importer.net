@@ -186,7 +186,7 @@ namespace Importer.Swagger
 
             try
             {
-                schemaName = refVal.Substring(refVal.LastIndexOf("/") + 1, refVal.Length);
+                schemaName = refVal.Substring(refVal.LastIndexOf("/") + 1);
             }
             catch (Exception e)
             {
