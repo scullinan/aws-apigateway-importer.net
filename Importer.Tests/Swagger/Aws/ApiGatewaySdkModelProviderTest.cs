@@ -24,6 +24,8 @@ namespace Importer.Tests.Swagger.Aws
             processedModels = new HashSet<string>();
             gatewayMock = new Mock<IAmazonAPIGateway>();
             resolverMock = new Mock<IModelNameResolver>();
+            gatewayMock.Setup(x => x.GetModel(It.IsAny<GetModelRequest>())).Returns(new GetModelResponse());
+            resolverMock.Setup(x => x.Sanitize(It.IsAny<string>())).Returns("model_name");
             underTest = new ApiGatewaySdkModelProvider(processedModels, gatewayMock.Object, resolverMock.Object);
         }
 

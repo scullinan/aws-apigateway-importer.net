@@ -18,6 +18,7 @@ namespace Importer.Tests.Swagger.Aws
         public ApiGatewaySdkMethodParameterProviderTest()
         {
             gatewayMock = new Mock<IAmazonAPIGateway>();
+            gatewayMock.Setup(x => x.GetModel(It.IsAny<GetModelRequest>())).Returns(new GetModelResponse());
             underTest = new ApiGatewaySdkMethodParameterProvider(gatewayMock.Object);
         }
 

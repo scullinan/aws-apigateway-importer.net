@@ -18,6 +18,7 @@ namespace Importer.Tests.Swagger.Aws
         private HashSet<string> processedModels;
         private Mock<IAmazonAPIGateway> gatewayMock;
         private Mock<IApiGatewaySdkModelProvider> modelProviderMock;
+        private Mock<ModelNameResolver> modelNameResolverMock;
         private string apiId = "pwfy7quvxh";
 
         public ApiGatewaySdkMethodResponseProviderTest()
@@ -25,6 +26,10 @@ namespace Importer.Tests.Swagger.Aws
             processedModels = new HashSet<string>();
             gatewayMock = new Mock<IAmazonAPIGateway>();
             modelProviderMock = new Mock<IApiGatewaySdkModelProvider>();
+            modelNameResolverMock = new Mock<ModelNameResolver>();
+            gatewayMock.Setup(x => x.GetModel(It.IsAny<GetModelRequest>())).Returns(new GetModelResponse());
+
+            modelProviderMock.Setup(x => x.NameResolver).Returns(modelNameResolverMock.Object);
             underTest = new ApiGatewaySdkMethodResponseProvider(processedModels, gatewayMock.Object, modelProviderMock.Object);
         }
 
