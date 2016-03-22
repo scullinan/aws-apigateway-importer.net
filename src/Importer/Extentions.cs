@@ -28,6 +28,17 @@ namespace Importer
             };
         }
 
+        public static RestApi RestApi(this GetRestApiResponse response)
+        {
+            return new RestApi()
+            {
+                Id = response.Id,
+                Name = response.Name,
+                CreatedDate = response.CreatedDate,
+                Description = response.Description
+            };
+        }
+
         public static IDictionary<string, object> ToDictionary(this JObject @object)
         {
             var result = @object.ToObject<Dictionary<string, object>>();

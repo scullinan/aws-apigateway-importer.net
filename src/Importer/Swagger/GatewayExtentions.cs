@@ -1,3 +1,4 @@
+using System;
 using Amazon.APIGateway;
 using Amazon.APIGateway.Model;
 
@@ -11,7 +12,7 @@ namespace Importer.Swagger
             {
                 var response = gateway.GetModel(new GetModelRequest() {RestApiId = apiId, ModelName = modelName});
             }
-            catch (NotFoundException ex)
+            catch (Exception ex)
             {
                 return false;
             }

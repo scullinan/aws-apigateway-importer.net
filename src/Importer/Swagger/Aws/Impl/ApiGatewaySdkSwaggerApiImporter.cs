@@ -72,6 +72,26 @@ namespace Importer.Swagger.Aws.Impl
             modelProvider.CleanupModels(api);
         }
 
+        public void PatchApi(string apiId, SwaggerDocument swagger)
+        {
+            Log.InfoFormat("Patching API {0}", apiId);
+
+            var response = Gateway.GetRestApi(new GetRestApiRequest() { RestApiId = apiId });
+
+            try
+            {
+                var api = response.RestApi();
+                var rootResource = this.GetRootResource(api);
+
+                modelProvider.UpdateModels(api, swagger);
+                resourceProvider.CreateResources(api, rootResource, swagger, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error creating API, rolling back", ex);
+            }
+        }
+
         public void Deploy(string apiId, DeploymentConfig config)
         {
             Log.InfoFormat("Deploying API {0}", apiId);
