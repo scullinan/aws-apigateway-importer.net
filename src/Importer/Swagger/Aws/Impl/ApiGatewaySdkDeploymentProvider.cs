@@ -40,7 +40,7 @@ namespace Importer.Swagger.Aws.Impl
                         .Operation(Operations.Replace, Paths.CloudwatchRoleArn, config.Logging.CloudwatchRoleArn)
                         .ToList();
 
-                    gateway.UpdateAccount(new UpdateAccountRequest() { PatchOperations = accountOps });
+                    gateway.WaitAndRetry(x => x.UpdateAccount(new UpdateAccountRequest() { PatchOperations = accountOps });
 
                     builder
                         .Operation(Operations.Replace, Paths.Logging.MetricsEnabled, config.Logging?.MetricsEnabled.ToString())

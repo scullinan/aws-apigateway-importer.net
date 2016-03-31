@@ -1,6 +1,7 @@
 using System;
 using Amazon.APIGateway;
 using Amazon.APIGateway.Model;
+using Polly;
 
 namespace Importer.Swagger
 {
@@ -32,6 +33,22 @@ namespace Importer.Swagger
             }
 
             return true;
+        }
+
+        public static PolicyResult<TResult> WaitAndRetry<TResult>(this IAmazonAPIGateway gateway, Func<IAmazonAPIGateway, TResult> action)
+        {
+            var count = 0;
+            var policy = Policy.Handle<TooManyRequestsException>()
+                .WaitAndRetry(new[] {
+                    TimeSpan.FromSeconds(2),
+                    TimeSpan.FromSeconds(3),
+                    TimeSpan.FromSeconds(4)
+                }, (x, y) =>
+                {
+                    count++;
+                });
+
+            return policy.ExecuteAndCapture(() => action(gateway));
         }
     }
 }

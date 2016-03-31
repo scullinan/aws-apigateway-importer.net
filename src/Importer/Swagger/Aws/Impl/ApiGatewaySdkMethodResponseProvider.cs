@@ -66,7 +66,7 @@ namespace Importer.Swagger.Aws.Impl
         private PutMethodResponseRequest GetCreateResponseInput(RestApi api, SwaggerDocument swagger, Resource resource, Method method, string modelContentType, Response response)
         {
             var input = new PutMethodResponseRequest();
-
+            
             // add response headers
             if (response.Headers != null)
             {

@@ -44,6 +44,7 @@ namespace Importer.Swagger.Aws.Impl
                 var rootResource = this.GetRootResource(api);
                 modelProvider.DeleteDefaultModels(api);
                 modelProvider.CreateModels(api, swagger);
+
                 resourceProvider.CreateResources(api, rootResource, swagger, true);
 
                 return api.Id;

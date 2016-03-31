@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Amazon.APIGateway;
 using Amazon.APIGateway.Model;
 using log4net;
@@ -57,8 +56,8 @@ namespace Importer.Swagger.Aws.Impl
                 ContentType = modelContentType,
                 Schema = schema
             };
-
-            gateway.CreateModel(input);
+            
+            gateway.WaitAndRetry(x => x.CreateModel(input));
         }
 
         public void DeleteDefaultModels(RestApi api)

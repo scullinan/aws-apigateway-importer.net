@@ -13,6 +13,7 @@ namespace Importer.Swagger.Aws.Impl
     {
         private readonly IAmazonAPIGateway gateway;
         private readonly IApiGatewaySdkMethodProvider methodProvider;
+        private List<Resource> resourcelist;
         readonly ILog log = LogManager.GetLogger(typeof(SwaggerApiFileImporter));
 
         public ApiGatewaySdkResourceProvider(IAmazonAPIGateway gateway, IApiGatewaySdkMethodProvider methodProvider)
@@ -167,11 +168,11 @@ namespace Importer.Swagger.Aws.Impl
         {
             var resourceList = new List<Resource>();
 
-            var resources = gateway.GetResources(new GetResourcesRequest()
+            var resources = gateway.WaitAndRetry(x => x.GetResources(new GetResourcesRequest()
             {
                 RestApiId = api.Id,
                 Limit = 500
-            });
+            })).Result;
 
             resourceList.AddRange(resources.Items);
 
