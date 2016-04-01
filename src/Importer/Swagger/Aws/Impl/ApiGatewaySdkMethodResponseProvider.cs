@@ -78,14 +78,13 @@ namespace Importer.Swagger.Aws.Impl
             }
 
             // if the schema references an existing model, use that model for the response
-            var modelOpt = GetModel(api, resource, method, response);
+            string modelName;
+            var modelOpt = GetModel(api, resource, method, response, out modelName);
 
             if (modelOpt != null)
             {
-                input.ResponseModels = new Dictionary<string, string>();
-                var modelName = modelOpt.Name;
+                input.ResponseModels = new Dictionary<string, string> {[modelContentType] = modelName};
 
-                input.ResponseModels[modelContentType] = modelName;
                 processedModels.Add(modelName);
                 Log.InfoFormat("Found reference to existing model {0}", modelName);
             }
@@ -94,8 +93,6 @@ namespace Importer.Swagger.Aws.Impl
                 // generate a model based on the schema if the model doesn't already exist
                 if (response.Schema != null)
                 {
-                    var modelName = modelProvider.NameResolver.GetModelName(resource.PathPart, method.HttpMethod, response);
-
                     Log.InfoFormat("Creating new model referenced from response: {0}", modelName);
 
                     modelProvider.CreateModel(api, modelName, response.Schema, swagger.Definitions, modelContentType);
@@ -106,25 +103,25 @@ namespace Importer.Swagger.Aws.Impl
             return input;
         }
 
-        private Model GetModel(RestApi api, Resource resource, Method method, Response response)
+        private Model GetModel(RestApi api, Resource resource, Method method, Response response, out string modelName)
         {
-
-            string modelName;
-
             // if the response references a proper model, look for a model matching the model name
-            if (response.Schema?.Type != null && response.Schema.Type.Equals("ref"))
-            {
+            if (response.Schema?.Ref != null)
                 modelName = modelProvider.NameResolver.GetModelName(response.Schema.Ref);
-            }
-            else
+            //if the response refereence a array and a model, look for a model matching a generaten array name
+            else if (response.Schema?.Type != null && response.Schema.Type.Equals("array") &&
+                     response.Schema.Items.Ref != null)
             {
-                // if the response has an embedded schema, look for a model matching the generated name
-                modelName = modelProvider.NameResolver.GetModelName(resource.PathPart, method.HttpMethod, response);
+                modelName = modelProvider.NameResolver.GetArrayModelName(response.Schema.Items.Ref);
             }
+            // if the response has an embedded schema, look for a model matching the generated name
+            else
+                modelName = modelProvider.NameResolver.GetModelName(resource.PathPart, method.HttpMethod, response);
 
             try
             {
-                var result = gateway.WaitAndRetry(x => x.GetModel(new GetModelRequest() {RestApiId = api.Id, ModelName = modelName}));
+                var name = modelName;
+                var result = gateway.WaitAndRetry(x => x.GetModel(new GetModelRequest() {RestApiId = api.Id, ModelName = name}));
                 return new Model()
                 {
                     Id = result.Id,
