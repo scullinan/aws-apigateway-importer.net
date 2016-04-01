@@ -45,7 +45,7 @@ namespace Importer.Swagger.Aws.Impl
                 CacheKeyParameters = integ["cacheKeyParameters"]?.ToObject<List<string>>()
             };
 
-            var integration = gateway.PutIntegration(request);
+            var integration = gateway.WaitAndRetry(x => x.PutIntegration(request));
             CreateIntegrationResponses(api, resource, integration, integ.ToDictionary());
         }
 
@@ -76,7 +76,7 @@ namespace Importer.Swagger.Aws.Impl
                         StatusCode = status
                     };
 
-                    gateway.PutIntegrationResponse(request);
+                    gateway.WaitAndRetry(x => x.PutIntegrationResponse(request));
                 }
             });
         }

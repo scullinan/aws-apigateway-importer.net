@@ -85,11 +85,11 @@ namespace Importer.Swagger.Aws.Impl
                     {
                         Log.InfoFormat("Removing deleted method {0} for resource {1}", httpMethod, resource.Id);
 
-                        gateway.DeleteMethod(new DeleteMethodRequest() {
+                        gateway.WaitAndRetry(x => x.DeleteMethod(new DeleteMethodRequest() {
                             RestApiId = api.Id,
                             ResourceId = resource.Id,
                             HttpMethod = httpMethod.ToUpper()
-                        });
+                        }));
                     }
                 }
             }
@@ -136,7 +136,7 @@ namespace Importer.Swagger.Aws.Impl
 
             // create method
             input.HttpMethod = httpMethod.ToUpper();
-            var result = gateway.PutMethod(input);
+            var result = gateway.WaitAndRetry(x => x.PutMethod(input));
 
             var method = new Method() {
                 HttpMethod = result.HttpMethod,
@@ -159,13 +159,13 @@ namespace Importer.Swagger.Aws.Impl
                 .Operation(Operations.Replace, "/authorizationType", GetAuthorizationType(op))
                 .Operation(Operations.Replace, "/apiKeyRequired", IsApiKeyRequired(swagger, op).ToString()).ToList();
 
-            var result = gateway.UpdateMethod(new UpdateMethodRequest()
+            var result = gateway.WaitAndRetry(x => x.UpdateMethod(new UpdateMethodRequest()
             {
                 RestApiId = api.Id,
                 HttpMethod = httpMethod.ToUpper(),
                 ResourceId = resource.Id,
                 PatchOperations = operations
-            });
+            }));
 
             var method = new Method()
             {
@@ -298,10 +298,10 @@ namespace Importer.Swagger.Aws.Impl
         {
             var resourceList = new List<Resource>();
 
-            var resources = gateway.GetResources(new GetResourcesRequest()
+            var resources = gateway.WaitAndRetry(x => x.GetResources(new GetResourcesRequest()
             {
                 RestApiId = api.Id
-            });
+            }));
 
             resourceList.AddRange(resources.Items);
 

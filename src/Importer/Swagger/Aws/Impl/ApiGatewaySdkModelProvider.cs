@@ -66,10 +66,10 @@ namespace Importer.Swagger.Aws.Impl
             list.ForEach(model =>  {
                 Log.InfoFormat("Removing default model {0}", model.Name);
 
-                gateway.DeleteModel(new DeleteModelRequest() {
+                gateway.WaitAndRetry(x => x.DeleteModel(new DeleteModelRequest() {
                     RestApiId = api.Id,
                     ModelName = model.Name
-                });
+                }));
             });
         }
 
@@ -102,11 +102,11 @@ namespace Importer.Swagger.Aws.Impl
             modelsToDelete.ForEach(x =>
             {
                 Log.InfoFormat("Removing deleted model {0}", x.Name);
-                gateway.DeleteModel(new DeleteModelRequest()
+                gateway.WaitAndRetry(y => y.DeleteModel(new DeleteModelRequest()
                 {
                     RestApiId = api.Id,
                     ModelName = x.Name
-                });
+                }));
             });
         }
 
@@ -123,22 +123,22 @@ namespace Importer.Swagger.Aws.Impl
                 .Operation(Operations.Replace, "/schema", schema)
                 .ToList();
 
-            gateway.UpdateModel(new UpdateModelRequest()
+            gateway.WaitAndRetry(x => x.UpdateModel(new UpdateModelRequest()
             {
                 RestApiId = api.Id,
                 ModelName = modelName,
                 PatchOperations = operations
-            });
+            }));
         }
 
         private List<Model> BuildModelList(RestApi api)
         {
             var modelList = new List<Model>();
 
-            var response = gateway.GetModels(new GetModelsRequest()
+            var response = gateway.WaitAndRetry(x => x.GetModels(new GetModelsRequest()
             {
                 RestApiId = api.Id
-            });
+            }));
 
             modelList.AddRange(response.Items);
 

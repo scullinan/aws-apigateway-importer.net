@@ -11,9 +11,9 @@ namespace Importer.Swagger
         {
             try
             {
-                var response = gateway.GetModel(new GetModelRequest() {RestApiId = apiId, ModelName = modelName});
+                gateway.WaitAndRetry(x => x.GetModel(new GetModelRequest() {RestApiId = apiId, ModelName = modelName}));
             }
-            catch (Exception ex)
+            catch (NotFoundException)
             {
                 return false;
             }
@@ -25,9 +25,9 @@ namespace Importer.Swagger
         {
             try
             {
-                var response = gateway.GetMethod(new GetMethodRequest() { RestApiId = apiId, HttpMethod = httpMethod.ToUpper(), ResourceId = resourceId });
+                gateway.WaitAndRetry(x => x.GetMethod(new GetMethodRequest() { RestApiId = apiId, HttpMethod = httpMethod.ToUpper(), ResourceId = resourceId }));
             }
-            catch (NotFoundException ex)
+            catch (NotFoundException)
             {
                 return false;
             }
@@ -35,20 +35,22 @@ namespace Importer.Swagger
             return true;
         }
 
-        public static PolicyResult<TResult> WaitAndRetry<TResult>(this IAmazonAPIGateway gateway, Func<IAmazonAPIGateway, TResult> action)
+        public static TResult WaitAndRetry<TResult>(this IAmazonAPIGateway gateway, Func<IAmazonAPIGateway, TResult> action)
         {
-            var count = 0;
             var policy = Policy.Handle<TooManyRequestsException>()
-                .WaitAndRetry(new[] {
+                .WaitAndRetry(new[]
+                {
                     TimeSpan.FromSeconds(2),
                     TimeSpan.FromSeconds(3),
                     TimeSpan.FromSeconds(4)
-                }, (x, y) =>
-                {
-                    count++;
                 });
 
-            return policy.ExecuteAndCapture(() => action(gateway));
+            var result = policy.ExecuteAndCapture(() => action(gateway));
+
+            if (result.FinalException != null)
+                throw result.FinalException;
+
+            return result.Result;
         }
     }
 }

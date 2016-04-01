@@ -40,7 +40,7 @@ namespace Importer.Swagger.Aws.Impl
                         .Operation(Operations.Replace, Paths.CloudwatchRoleArn, config.Logging.CloudwatchRoleArn)
                         .ToList();
 
-                    gateway.WaitAndRetry(x => x.UpdateAccount(new UpdateAccountRequest() { PatchOperations = accountOps });
+                    gateway.WaitAndRetry(x => x.UpdateAccount(new UpdateAccountRequest() { PatchOperations = accountOps }));
 
                     builder
                         .Operation(Operations.Replace, Paths.Logging.MetricsEnabled, config.Logging?.MetricsEnabled.ToString())
@@ -60,39 +60,37 @@ namespace Importer.Swagger.Aws.Impl
                 .Operation(Operations.Replace, Paths.Throttling.BurstLimit, config.Throttling?.BurstLimit.ToString())
                 .Operation(Operations.Replace, Paths.Throttling.RateLimit, config.Throttling?.RateLimit.ToString());
 
-            gateway.UpdateStage(new UpdateStageRequest() {
+            gateway.WaitAndRetry(x => x.UpdateStage(new UpdateStageRequest() {
                 RestApiId = apiId,
                 StageName = config.StageName,
                 PatchOperations = builder.ToList()
-            });
+            }));
         }
 
         public void CreateDomain(DeploymentConfig config)
         {
             if (config.Domain != null)
             {
-                gateway.CreateDomainName(new CreateDomainNameRequest()
-                {
+                gateway.WaitAndRetry(x => x.CreateDomainName(new CreateDomainNameRequest() {
                     DomainName = config.Domain.DomainName,
                     CertificateBody = config.Domain.CetificateBody,
                     CertificateName = config.Domain.CetificateName,
                     CertificateChain = config.Domain.CetificateChain,
                     CertificatePrivateKey = config.Domain.CetificatePrivateKey
-                });
+                }));
             }
         }
 
         public string CreateApiKey(string apiId, string name, string stage)
         {
-            var result = gateway.CreateApiKey(new CreateApiKeyRequest()
-            {
+            var result = gateway.WaitAndRetry(x => x.CreateApiKey(new CreateApiKeyRequest() {
                 Enabled = true,
                 Name = name,
                 StageKeys = new List<StageKey>()
                 {
                     new StageKey() {RestApiId = apiId, StageName = stage}
                 }
-            });
+            }));
 
             return result.Id;
         }
