@@ -8,7 +8,7 @@ namespace Importer.Swagger.Aws.Impl
 {
     public class ApiGatewaySdkSwaggerApiImporter : ISwaggerApiImporter
     {
-        protected IAmazonAPIGateway Gateway;
+        protected IAmazonAPIGateway gateway;
         protected ILog Log = LogManager.GetLogger(typeof(ApiGatewaySdkSwaggerApiImporter));
         
         private readonly IApiGatewaySdkModelProvider modelProvider;
@@ -18,7 +18,7 @@ namespace Importer.Swagger.Aws.Impl
 
         public ApiGatewaySdkSwaggerApiImporter(IAmazonAPIGateway gateway, IApiGatewaySdkModelProvider modelProvider, IApiGatewaySdkResourceProvider resourceProvider, IApiGatewaySdkMethodProvider methodProvider, IApiGatewaySdkDeploymentProvider deploymentProvider)
         {
-            Gateway = gateway;
+            this.gateway = gateway;
             this.modelProvider = modelProvider;
             this.resourceProvider = resourceProvider;
             this.methodProvider = methodProvider;
@@ -35,7 +35,7 @@ namespace Importer.Swagger.Aws.Impl
                 Description = swagger.Info.Description
             };
 
-            var response = Gateway.CreateRestApi(request);
+            var response = gateway.WaitAndRetry(x => x.CreateRestApi(request));
 
             try
             {
@@ -44,6 +44,7 @@ namespace Importer.Swagger.Aws.Impl
                 var rootResource = this.GetRootResource(api);
                 modelProvider.DeleteDefaultModels(api);
                 modelProvider.CreateModels(api, swagger);
+
                 resourceProvider.CreateResources(api, rootResource, swagger, true);
 
                 return api.Id;
@@ -72,6 +73,26 @@ namespace Importer.Swagger.Aws.Impl
             modelProvider.CleanupModels(api);
         }
 
+        public void PatchApi(string apiId, SwaggerDocument swagger)
+        {
+            Log.InfoFormat("Patching API {0}", apiId);
+
+            var response = gateway.WaitAndRetry(x => x.GetRestApi(new GetRestApiRequest() { RestApiId = apiId }));
+
+            try
+            {
+                var api = response.RestApi();
+                var rootResource = this.GetRootResource(api);
+
+                modelProvider.UpdateModels(api, swagger);
+                resourceProvider.CreateResources(api, rootResource, swagger, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error creating API, rolling back", ex);
+            }
+        }
+
         public void Deploy(string apiId, DeploymentConfig config)
         {
             Log.InfoFormat("Deploying API {0}", apiId);
@@ -83,9 +104,9 @@ namespace Importer.Swagger.Aws.Impl
         {
             Log.InfoFormat("Deleting API {0}", apiId);
 
-            Gateway.DeleteRestApi(new DeleteRestApiRequest() {
+            gateway.WaitAndRetry(x => x.DeleteRestApi(new DeleteRestApiRequest() {
                 RestApiId = apiId
-            });
+            }));
         }
 
         public string ProvisionApiKey(string apiId, string name, string stage)
@@ -110,11 +131,11 @@ namespace Importer.Swagger.Aws.Impl
         {
             var resourceList = new List<Resource>();
 
-            var resources = Gateway.GetResources(new GetResourcesRequest()
+            var resources = gateway.WaitAndRetry(x => x.GetResources(new GetResourcesRequest()
             {
                 RestApiId = api.Id,
                 Limit = 500
-            });
+            }));
 
             resourceList.AddRange(resources.Items);
 
@@ -130,7 +151,7 @@ namespace Importer.Swagger.Aws.Impl
 
         private RestApi GetApi(string apiId)
         {
-            var api = Gateway.GetRestApi(new GetRestApiRequest() {RestApiId = apiId});
+            var api = gateway.WaitAndRetry(x => x.GetRestApi(new GetRestApiRequest() {RestApiId = apiId}));
             return new RestApi() { Id = api.Id, Name = api.Name };
         }
     }

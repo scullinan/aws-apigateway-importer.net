@@ -39,7 +39,7 @@ namespace Importer.Swagger.Aws.Impl
                             PatchOperations = operations
                         };
 
-                        gateway.UpdateMethod(request);
+                        gateway.WaitAndRetry(x => x.UpdateMethod(request));
                     }
                 }
             });
@@ -55,13 +55,13 @@ namespace Importer.Swagger.Aws.Impl
                         .Operation(Operations.Remove, "/requestParameters/" + parameter)
                         .ToList();
 
-                    gateway.UpdateMethod(new UpdateMethodRequest()
+                    gateway.WaitAndRetry(x => x.UpdateMethod(new UpdateMethodRequest()
                     {
                         RestApiId = api.Id,
                         ResourceId = resource.Id,
                         HttpMethod = method.HttpMethod,
                         PatchOperations = operations
-                    });
+                    }));
                 }
             }
 

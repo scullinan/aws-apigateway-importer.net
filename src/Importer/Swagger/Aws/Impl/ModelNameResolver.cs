@@ -14,7 +14,7 @@ namespace Importer.Swagger.Aws.Impl
                 return $"Model{Guid.NewGuid().ToString().Substring(0, 8)}";
             }
 
-            return string.Format(ModelNameFormat, resourceName.ToUpper(), method.ToUpper(), Sanitize(response.Description));
+            return string.Format(ModelNameFormat, Sanitize(resourceName).ToUpper(), method.ToUpper(), Sanitize(response.Description));
         }
 
         public string GetModelName(string refPath)

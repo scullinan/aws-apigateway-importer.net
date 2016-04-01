@@ -42,7 +42,7 @@ namespace Importer.Swagger.Aws.Impl
                     request.StatusCode = x.Key;
                     request.HttpMethod = method.HttpMethod;
 
-                    gateway.PutMethodResponse(request);
+                    gateway.WaitAndRetry(y => y.PutMethodResponse(request));
                 }
             });
         }
@@ -51,13 +51,13 @@ namespace Importer.Swagger.Aws.Impl
         {
             foreach (var response in method.MethodResponses.Values)
             {
-                gateway.DeleteMethodResponse(new DeleteMethodResponseRequest()
+                gateway.WaitAndRetry(x => x.DeleteMethodResponse(new DeleteMethodResponseRequest()
                 {
                     RestApiId = api.Id,
                     ResourceId = resource.Id,
                     HttpMethod = method.HttpMethod,
                     StatusCode = response.StatusCode
-                });
+                }));
             }
 
             CreateMethodResponses(api, resource, method, swagger, modelContentType, responses);
@@ -66,7 +66,7 @@ namespace Importer.Swagger.Aws.Impl
         private PutMethodResponseRequest GetCreateResponseInput(RestApi api, SwaggerDocument swagger, Resource resource, Method method, string modelContentType, Response response)
         {
             var input = new PutMethodResponseRequest();
-
+            
             // add response headers
             if (response.Headers != null)
             {
@@ -124,7 +124,7 @@ namespace Importer.Swagger.Aws.Impl
 
             try
             {
-                var result = gateway.GetModel(new GetModelRequest() {RestApiId = api.Id, ModelName = modelName});
+                var result = gateway.WaitAndRetry(x => x.GetModel(new GetModelRequest() {RestApiId = api.Id, ModelName = modelName}));
                 return new Model()
                 {
                     Id = result.Id,

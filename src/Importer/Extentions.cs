@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text.RegularExpressions;
 using Amazon.APIGateway.Model;
 using Newtonsoft.Json.Linq;
@@ -18,6 +19,17 @@ namespace Importer
         }
 
         public static RestApi RestApi(this CreateRestApiResponse response)
+        {
+            return new RestApi()
+            {
+                Id = response.Id,
+                Name = response.Name,
+                CreatedDate = response.CreatedDate,
+                Description = response.Description
+            };
+        }
+
+        public static RestApi RestApi(this GetRestApiResponse response)
         {
             return new RestApi()
             {
@@ -57,8 +69,6 @@ namespace Importer
                 return dictionary[key] as Dictionary<TKey, TValue>;
 
             return null;
-        }
-
-        
+        }  
     }
 }

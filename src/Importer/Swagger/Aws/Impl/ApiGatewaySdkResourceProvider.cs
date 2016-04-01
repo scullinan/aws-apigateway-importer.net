@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Amazon.APIGateway;
 using Amazon.APIGateway.Model;
-using Amazon.Runtime.Internal.Util;
 using Importer.Swagger.Impl;
 using log4net;
 
@@ -13,6 +11,7 @@ namespace Importer.Swagger.Aws.Impl
     {
         private readonly IAmazonAPIGateway gateway;
         private readonly IApiGatewaySdkMethodProvider methodProvider;
+        private List<Resource> resourcelist;
         readonly ILog log = LogManager.GetLogger(typeof(SwaggerApiFileImporter));
 
         public ApiGatewaySdkResourceProvider(IAmazonAPIGateway gateway, IApiGatewaySdkMethodProvider methodProvider)
@@ -68,12 +67,12 @@ namespace Importer.Swagger.Aws.Impl
             {
                 log.InfoFormat("Creating resource '{0}' on {1}", part, parentResourceId);
 
-                var resource = gateway.CreateResource(new CreateResourceRequest()
+                var resource = gateway.WaitAndRetry(x => x.CreateResource(new CreateResourceRequest()
                 {
                     RestApiId = api.Id,
                     ParentId = parentResourceId,
                     PathPart = part
-                });
+                }));
 
                 return new Resource()
                 {
@@ -104,11 +103,11 @@ namespace Importer.Swagger.Aws.Impl
             foreach (var resource in deleteResources)
             {
                 log.Info("Removing deleted resource {0}" + resource.Path);
-                gateway.DeleteResource(new DeleteResourceRequest()
+                gateway.WaitAndRetry(x => x.DeleteResource(new DeleteResourceRequest()
                 {
                     RestApiId = api.Id,
                     ResourceId = resource.Id
-                });
+                }));
             }
         }
 
@@ -167,11 +166,11 @@ namespace Importer.Swagger.Aws.Impl
         {
             var resourceList = new List<Resource>();
 
-            var resources = gateway.GetResources(new GetResourcesRequest()
+            var resources = gateway.WaitAndRetry(x => x.GetResources(new GetResourcesRequest()
             {
                 RestApiId = api.Id,
                 Limit = 500
-            });
+            }));
 
             resourceList.AddRange(resources.Items);
 

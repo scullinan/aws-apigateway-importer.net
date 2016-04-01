@@ -14,6 +14,9 @@ namespace Importer
         [Option('u', "update", HelpText = "API ID to import swagger into an existing API")]
         public IList<string> UpdateOption { get; set; }
 
+        [Option('p', "patch", HelpText = "API ID to import swagger into an existing API")]
+        public IList<string> PathOption { get; set; }
+
         [Option('d', "delete", HelpText = "API ID to delete")]
         public string DeleteApiId { get; set; }
 
@@ -26,7 +29,7 @@ namespace Importer
         [Option('r', "region", HelpText = "Create a new API (optional)")]
         public string Region { get; set; }
 
-        [Option('p', "prov", HelpText = "Stage used to provision a API Key (optional)")]
+        [Option("key", HelpText = "Provision a API Key in a stage (optional)")]
         public IList<string> ProvisionConfig { get; set; }
 
         public bool Create
@@ -42,6 +45,14 @@ namespace Importer
             }
         }
 
+        public string PatchApiId
+        {
+            get
+            {
+                return PathOption.Count > 0 ? PathOption[0] : null;
+            }
+        }
+
         public IEnumerable<string> Files
         {
             get
@@ -49,7 +60,13 @@ namespace Importer
                 if (CreateOption.Any())
                     return CreateOption;
 
-                return UpdateOption.Count > 1 ? UpdateOption.Skip(1) : Enumerable.Empty<string>();
+                if (UpdateOption.Any())
+                    return UpdateOption.Count > 1 ? UpdateOption.Skip(1) : Enumerable.Empty<string>();
+
+                if (PathOption.Any())
+                    return PathOption.Count > 1 ? PathOption.Skip(1) : Enumerable.Empty<string>();
+
+                return Enumerable.Empty<string>();
             }
         }
     }
