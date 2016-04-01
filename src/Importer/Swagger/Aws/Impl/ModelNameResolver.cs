@@ -7,6 +7,17 @@ namespace Importer.Swagger.Aws.Impl
     {
         private const string ModelNameFormat = "{0}x{1}x{2}";
 
+        public string GetModelName(string refPath)
+        {
+            return string.IsNullOrEmpty(@refPath) ? string.Empty : @refPath.Substring(@refPath.LastIndexOf('/') + 1);
+        }
+
+        public string GetArrayModelName(string refPath)
+        {
+            var itemModelName = GetModelName(refPath);
+            return $"{itemModelName}Array";
+        }
+
         public string GetModelName(string resourceName, string method, Response response)
         {
             if (string.IsNullOrEmpty(response.Description))
@@ -15,11 +26,6 @@ namespace Importer.Swagger.Aws.Impl
             }
 
             return string.Format(ModelNameFormat, Sanitize(resourceName).ToUpper(), method.ToUpper(), Sanitize(response.Description));
-        }
-
-        public string GetModelName(string refPath)
-        {
-            return string.IsNullOrEmpty(@refPath) ? string.Empty : @refPath.Substring(@refPath.LastIndexOf('/') + 1);
         }
 
         public string Sanitize(string str)
