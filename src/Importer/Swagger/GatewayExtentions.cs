@@ -40,9 +40,9 @@ namespace Importer.Swagger
             var policy = Policy.Handle<TooManyRequestsException>()
                 .WaitAndRetry(new[]
                 {
+                    TimeSpan.FromSeconds(1),
                     TimeSpan.FromSeconds(2),
-                    TimeSpan.FromSeconds(3),
-                    TimeSpan.FromSeconds(4)
+                    TimeSpan.FromSeconds(3)
                 });
 
             var result = policy.ExecuteAndCapture(() => action(gateway));

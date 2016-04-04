@@ -85,7 +85,8 @@ namespace Importer.Swagger.Aws.Impl
                 var rootResource = this.GetRootResource(api);
 
                 modelProvider.UpdateModels(api, swagger);
-                resourceProvider.CreateResources(api, rootResource, swagger, true);
+                resourceProvider.UpdateResources(api, rootResource, swagger);
+                methodProvider.UpdateMethods(api, swagger);
             }
             catch (Exception ex)
             {
