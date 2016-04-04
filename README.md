@@ -33,6 +33,13 @@ It will look for configured credentials in environment variables, Java system pr
 
 ```
 
+### Deploy an existing API to a stage
+
+```sh
+./aws-api-import --update API_ID --deploy path/to/deployment.json  
+
+```
+
 ### Provsion a API key for an existing API & stage
 
 ```sh
