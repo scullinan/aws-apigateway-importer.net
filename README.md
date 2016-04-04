@@ -23,35 +23,36 @@ It will look for configured credentials in environment variables, Java system pr
 
 ```sh
 ./aws-api-import --create path/to/swagger.json --deploy path/to/deployment.json
-
 ```
 
 ### Update an existing API and deploy it to a stage
 
 ```sh
 ./aws-api-import --update API_ID path/to/swagger.json --deploy path/to/deployment.json  
+```
 
+### Merge to an existing API and deploy it to a stage
+
+```sh
+./aws-api-import --merge API_ID path/to/swagger.json --deploy path/to/deployment.json  
 ```
 
 ### Deploy an existing API to a stage
 
 ```sh
 ./aws-api-import --update API_ID --deploy path/to/deployment.json  
-
 ```
 
 ### Provsion a API key for an existing API & stage
 
 ```sh
 ./aws-api-import --update API_ID --prov API_KEY_NAME STAGE_NAME 
-
 ```
 
 ### Delete an existing API
 
 ```sh
 ./aws-api-import --delete API_ID
-
 ```
 
 ### API Gateway Extension Example

@@ -31,12 +31,12 @@ namespace Importer.Swagger.Impl
             importer.UpdateApi(apiId, swagger);
         }
 
-        public void PatchApi(string apiId, string filePath)
+        public void MergeApi(string apiId, string filePath)
         {
-            log.InfoFormat("Attempting to patch API from Swagger definition. API identifier: {0} Swagger file: {1}", apiId, filePath);
+            log.InfoFormat("Attempting to merge API from Swagger definition. API identifier: {0} Swagger file: {1}", apiId, filePath);
 
             var swagger = Import<SwaggerDocument>(filePath);
-            importer.PatchApi(apiId, swagger);
+            importer.MergeApi(apiId, swagger);
         }
 
         public void Deploy(string apiId, string deploymentConfigFilePath)

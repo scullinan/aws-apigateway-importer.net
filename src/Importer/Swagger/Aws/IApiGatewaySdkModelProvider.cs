@@ -10,7 +10,6 @@ namespace Importer.Swagger.Aws
         void DeleteDefaultModels(RestApi api);
         void UpdateModels(RestApi api, SwaggerDocument swagger);
         void CleanupModels(RestApi api);
-
         IModelNameResolver NameResolver { get; }
     }
 }

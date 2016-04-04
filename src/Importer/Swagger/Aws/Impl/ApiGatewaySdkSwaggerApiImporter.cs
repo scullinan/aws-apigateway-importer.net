@@ -72,9 +72,9 @@ namespace Importer.Swagger.Aws.Impl
             modelProvider.CleanupModels(api);
         }
 
-        public void PatchApi(string apiId, SwaggerDocument swagger)
+        public void MergeApi(string apiId, SwaggerDocument swagger)
         {
-            Log.InfoFormat("Patching API {0}", apiId);
+            Log.InfoFormat("Merging API {0}", apiId);
 
             var response = gateway.WaitAndRetry(x => x.GetRestApi(new GetRestApiRequest() { RestApiId = apiId }));
 

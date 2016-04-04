@@ -75,9 +75,9 @@ namespace Importer
             {
                 importer.UpdateApi(options.UpdateApiId, fileName);
             }
-            else if (!string.IsNullOrEmpty(options.PatchApiId) && options.Files.Any())
+            else if (!string.IsNullOrEmpty(options.MergeApiId) && options.Files.Any())
             {
-                importer.PatchApi(options.PatchApiId, fileName);
+                importer.MergeApi(options.MergeApiId, fileName);
             }
             else if (!string.IsNullOrEmpty(options.DeleteApiId))
             {

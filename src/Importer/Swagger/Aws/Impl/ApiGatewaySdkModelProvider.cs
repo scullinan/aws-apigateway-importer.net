@@ -109,7 +109,7 @@ namespace Importer.Swagger.Aws.Impl
                 }));
             });
         }
-
+        
         private void UpdateModel(RestApi api, string modelName, Schema model, IDictionary<string, Schema> definitions)
         {
             Log.InfoFormat("Updating model for api id {0} with name {1}", api.Id, modelName);
