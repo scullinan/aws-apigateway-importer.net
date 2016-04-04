@@ -91,9 +91,9 @@ namespace Importer
             }
 
 
-            if (!string.IsNullOrEmpty(options.DeploymentConfig) && !string.IsNullOrEmpty(apiId))
+            if (!string.IsNullOrEmpty(options.DeploymentConfig) && !string.IsNullOrEmpty(options.UpdateApiId))
             {
-                importer.Deploy(apiId, options.DeploymentConfig);
+                importer.Deploy(options.UpdateApiId, options.DeploymentConfig);
             }
 
             if (options.ProvisionConfig.Any())
