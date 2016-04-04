@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Amazon.APIGateway;
 using Amazon.APIGateway.Model;
 using log4net;
@@ -79,19 +78,12 @@ namespace Importer.Swagger.Aws.Impl
 
             var response = gateway.WaitAndRetry(x => x.GetRestApi(new GetRestApiRequest() { RestApiId = apiId }));
 
-            try
-            {
-                var api = response.RestApi();
-                var rootResource = this.GetRootResource(api);
+            var api = response.RestApi();
+            var rootResource = this.GetRootResource(api);
 
-                modelProvider.UpdateModels(api, swagger);
-                resourceProvider.UpdateResources(api, rootResource, swagger);
-                methodProvider.UpdateMethods(api, swagger);
-            }
-            catch (Exception ex)
-            {
-                Log.Error("Error creating API, rolling back", ex);
-            }
+            modelProvider.UpdateModels(api, swagger);
+            resourceProvider.UpdateResources(api, rootResource, swagger);
+            methodProvider.UpdateMethods(api, swagger);
         }
 
         public void Deploy(string apiId, DeploymentConfig config)
@@ -117,7 +109,7 @@ namespace Importer.Swagger.Aws.Impl
 
         private Resource GetRootResource(RestApi api)
         {
-            foreach (var resource in BuildResourceList(api))
+            foreach (var resource in gateway.BuildResourceList(api.Id))
             {
                 if ("/".Equals(resource.Path))
                 {
@@ -126,28 +118,6 @@ namespace Importer.Swagger.Aws.Impl
             }
 
             return null;
-        }
-
-        private List<Resource> BuildResourceList(RestApi api)
-        {
-            var resourceList = new List<Resource>();
-
-            var resources = gateway.WaitAndRetry(x => x.GetResources(new GetResourcesRequest()
-            {
-                RestApiId = api.Id,
-                Limit = 500
-            }));
-
-            resourceList.AddRange(resources.Items);
-
-            //ToDo:Travese next link
-            //while (resources.._isLinkAvailable("next")) {
-            //{
-            //    resources = resources.getNext();
-            //    resourceList.addAll(resources.getItem());
-            //}
-
-            return resourceList;
         }
 
         private RestApi GetApi(string apiId)

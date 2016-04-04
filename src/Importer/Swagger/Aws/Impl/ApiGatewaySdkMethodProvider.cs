@@ -75,7 +75,7 @@ namespace Importer.Swagger.Aws.Impl
 
         public void CleanupMethods(RestApi api, SwaggerDocument swagger)
         {
-            foreach (var resource in BuildResourceList(api))
+            foreach (var resource in gateway.BuildResourceList(api.Id))
             {
                 foreach (var method in resource.ResourceMethods)
                 {
@@ -283,7 +283,7 @@ namespace Importer.Swagger.Aws.Impl
 
         private Resource GetResource(RestApi api, string fullPath)
         {
-            foreach (Resource r in  BuildResourceList(api))
+            foreach (var r in  gateway.BuildResourceList(api.Id))
             {
                 if (r.Path.Equals(fullPath))
                 {
@@ -292,27 +292,6 @@ namespace Importer.Swagger.Aws.Impl
             }
 
             return null;
-        }
-
-        private List<Resource> BuildResourceList(RestApi api)
-        {
-            var resourceList = new List<Resource>();
-
-            var resources = gateway.WaitAndRetry(x => x.GetResources(new GetResourcesRequest()
-            {
-                RestApiId = api.Id
-            }));
-
-            resourceList.AddRange(resources.Items);
-
-            //ToDo:Travese next link
-            //while (resources.._isLinkAvailable("next")) {
-            //{
-            //    resources = resources.getNext();
-            //    resourceList.addAll(resources.getItem());
-            //}
-
-            return resourceList;
         }
 
         private bool IsMethodInSwagger(string path, string httpMethod, string basePath, IDictionary<string, PathItem> paths)

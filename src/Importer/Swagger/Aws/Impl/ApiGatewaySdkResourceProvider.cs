@@ -11,7 +11,6 @@ namespace Importer.Swagger.Aws.Impl
     {
         private readonly IAmazonAPIGateway gateway;
         private readonly IApiGatewaySdkMethodProvider methodProvider;
-        private List<Resource> resourcelist;
         readonly ILog log = LogManager.GetLogger(typeof(SwaggerApiFileImporter));
 
         public ApiGatewaySdkResourceProvider(IAmazonAPIGateway gateway, IApiGatewaySdkMethodProvider methodProvider)
@@ -98,7 +97,7 @@ namespace Importer.Swagger.Aws.Impl
         {
             log.Info("Cleaning up removed resources");
 
-            var resources = BuildResourceList(api);
+            var resources = gateway.BuildResourceList(api.Id);
             var deleteResources = resources.Where(x => !paths.Contains(x.PathPart) && !x.Path.Equals("/"));
             foreach (var resource in deleteResources)
             {
@@ -146,7 +145,7 @@ namespace Importer.Swagger.Aws.Impl
 
         private Resource GetResource(RestApi api, string parentResourceId, string pathPart)
         {
-            foreach (Resource resource in BuildResourceList(api))
+            foreach (Resource resource in gateway.BuildResourceList(api.Id))
             {
                 if (PathEquals(pathPart, resource.PathPart) && resource.ParentId.Equals(parentResourceId))
                 {
@@ -160,28 +159,6 @@ namespace Importer.Swagger.Aws.Impl
         private bool PathEquals(string p1, string p2)
         {
             return (string.IsNullOrEmpty(p1) && string.IsNullOrEmpty(p2)) || p1.Equals(p2);
-        }
-
-        private List<Resource> BuildResourceList(RestApi api)
-        {
-            var resourceList = new List<Resource>();
-
-            var resources = gateway.WaitAndRetry(x => x.GetResources(new GetResourcesRequest()
-            {
-                RestApiId = api.Id,
-                Limit = 500
-            }));
-
-            resourceList.AddRange(resources.Items);
-
-            //ToDo:Travese next link
-            //while (resources.._isLinkAvailable("next")) {
-            //{
-            //    resources = resources.getNext();
-            //    resourceList.addAll(resources.getItem());
-            //}
-
-            return resourceList;
         }
 
         private List<string> BuildResourceListFromSwagger(IEnumerable<string> paths, string basePath)

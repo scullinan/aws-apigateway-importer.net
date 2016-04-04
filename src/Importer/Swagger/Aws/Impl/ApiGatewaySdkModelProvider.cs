@@ -62,8 +62,8 @@ namespace Importer.Swagger.Aws.Impl
 
         public void DeleteDefaultModels(RestApi api)
         {
-            var list = BuildModelList(api);
-            list.ForEach(model =>  {
+            var models = gateway.BuildModelList(api.Id);
+            models.ForEach(model =>  {
                 Log.InfoFormat("Removing default model {0}", model.Name);
 
                 gateway.WaitAndRetry(x => x.DeleteModel(new DeleteModelRequest() {
@@ -96,7 +96,7 @@ namespace Importer.Swagger.Aws.Impl
 
         public void CleanupModels(RestApi api)
         {
-            var existingModels = BuildModelList(api);
+            var existingModels = gateway.BuildModelList(api.Id);
             var modelsToDelete = existingModels.Where(x => !processedModels.Contains(x.Name));
 
             modelsToDelete.ForEach(x =>
@@ -129,27 +129,6 @@ namespace Importer.Swagger.Aws.Impl
                 ModelName = modelName,
                 PatchOperations = operations
             }));
-        }
-
-        private List<Model> BuildModelList(RestApi api)
-        {
-            var modelList = new List<Model>();
-
-            var response = gateway.WaitAndRetry(x => x.GetModels(new GetModelsRequest()
-            {
-                RestApiId = api.Id
-            }));
-
-            modelList.AddRange(response.Items);
-
-            //ToDo:Travese next link
-            //while (models._isLinkAvailable("next"))
-            //{
-            //    models = models.getNext();
-            //    modelList.addAll(models.getItem());
-            //}
-
-            return modelList;
         }
     }
 }
