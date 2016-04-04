@@ -64,32 +64,25 @@ namespace Importer
         {
             var importer = Container.Resolve<ISwaggerApiFileImporter>();
 
-            var apiId = string.Empty; 
-
             if (options.Create)
             {
-                apiId = importer.ImportApi(fileName);
+                var apiId = importer.ImportApi(fileName);
 
                 if (options.Cleanup)
                     importer.DeleteApi(apiId);
-                
             }
             else if (!string.IsNullOrEmpty(options.UpdateApiId) && options.Files.Any())
             {
-                apiId = options.UpdateApiId;
                 importer.UpdateApi(options.UpdateApiId, fileName);
             }
             else if (!string.IsNullOrEmpty(options.PatchApiId) && options.Files.Any())
             {
-                apiId = options.PatchApiId;
                 importer.PatchApi(options.PatchApiId, fileName);
             }
             else if (!string.IsNullOrEmpty(options.DeleteApiId))
             {
-                apiId = options.DeleteApiId;
                 importer.DeleteApi(options.DeleteApiId);
             }
-
 
             if (!string.IsNullOrEmpty(options.DeploymentConfig) && !string.IsNullOrEmpty(options.UpdateApiId))
             {
