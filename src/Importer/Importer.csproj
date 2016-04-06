@@ -102,6 +102,7 @@
     <Compile Include="Extentions.cs" />
     <Compile Include="Operations.cs" />
     <Compile Include="PatchOperationBuilder.cs" />
+    <Compile Include="Swagger\Key.cs" />
     <Compile Include="Swagger\VendorExtensionsConverter.cs" />
     <Compile Include="Swagger\ISwaggerApiFileImporter.cs" />
     <Compile Include="Swagger\ISwaggerApiImporter.cs" />

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -59,6 +60,20 @@ namespace Importer.Swagger.Impl
             log.InfoFormat("Attempting to provision API Key. API identifier: {0}", apiId);
 
             return importer.ProvisionApiKey(apiId, name, stage);
+        }
+
+        public IDictionary<string, string> ListApis()
+        {
+            log.InfoFormat("Listing APIs");
+
+            return importer.ListApis();
+        }
+
+        public IDictionary<string, Key> ListKeys()
+        {
+            log.InfoFormat("Listing Keys");
+
+            return importer.ListKeys();
         }
 
         private static T Import<T>(string filePath)

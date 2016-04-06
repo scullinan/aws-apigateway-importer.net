@@ -55,12 +55,10 @@ namespace Importer
             });
 
             var fileName = options.Files.FirstOrDefault();
-            ImportSwagger(options, fileName);
-
-            Console.ReadLine();
+            Handle(options, fileName);
         }
 
-        private static void ImportSwagger(Options options, string fileName)
+        private static void Handle(Options options, string fileName)
         {
             var importer = Container.Resolve<ISwaggerApiFileImporter>();
 
@@ -91,8 +89,32 @@ namespace Importer
 
             if (options.ProvisionConfig.Any())
             {
-                var apiKey = importer.ProvisionApiKey(options.UpdateApiId, options.ProvisionConfig[0], options.ProvisionConfig[1]);
+                var apiKey = importer.ProvisionApiKey(options.UpdateApiId, options.ProvisionConfig[0],
+                    options.ProvisionConfig[1]);
                 log.InfoFormat("ApiKey {0} created for API id {1}", apiKey, options.UpdateApiId);
+            }
+
+            if (!string.IsNullOrEmpty(options.ListCommand))
+            {
+                switch (options.ListCommand)
+                {
+                    case "apis":
+                    {
+                        foreach (var item in importer.ListApis())
+                        {
+                            Console.WriteLine("Id : {0} : {1}", item.Key, item.Value);
+                        }
+                        break;
+                    }
+                    case "keys":
+                    {
+                        foreach (var item in importer.ListKeys())
+                        {
+                            Console.WriteLine("Id : {0} : {1}", item.Key, item.Value);
+                        }
+                        break;
+                    }
+                }
             }
         }
     }

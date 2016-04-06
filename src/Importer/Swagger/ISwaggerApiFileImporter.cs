@@ -1,4 +1,6 @@
-﻿namespace Importer.Swagger
+﻿using System.Collections.Generic;
+
+namespace Importer.Swagger
 {
     public interface ISwaggerApiFileImporter
     {
@@ -8,5 +10,7 @@
         void Deploy(string apiId, string deploymentConfigFilePath);
         void DeleteApi(string apiId);
         string ProvisionApiKey(string apiId, string name, string stage);
+        IDictionary<string, string> ListApis();
+        IDictionary<string, Key> ListKeys();
     }
 }

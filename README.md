@@ -55,6 +55,17 @@ It will look for configured credentials in environment variables, Java system pr
 ./aws-api-import --delete API_ID
 ```
 
+### List Apis
+
+```sh
+./aws-api-import --list apis
+```
+### List Api Keys
+
+```sh
+./aws-api-import --list keys
+```
+
 ### API Gateway Extension Example
 
 You can fully define an API Gateway API in Swagger using the `x-amazon-apigateway-auth` and `x-amazon-apigateway-integration` extensions.

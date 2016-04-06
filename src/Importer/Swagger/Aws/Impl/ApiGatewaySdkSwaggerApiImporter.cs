@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Amazon.APIGateway;
 using Amazon.APIGateway.Model;
 using log4net;
@@ -105,6 +107,34 @@ namespace Importer.Swagger.Aws.Impl
         public string ProvisionApiKey(string apiId, string name, string stage)
         {
             return deploymentProvider.CreateApiKey(apiId, name, stage);
+        }
+
+        public IDictionary<string, string> ListApis()
+        {
+            var results = gateway.PageWaitAndRetry<RestApi>((x, limit, pos) => x.GetRestApis(new GetRestApisRequest()
+            {
+                Limit = limit,
+                Position = pos
+            }));
+
+            return results.ToDictionary(x => x.Id, x => x.Name);
+        }
+
+        public IDictionary<string, Key> ListKeys()
+        {
+            var results = gateway.PageWaitAndRetry<ApiKey>((x, limit, pos) => x.GetApiKeys(new GetApiKeysRequest()
+            {
+                Limit = limit,
+                Position = pos
+            }));
+
+            return results.ToDictionary(x => x.Id, x => new Key() {
+                        Name = x.Name,
+                        CreatedDate = x.CreatedDate,
+                        Description = x.Description,
+                        Enabled = x.Enabled,
+                        Stages = x.StageKeys
+                    });
         }
 
         private Resource GetRootResource(RestApi api)
