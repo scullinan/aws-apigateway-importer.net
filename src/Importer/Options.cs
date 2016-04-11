@@ -20,7 +20,10 @@ namespace Importer
         [Option('m', "merge", HelpText = " merge swagger into an existing API")]
         public IList<string> MergeOption { get; set; }
 
-        [Option('d', "delete", HelpText = "API ID to delete")]
+        [Option('w', "wipe", HelpText = "API Id to wipe")]
+        public string WipeApiId { get; set; }
+
+        [Option('d', "delete", HelpText = "API Id to delete")]
         public string DeleteApiId { get; set; }
 
         [Option('u', "deploy", HelpText = "Stage used to deploy the API (optional)")]
@@ -29,11 +32,11 @@ namespace Importer
         [Option('t', "test", HelpText = "Create a new API (create only)")]
         public bool Cleanup { get; set; }
 
-        [Option('p', "provision", HelpText = "Provision a API Key in a stage (optional)")]
-        public IList<string> ProvisionConfig { get; set; }
+        [Option("apikeys", HelpText = "manageAPI keys in a stage (optional)")]
+        public IList<string> ApiKeyOptions { get; set; }
 
-        [Option('l', "list", HelpText = "List all apis")]
-        public IList<string> List { get; set; }
+        [Option('l', "list", HelpText = "List APIs and API Keys, supported options apis|keys")]
+        public IList<string> ListOption { get; set; }
 
         public bool Create => CreateOption.Any();
 
@@ -58,17 +61,31 @@ namespace Importer
             }
         }
 
-        public string ListCommand => List.Any() ? ValidateListCommand(List[0]) : string.Empty;
+        public string ListCommand => ListOption.Any() ? ValidateListCommand(ListOption[0]) : string.Empty;
+
+        public string ApiKeyCommand => ApiKeyOptions.Any() ? ValidateApiKeyCommand(ApiKeyOptions[0]) : string.Empty;
 
         private string ValidateListCommand(string cmd)
         {
             switch (cmd)
             {
-                case ListKeys.Apis:
-                case ListKeys.Keys:
+                case Importer.ListCommands.Apis:
+                case Importer.ListCommands.Keys:
                     return cmd;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(cmd)); 
+            }
+        }
+
+        private string ValidateApiKeyCommand(string cmd)
+        {
+            switch (cmd)
+            {
+                case ApiKeyCommands.Create:
+                case ApiKeyCommands.Delete:
+                    return cmd;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(cmd));
             }
         }
     }

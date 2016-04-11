@@ -22,48 +22,50 @@ It will look for configured credentials in environment variables, Java system pr
 ### Import and deploy a new API
 
 ```sh
-./aws-api-import --create path/to/swagger.json --deploy path/to/deployment.json
+--create path/to/swagger.json --deploy path/to/deployment.json
 ```
 
 ### Update an existing API and deploy it to a stage
 
 ```sh
-./aws-api-import --update API_ID path/to/swagger.json --deploy path/to/deployment.json  
+--update API_ID path/to/swagger.json --deploy path/to/deployment.json  
 ```
 
 ### Merge to an existing API and deploy it to a stage
 
 ```sh
-./aws-api-import --merge API_ID path/to/swagger.json --deploy path/to/deployment.json  
+--merge API_ID path/to/swagger.json --deploy path/to/deployment.json  
 ```
 
 ### Deploy an existing API to a stage
 
 ```sh
-./aws-api-import --update API_ID --deploy path/to/deployment.json  
+--update API_ID --deploy path/to/deployment.json  
 ```
 
 ### Provsion a API key for an existing API & stage
 
 ```sh
-./aws-api-import --update API_ID --prov API_KEY_NAME STAGE_NAME 
+--update API_ID --prov API_KEY_NAME STAGE_NAME 
+```
+
+### Wipe an existing API
+
+```sh
+--wipe API_ID
 ```
 
 ### Delete an existing API
 
 ```sh
-./aws-api-import --delete API_ID
+--delete API_ID
 ```
 
-### List Apis
+### List Commands
 
 ```sh
-./aws-api-import --list apis
-```
-### List Api Keys
-
-```sh
-./aws-api-import --list keys
+--list apis
+--list keys
 ```
 
 ### API Gateway Extension Example

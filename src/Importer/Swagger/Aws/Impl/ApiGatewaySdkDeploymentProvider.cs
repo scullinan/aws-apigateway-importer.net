@@ -94,5 +94,13 @@ namespace Importer.Swagger.Aws.Impl
 
             return result.Id;
         }
+
+        public void DeleteApiKey(string key)
+        {
+            gateway.WaitAndRetry(x => x.DeleteApiKey(new DeleteApiKeyRequest()
+            {
+                ApiKey = key
+            }));
+        }
     }
 }

@@ -60,7 +60,7 @@ namespace Importer.Swagger.Aws.Impl
             gateway.WaitAndRetry(x => x.CreateModel(input));
         }
 
-        public void DeleteDefaultModels(RestApi api)
+        public void DeleteModels(RestApi api)
         {
             var models = gateway.BuildModelList(api.Id);
             models.ForEach(model =>  {

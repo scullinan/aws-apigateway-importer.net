@@ -44,7 +44,7 @@ namespace Importer.Tests.Swagger.Aws
             var result = underTest.CreateApi(swagger, "api");
 
             gatewayMock.Verify(x => x.CreateRestApi(It.IsAny<CreateRestApiRequest>()), Times.Once);
-            sdkModelProviderMock.Verify(x => x.DeleteDefaultModels(It.IsAny<RestApi>()), Times.Once);
+            sdkModelProviderMock.Verify(x => x.DeleteModels(It.IsAny<RestApi>()), Times.Once);
             sdkModelProviderMock.Verify(x => x.CreateModels(It.IsAny<RestApi>(), It.IsAny<SwaggerDocument>()), Times.Once);
             resourceProviderMock.Verify(x => x.CreateResources(It.IsAny<RestApi>(), It.IsAny<Resource>(), It.IsAny<SwaggerDocument>(), true), Times.Once);
 

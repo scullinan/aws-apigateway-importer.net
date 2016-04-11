@@ -54,7 +54,7 @@ namespace Importer
                 return 1;
             });
 
-            var fileName = options.Files.FirstOrDefault();
+            var fileName = options.Files != null ? options.Files.FirstOrDefault() : string.Empty;
             Handle(options, fileName);
         }
 
@@ -82,23 +82,40 @@ namespace Importer
                 importer.DeleteApi(options.DeleteApiId);
             }
 
-            if (!string.IsNullOrEmpty(options.DeploymentConfig) && !string.IsNullOrEmpty(options.UpdateApiId))
+            else if (!string.IsNullOrEmpty(options.WipeApiId))
+            {
+                importer.WipeApi(options.WipeApiId);
+            }
+
+            if (!string.IsNullOrEmpty(options.UpdateApiId) && !string.IsNullOrEmpty(options.DeploymentConfig))
             {
                 importer.Deploy(options.UpdateApiId, options.DeploymentConfig);
             }
 
-            if (options.ProvisionConfig.Any())
+            if (!string.IsNullOrEmpty(options.ApiKeyCommand))
             {
-                var apiKey = importer.ProvisionApiKey(options.UpdateApiId, options.ProvisionConfig[0],
-                    options.ProvisionConfig[1]);
-                log.InfoFormat("ApiKey {0} created for API id {1}", apiKey, options.UpdateApiId);
+                switch (options.ApiKeyCommand)
+                {
+                    case ApiKeyCommands.Create:
+                    {
+                        var apiKey = importer.ProvisionApiKey(options.UpdateApiId, options.ApiKeyOptions[1],
+                            options.ApiKeyOptions[2]);
+                        log.InfoFormat("ApiKey {0} created for API id {1}", apiKey, options.UpdateApiId);
+                        break;
+                    }
+                    case ApiKeyCommands.Delete:
+                    {
+                        importer.DeleteApiKey(options.ApiKeyOptions[1]);
+                        break;
+                    }
+                }
             }
 
             if (!string.IsNullOrEmpty(options.ListCommand))
             {
                 switch (options.ListCommand)
                 {
-                    case "apis":
+                    case ListCommands.Apis:
                     {
                         foreach (var item in importer.ListApis())
                         {
@@ -106,7 +123,7 @@ namespace Importer
                         }
                         break;
                     }
-                    case "keys":
+                    case ListCommands.Keys:
                     {
                         foreach (var item in importer.ListKeys())
                         {

@@ -68,7 +68,7 @@ namespace Importer.Tests.Swagger.Aws
             }});
 
             var restApi = new RestApi() { Id = apiId };
-            underTest.DeleteDefaultModels(restApi);
+            underTest.DeleteModels(restApi);
 
             gatewayMock.Verify(x => x.DeleteModel(It.IsAny<DeleteModelRequest>()), Times.Exactly(2));
         }

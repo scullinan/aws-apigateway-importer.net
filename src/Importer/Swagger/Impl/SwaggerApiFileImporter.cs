@@ -62,6 +62,20 @@ namespace Importer.Swagger.Impl
             return importer.ProvisionApiKey(apiId, name, stage);
         }
 
+        public void DeleteApiKey(string key)
+        {
+            log.InfoFormat("Attempting to delete API key {0}", key);
+
+            importer.DeleteApiKey(key);
+        }
+
+        public void WipeApi(string apiId)
+        {
+            log.InfoFormat("Attempting to Wipe API. API identifier: {0}", apiId);
+
+            importer.WipeApi(apiId);
+        }
+
         public IDictionary<string, string> ListApis()
         {
             log.InfoFormat("Listing APIs");

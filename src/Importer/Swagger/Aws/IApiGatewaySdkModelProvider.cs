@@ -7,7 +7,7 @@ namespace Importer.Swagger.Aws
     {
         void CreateModels(RestApi api, SwaggerDocument swagger);
         void CreateModel(RestApi api, string modelName, Schema model, IDictionary<string, Schema> definitions, string modelContentType);
-        void DeleteDefaultModels(RestApi api);
+        void DeleteModels(RestApi api);
         void UpdateModels(RestApi api, SwaggerDocument swagger);
         void CleanupModels(RestApi api);
         IModelNameResolver NameResolver { get; }

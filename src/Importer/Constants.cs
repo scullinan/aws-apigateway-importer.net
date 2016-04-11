@@ -7,9 +7,15 @@ namespace Importer
         public const string ExtensionIntegration = "x-amazon-apigateway-integration";
     }
 
-    public static class ListKeys
+    public static class ListCommands
     {
         public const string Apis = "apis";
         public const string Keys = "keys";
+    }
+
+    public static class ApiKeyCommands
+    {
+        public const string Create = "create";
+        public const string Delete = "delete";
     }
 }

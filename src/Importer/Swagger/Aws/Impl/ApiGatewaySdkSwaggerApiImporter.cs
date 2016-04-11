@@ -43,7 +43,7 @@ namespace Importer.Swagger.Aws.Impl
                 var api = response.RestApi();
 
                 var rootResource = this.GetRootResource(api);
-                modelProvider.DeleteDefaultModels(api);
+                modelProvider.DeleteModels(api);
                 modelProvider.CreateModels(api, swagger);
 
                 resourceProvider.CreateResources(api, rootResource, swagger, true);
@@ -109,10 +109,25 @@ namespace Importer.Swagger.Aws.Impl
             return deploymentProvider.CreateApiKey(apiId, name, stage);
         }
 
+        public void DeleteApiKey(string key)
+        {
+            deploymentProvider.DeleteApiKey(key);
+        }
+
+        public void WipeApi(string apiId)
+        {
+            Log.InfoFormat("Wiping API {0}", apiId);
+
+            var response = gateway.WaitAndRetry(x => x.GetRestApi(new GetRestApiRequest() { RestApiId = apiId }));
+            var api = response.RestApi();
+
+            resourceProvider.DeleteResources(api);
+            modelProvider.DeleteModels(api);
+        }
+
         public IDictionary<string, string> ListApis()
         {
-            var results = gateway.PageWaitAndRetry<RestApi>((x, limit, pos) => x.GetRestApis(new GetRestApisRequest()
-            {
+            var results = gateway.PageWaitAndRetry<RestApi>((x, limit, pos) => x.GetRestApis(new GetRestApisRequest() {
                 Limit = limit,
                 Position = pos
             }));

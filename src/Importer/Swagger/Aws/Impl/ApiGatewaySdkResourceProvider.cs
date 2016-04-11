@@ -57,6 +57,28 @@ namespace Importer.Swagger.Aws.Impl
             CleanupResources(api, paths);
         }
 
+        public void DeleteResources(RestApi api)
+        {
+            log.Info("Deleting all resources");
+
+            var resources = gateway.BuildResourceList(api.Id);
+            var deleteResources = resources.Where(x => !x.Path.Equals("/"));
+            foreach (var resource in deleteResources)
+            {
+                log.Info("Deleting resource {0}" + resource.Path);
+
+                try
+                {
+                    gateway.WaitAndRetry(x => x.DeleteResource(new DeleteResourceRequest()
+                    {
+                        RestApiId = api.Id,
+                        ResourceId = resource.Id
+                    }));
+                }
+                catch(NotFoundException) { }
+            }
+        }
+
         private Resource CreateResource(RestApi api, string parentResourceId, string part)
         {
             Resource existingResource = GetResource(api, parentResourceId, part);
