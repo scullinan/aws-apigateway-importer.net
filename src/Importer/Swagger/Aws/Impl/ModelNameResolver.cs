@@ -25,12 +25,17 @@ namespace Importer.Swagger.Aws.Impl
                 return $"Model{Guid.NewGuid().ToString().Substring(0, 8)}";
             }
 
-            return string.Format(ModelNameFormat, Sanitize(resourceName).ToUpper(), method.ToUpper(), Sanitize(response.Description));
+            return string.Format(ModelNameFormat, Sanitize(resourceName.ToUpper(), string.Empty), method.ToUpper(), Sanitize(response.Description));
         }
 
         public string Sanitize(string str)
         {
-            return Regex.Replace(str, "[^a-zA-Z0-9_.]+", "x", RegexOptions.Compiled);
+            return Sanitize(str, "x");
+        }
+
+        private string Sanitize(string str, string replaceChar)
+        {
+            return Regex.Replace(str, "[^a-zA-Z0-9_.]+", replaceChar, RegexOptions.Compiled);
         }
     }
 }

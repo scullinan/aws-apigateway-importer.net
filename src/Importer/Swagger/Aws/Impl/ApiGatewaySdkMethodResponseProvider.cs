@@ -91,7 +91,7 @@ namespace Importer.Swagger.Aws.Impl
             else
             {
                 // generate a model based on the schema if the model doesn't already exist
-                if (response.Schema != null)
+                if (response.Schema?.Ref != null)
                 {
                     Log.InfoFormat("Creating new model referenced from response: {0}", modelName);
 
@@ -103,6 +103,7 @@ namespace Importer.Swagger.Aws.Impl
             return input;
         }
 
+        //ToDo:refactor to ModelProvider
         private Model GetModel(RestApi api, Resource resource, Method method, Response response, out string modelName)
         {
             // if the response references a proper model, look for a model matching the model name
@@ -121,7 +122,7 @@ namespace Importer.Swagger.Aws.Impl
             try
             {
                 var name = modelName;
-                var result = gateway.WaitAndRetry(x => x.GetModel(new GetModelRequest() {RestApiId = api.Id, ModelName = name}));
+                var result = gateway.WaitAndRetry(x => x.GetModel(new GetModelRequest() { RestApiId = api.Id, ModelName = name }));
                 return new Model()
                 {
                     Id = result.Id,

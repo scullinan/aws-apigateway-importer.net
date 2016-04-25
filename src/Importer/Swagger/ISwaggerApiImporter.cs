@@ -15,5 +15,6 @@ namespace Importer.Swagger
         void WipeApi(string apiId);
         IDictionary<string, string> ListApis();
         IDictionary<string, Key> ListKeys();
+        string ExportAsSwagger(string exportApiId, string stage);
     }
 }

@@ -35,14 +35,19 @@ namespace Importer
         [Option("apikeys", HelpText = "manageAPI keys in a stage (optional)")]
         public IList<string> ApiKeyOptions { get; set; }
 
-        [Option('l', "list", HelpText = "List APIs and API Keys, supported options apis|keys")]
+        [Option('l', "list", HelpText = "List APIs, API Keys & Operations, supported options apis|keys|ops")]
         public IList<string> ListOption { get; set; }
+
+        [Option('e', "export", HelpText = "Export")]
+        public IList<string> ExportOption { get; set; }
 
         public bool Create => CreateOption.Any();
 
         public string UpdateApiId => UpdateOption.Count > 0 ? UpdateOption[0] : null;
 
         public string MergeApiId => MergeOption.Count > 0 ? MergeOption[0] : null;
+
+        public string ExportApiId => ExportOption.Count > 0 ? ExportOption[0] : null;
 
         public IEnumerable<string> Files
         {
@@ -71,6 +76,7 @@ namespace Importer
             {
                 case Importer.ListCommands.Apis:
                 case Importer.ListCommands.Keys:
+                case Importer.ListCommands.Ops:
                     return cmd;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(cmd)); 
