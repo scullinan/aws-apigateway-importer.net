@@ -68,10 +68,22 @@
     <Compile Include="Swagger\Aws\ApiGatewaySdkResourceProviderTest.cs" />
     <Compile Include="Swagger\Aws\ApiGatewaySdkSwaggerApiImporterFactoryTest.cs" />
     <Compile Include="Swagger\Aws\ApiGatewaySdkSwaggerApiImporterTest.cs" />
+    <Compile Include="Swagger\SchemaResource.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SchemaResource.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Swagger\SchemaTransformerTest.cs" />
     <Compile Include="Swagger\SwaggerApiFileImporterTest.cs" />
     <Compile Include="TestHelper.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Swagger\SchemaResource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SchemaResource.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
@@ -84,12 +96,15 @@
     <Content Include="Resources\deployment.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\defintions.json" />
     <None Include="Resources\large.json" />
+    <None Include="Resources\complex-schema.json" />
     <None Include="Resources\petstore-expanded.json" />
     <None Include="Resources\petstore-minimal.json" />
     <None Include="Resources\petstore-simple.json" />
     <None Include="Resources\petstore-with-external-docs.json" />
     <None Include="Resources\petstore.json" />
+    <None Include="Resources\simple-schema.json" />
     <None Include="Resources\test.json" />
     <None Include="Resources\uber.json" />
   </ItemGroup>
