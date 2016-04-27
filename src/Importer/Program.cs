@@ -131,7 +131,22 @@ namespace Importer
                         }
                         break;
                     }
+                    case ListCommands.Ops:
+                    {
+                        if (options.ListOption.Count > 1)
+                            foreach (var item in importer.ListOperations(options.ListOption[1]))
+                            {
+                                Console.WriteLine(item);
+                            }
+                        break;
+                    }
                 }
+            }
+
+            if (!string.IsNullOrEmpty(options.ExportApiId))
+            {
+                var json = importer.ExportAsSwagger(options.ExportApiId, options.ExportOption[1]);
+                File.WriteAllText(@"output.json", json);
             }
         }
     }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Amazon.APIGateway;
 using Amazon.APIGateway.Model;
@@ -152,6 +153,20 @@ namespace Importer.Swagger.Aws.Impl
                     });
         }
 
+        public string ExportAsSwagger(string exportApiId, string stage)
+        {
+            var result = gateway.GetExport(new GetExportRequest()
+            {
+                RestApiId = exportApiId,
+                ExportType = "swagger",
+                Accepts = "application/json",
+                StageName = stage
+            });
+
+            var sr = new StreamReader(result.Body);
+            return sr.ReadToEnd();
+        }
+        
         private Resource GetRootResource(RestApi api)
         {
             foreach (var resource in gateway.BuildResourceList(api.Id))

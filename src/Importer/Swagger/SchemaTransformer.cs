@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Xml;
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
 using Newtonsoft.Json.Serialization;
+using Formatting = Newtonsoft.Json.Formatting;
 
 namespace Importer.Swagger
 {
     public class SchemaTransformer
     {
-        readonly ILog log = LogManager.GetLogger(typeof(SchemaTransformer));
+        readonly ILog log = LogManager.GetLogger(typeof (SchemaTransformer));
 
         public string Flatten(string model, string models)
         {
@@ -25,6 +28,12 @@ namespace Importer.Swagger
             foreach (JToken @ref in refs.Keys)
             {
                 var canonicalRef = @ref.ToString();
+
+                var resource = GetDataType(@ref.ToString());
+                var parentResource = GetParentDataType(@ref.Path);
+
+                if (resource.Equals(parentResource, StringComparison.OrdinalIgnoreCase))
+                    return;
 
                 try
                 {
@@ -47,8 +56,8 @@ namespace Importer.Swagger
         private JObject GetSchema(string schemaName, JObject models)
         {
             var token = models.GetValue(schemaName, StringComparison.CurrentCultureIgnoreCase);
-            
-            return (JObject)token;
+
+            return (JObject) token;
         }
 
         private string GetFlattened(JObject model, JObject models)
@@ -58,7 +67,7 @@ namespace Importer.Swagger
             BuildSchemaReferenceMap(model, models, schemaMap);
 
             ReplaceRefs(model, schemaMap);
-            
+
             if (log.IsDebugEnabled)
             {
                 try
@@ -67,7 +76,7 @@ namespace Importer.Swagger
                 }
                 catch (JsonException ignored)
                 {
-                    
+
                 }
             }
 
@@ -79,7 +88,7 @@ namespace Importer.Swagger
 
         private void Validate(JObject rootNode)
         {
-            var generator = new JsonSchemaGenerator() { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+            var generator = new JsonSchemaGenerator() {ContractResolver = new CamelCasePropertyNamesContractResolver()};
 
             try
             {
@@ -97,7 +106,7 @@ namespace Importer.Swagger
             }
         }
 
-     /*
+        /*
      * Add schema references as inline definitions to the root schema
      */
 
@@ -117,7 +126,8 @@ namespace Importer.Swagger
         /*
          * Replace a reference node with an inline reference
          */
-        private void ReplaceRef(JObject parent, String schemaName)
+
+        private void ReplaceRef(JObject parent, string schemaName)
         {
             parent["$ref"] = new JValue("#/definitions/" + schemaName);
         }
@@ -125,9 +135,9 @@ namespace Importer.Swagger
         /*
          * Find all reference node in the schema tree. Build a map of the reference node to its parent
          */
+
         private void FindReferences(JToken node, IDictionary<JToken, JToken> refNodes)
         {
-            
             try
             {
                 var refNode = node["$ref"];
@@ -140,8 +150,7 @@ namespace Importer.Swagger
             {
                 var innerException = ex.InnerException;
             }
-            
-
+           
             foreach (JToken child in node.Children())
             {
                 FindReferences(child, refNodes);
@@ -152,6 +161,7 @@ namespace Importer.Swagger
         * Attempt to serialize an existing schema
         * If this fails something is seriously wrong, because this schema has already been saved by the control plane
         */
+
         JObject Deserialize(string schemaText)
         {
             try
@@ -160,7 +170,8 @@ namespace Importer.Swagger
             }
             catch (Exception e)
             {
-                throw new ArgumentException(string.Format("Invalid schema found. Could not deserialize schema: {0}, {1}", schemaText, e));
+                throw new ArgumentException(string.Format(
+                    "Invalid schema found. Could not deserialize schema: {0}, {1}", schemaText, e));
             }
         }
 
@@ -168,6 +179,7 @@ namespace Importer.Swagger
          * Attempt to serialize an existing schema
          * If this fails something is seriously wrong, because this schema has already been saved by the control plane
          */
+
         private string SerializeExisting(JObject root)
         {
             try
@@ -212,5 +224,14 @@ namespace Importer.Swagger
             return apiId;
         }
 
+        private string GetDataType(string defintionPath)
+        {
+            return defintionPath.Substring(defintionPath.LastIndexOf("/", StringComparison.Ordinal) + 1);
+        }
+
+        private string GetParentDataType(string refPath)
+        {
+            return refPath.Split('.')[0];
+        }
     }
 }

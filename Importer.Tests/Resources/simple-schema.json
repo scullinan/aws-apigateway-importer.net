@@ -1,0 +1,16 @@
+{
+	"type" : "object",
+	"properties" : {
+		"value" : {
+			"$ref" : "#/definitions/CurrencyValue"
+		},
+		"valueDate" : {
+			"format" : "date-time",
+			"type" : "string"
+		},
+		"valueType" : {
+			"enum" : ["Manual", "ContractEnquiry", "UnderlyingFundValues", "Mixed"],
+			"type" : "string"
+		}
+	}
+}

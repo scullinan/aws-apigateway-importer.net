@@ -11,6 +11,7 @@ namespace Importer
     {
         public const string Apis = "apis";
         public const string Keys = "keys";
+        public const string Ops = "ops";
     }
 
     public static class ApiKeyCommands

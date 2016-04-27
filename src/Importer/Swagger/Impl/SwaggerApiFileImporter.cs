@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -90,12 +91,43 @@ namespace Importer.Swagger.Impl
             return importer.ListKeys();
         }
 
+        public IEnumerable<string> ListOperations(string filePath)
+        {
+            log.InfoFormat("Attempting list all operations : Swagger file: {0}", filePath);
+
+            var swagger = Import<SwaggerDocument>(filePath);
+
+            return swagger.Paths.Select(path => GetOperations(path.Key, path.Value)).ToList();
+        }
+
+        public string ExportAsSwagger(string exportApiId, string stage)
+        {
+            log.InfoFormat("Exporting API {0}", exportApiId);
+
+            return importer.ExportAsSwagger(exportApiId, stage);
+        }
+
         private static T Import<T>(string filePath)
         {
             var serializer = new JsonSerializer { ContractResolver = new CamelCasePropertyNamesContractResolver(), NullValueHandling = NullValueHandling.Ignore };
     
             var sr = new StreamReader(filePath);
             return serializer.Deserialize<T>(new JsonTextReader(sr));
+        }
+
+        private string GetOperations(string path, PathItem pathItem)
+        {
+            var ops = new List<string>();
+
+            if (pathItem.Head != null) ops.Add("HEAD");
+            if (pathItem.Get != null) ops.Add("GET");
+            if (pathItem.Post != null) ops.Add("POST");
+            if (pathItem.Put != null) ops.Add("PUT");
+            if (pathItem.Patch != null) ops.Add("PATCH");
+            if (pathItem.Delete != null) ops.Add("DELETE");
+            if (pathItem.Options != null) ops.Add("OPTIONS");
+            
+            return $"{string.Join(",", ops)} {path}";
         }
     }
 }

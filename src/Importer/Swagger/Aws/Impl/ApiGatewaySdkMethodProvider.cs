@@ -106,31 +106,47 @@ namespace Importer.Swagger.Aws.Impl
             };
 
             // set input model if present in body
-            op.Parameters.Where(x => x.In.Equals("body")).ForEach(p => {
+            op.Parameters?.Where(x => x.In.Equals("body")).ForEach(p =>
+            {
                 //BodyParameter bodyParam = (BodyParameter)p;
 
-                var inputModel = modelProvider.NameResolver.GetModelName(p.Schema.Ref);
+                string modelName = null;
+
+                //ToDo:refactor to ModelProvider
+                // if the response references a proper model, look for a model matching the model name
+                if (p.Schema?.Ref != null)
+                    modelName = modelProvider.NameResolver.GetModelName(p.Schema.Ref);
+                //if the response refereence a array and a model, look for a model matching a generaten array name
+                else if (p.Schema?.Type != null && p.Schema.Type.Equals("array") &&
+                         p.Schema.Items.Ref != null)
+                {
+                    modelName = modelProvider.NameResolver.GetArrayModelName(p.Schema.Items.Ref);
+                }
+
+                if (!gateway.DoesModelExists(api.Id, modelName))
+                    modelProvider.CreateModel(api, modelName, p.Schema, swagger.Definitions, modelContentType);
+
                 input.RequestModels = new Dictionary<string, string>();
 
                 // model already imported
-                if (inputModel != null)
+                if (modelName != null)
                 {
-                    processedModels.Add(inputModel);
+                    processedModels.Add(modelName);
 
-                    Log.InfoFormat("Found input model reference {0}", inputModel);
-                    input.RequestModels[modelContentType] = inputModel;
+                    Log.InfoFormat("Found input model reference {0}", modelName);
+                    input.RequestModels[modelContentType] = modelName;
                 }
                 else
                 {
-                    if (p.Schema == null)
-                        throw new ArgumentException("Body parameter '{0}' + must have a schema defined", p.Name);
+                    if (p.Schema?.Ref != null)
+                    {
+                        // create new model from nested schema
+                        modelName = modelProvider.NameResolver.GetModelName(p.Schema.Ref);
+                        Log.InfoFormat("Creating new model referenced from parameter: {0}", modelName);
 
-                    // create new model from nested schema
-                    var modelName = modelProvider.NameResolver.GetModelName(p.Schema.Ref);
-                    Log.InfoFormat("Creating new model referenced from parameter: {0}", modelName);
-
-                    modelProvider.CreateModel(api, modelName, p.Schema, swagger.Definitions, modelContentType);
-                    input.RequestModels[modelContentType] = modelName;
+                        modelProvider.CreateModel(api, modelName, p.Schema, swagger.Definitions, modelContentType);
+                        input.RequestModels[modelContentType] = modelName;
+                    }
                 }
             });
 
@@ -149,7 +165,8 @@ namespace Importer.Swagger.Aws.Impl
             };
 
             methodResponseProvider.CreateMethodResponses(api, resource, method, swagger, modelContentType, op.Responses);
-            methodParameterProvider.CreateMethodParameters(api, resource, method, op.Parameters);
+            if(op.Parameters != null)
+                methodParameterProvider.CreateMethodParameters(api, resource, method, op.Parameters);
             methodIntegrationProvider.CreateIntegration(api, resource, method, op.VendorExtensions);
         }
 
@@ -193,6 +210,7 @@ namespace Importer.Swagger.Aws.Impl
             AddOp(ops, "delete", path.Delete);
             AddOp(ops, "options", path.Options);
             AddOp(ops, "patch", path.Patch);
+            AddOp(ops, "head", path.Head);
 
             return ops;
         }
