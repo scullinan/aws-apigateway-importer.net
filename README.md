@@ -142,13 +142,6 @@ Deployment Configuration :
     "throttling": {
         "rateLimit": 500,
         "burstLimit": 1000
-    },
-    "domain": {
-        "domainName": "api.example.com",
-        "cetificateName": "CERTIFICATE_NAME",
-        "cetificateBody": "CERTIFICATE_BODY",
-        "cetificatePrivateKey": "CERTIFICATE_PRIVATE_KEY",
-        "cetificateChain" : "CERTIFICATE_CHAIN"
     }
 }
 ```
