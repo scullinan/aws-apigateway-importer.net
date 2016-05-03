@@ -1,0 +1,84 @@
+{
+	"type" : "object",
+	"properties" : {
+		"clientId" : {
+			"format" : "int32",
+			"type" : "integer"
+		},
+		"investments" : {
+			"type" : "array",
+			"items" : {
+				"$ref" : "#/definitions/Investment"
+			}
+		},
+		"pensions" : {
+			"type" : "array",
+			"items" : {
+				"$ref" : "#/definitions/Pension"
+			}
+		},
+		"protections" : {
+			"type" : "array",
+			"items" : {
+				"$ref" : "#/definitions/Protection"
+			}
+		},
+		"mortgages" : {
+			"type" : "array",
+			"items" : {
+				"$ref" : "#/definitions/Mortgage"
+			}
+		},
+		"assets" : {
+			"type" : "array",
+			"items" : {
+				"$ref" : "#/definitions/Asset"
+			}
+		},
+		"investmentAggregate" : {
+			"$ref" : "#/definitions/InvestmentsAggregate"
+		},
+		"pensionAggregate" : {
+			"$ref" : "#/definitions/PensionsAggregate"
+		},
+		"protectionAggregate" : {
+			"$ref" : "#/definitions/ProtectionsAggregate"
+		},
+		"mortgageAggregate" : {
+			"$ref" : "#/definitions/MortgagesAggregate"
+		},
+		"assetAggregate" : {
+			"$ref" : "#/definitions/AssetsAggregate"
+		},
+		"investmentAggregates" : {
+			"type" : "object",
+			"additionalProperties" : {
+				"$ref" : "#/definitions/InvestmentsAggregate"
+			}
+		},
+		"pensionAggregates" : {
+			"type" : "object",
+			"additionalProperties" : {
+				"$ref" : "#/definitions/PensionsAggregate"
+			}
+		},
+		"protectionAggregates" : {
+			"type" : "object",
+			"additionalProperties" : {
+				"$ref" : "#/definitions/ProtectionsAggregate"
+			}
+		},
+		"mortgageAggregates" : {
+			"type" : "object",
+			"additionalProperties" : {
+				"$ref" : "#/definitions/MortgagesAggregate"
+			}
+		},
+		"assetAggregates" : {
+			"type" : "object",
+			"additionalProperties" : {
+				"$ref" : "#/definitions/AssetsAggregate"
+			}
+		}
+	}
+}
