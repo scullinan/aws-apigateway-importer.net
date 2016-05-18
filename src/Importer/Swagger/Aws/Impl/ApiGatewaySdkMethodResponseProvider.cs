@@ -73,7 +73,8 @@ namespace Importer.Swagger.Aws.Impl
                 input.ResponseParameters = new Dictionary<string, bool>();
                 response.Headers.ForEach(x =>
                 {
-                    input.ResponseParameters["method.response.header." + x.Key] = x.Value.Required;
+                    if (x.Value.Required != null)
+                        input.ResponseParameters["method.response.header." + x.Key] = x.Value.Required.Value;
                 });
             }
 

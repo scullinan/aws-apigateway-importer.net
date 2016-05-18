@@ -169,6 +169,7 @@ namespace APIGateway.Swagger
         public int? MultipleOf;
     }
 
+    [JsonConverter(typeof(ResponseConverter))]
     public class Response
     {
         public string Description;
@@ -180,7 +181,7 @@ namespace APIGateway.Swagger
     public class Header : PartialSchema
     {
         public string Description;
-        public bool Required;
+        public bool? Required;
     }
 
     public class Xml

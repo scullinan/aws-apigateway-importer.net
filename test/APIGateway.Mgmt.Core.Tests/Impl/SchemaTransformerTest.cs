@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using NUnit.Framework;
 
-namespace Importer.Tests.Swagger
+namespace Importer.Tests.Impl
 {
     [TestFixture]
     public class SchemaTransformerTest

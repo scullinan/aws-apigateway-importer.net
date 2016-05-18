@@ -168,6 +168,7 @@ namespace Importer.Swagger
         public int? MultipleOf;
     }
 
+    [JsonConverter(typeof(ResponseConverter))]
     public class Response
     {
         public string Description;
@@ -179,7 +180,7 @@ namespace Importer.Swagger
     public class Header : PartialSchema
     {
         public string Description;
-        public bool Required;
+        public bool? Required;
     }
 
     public class Xml

@@ -96,6 +96,27 @@ namespace APIGateway.Management.Impl
             methodProvider.UpdateMethods(api, swagger);
         }
 
+        public SwaggerDocument Combine(List<SwaggerDocument> documents)
+        {
+            var first = documents[0];
+
+            foreach (var doc in documents.Skip(1))
+            {
+                foreach (var path in doc.Paths)
+                {
+                    first.Paths.Add(path);
+                }
+
+                foreach (var def in doc.Definitions)
+                {
+                    if (!first.Definitions.ContainsKey(def.Key))
+                        first.Definitions.Add(def);
+                }
+            }
+
+            return first;
+        }
+
         public void Delete(string apiId)
         {
             Log.InfoFormat("Deleting API {0}", apiId);

@@ -41,6 +41,9 @@ namespace Importer
         [Option('e', "export", HelpText = "Export")]
         public IList<string> ExportOption { get; set; }
 
+        [Option("combine", HelpText = "Combine swagger files")]
+        public IList<string> CombineOption { get; set; }
+
         public bool Create => CreateOption.Any();
 
         public string UpdateApiId => UpdateOption.Count > 0 ? UpdateOption[0] : null;

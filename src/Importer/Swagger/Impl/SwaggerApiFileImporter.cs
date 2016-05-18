@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Amazon.Runtime.Internal;
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -107,12 +108,45 @@ namespace Importer.Swagger.Impl
             return importer.ExportAsSwagger(exportApiId, stage);
         }
 
+        public string Combine(IEnumerable<string> files)
+        {
+            var documents = files.Select(Import<SwaggerDocument>).ToList();
+
+            var first = documents[0];
+
+            foreach (var doc in documents.Skip(1))
+            {
+                foreach (var path in doc.Paths)
+                {
+                    Fix(path.Value);
+                    first.Paths.Add(path);
+                }
+
+                foreach (var def in doc.Definitions)
+                {
+                    if(!first.Definitions.ContainsKey(def.Key))
+                        first.Definitions.Add(def);
+                }
+            }
+
+             return Export(first);
+        }
+
         private static T Import<T>(string filePath)
         {
             var serializer = new JsonSerializer { ContractResolver = new CamelCasePropertyNamesContractResolver(), NullValueHandling = NullValueHandling.Ignore };
     
             var sr = new StreamReader(filePath);
             return serializer.Deserialize<T>(new JsonTextReader(sr));
+        }
+
+        private static string Export<T>(T document)
+        {
+            return JsonConvert.SerializeObject(document, Formatting.Indented, new JsonSerializerSettings()
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                NullValueHandling = NullValueHandling.Ignore
+            });
         }
 
         private string GetOperations(string path, PathItem pathItem)
@@ -128,6 +162,41 @@ namespace Importer.Swagger.Impl
             if (pathItem.Options != null) ops.Add("OPTIONS");
             
             return $"{string.Join(",", ops)} {path}";
+        }
+
+        private void Fix(PathItem pathItem)
+        {
+            Fix(pathItem.Head);
+            Fix(pathItem.Get);
+            Fix(pathItem.Post);
+            Fix(pathItem.Put);
+            Fix(pathItem.Patch);
+            Fix(pathItem.Delete);
+            Fix(pathItem.Options);
+        }
+
+        private void Fix(Operation op)
+        {
+            if (op != null)
+            {
+                if (op.Parameters.All(x => x.Name != "x-api-key"))
+                {
+                    op.Parameters.Add(new Parameter()
+                    {
+                        Name = "x-api-key",
+                        In = "header",
+                        Required = false,
+                        Type = "string"
+                    });
+                }
+
+                if (!string.IsNullOrEmpty(op.Summary) && string.IsNullOrEmpty(op.Description))
+                {
+                    op.Description = op.Summary;
+                }
+
+                op.Summary = null;
+            }
         }
     }
 }

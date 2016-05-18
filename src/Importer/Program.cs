@@ -148,6 +148,12 @@ namespace Importer
                 var json = importer.ExportAsSwagger(options.ExportApiId, options.ExportOption[1]);
                 File.WriteAllText(@"output.json", json);
             }
+
+            if (options.CombineOption.Any() && options.CombineOption.Count > 2)
+            {
+                var json = importer.Combine(options.CombineOption.Skip(1));
+                File.WriteAllText(options.CombineOption[0], json);
+            }
         }
     }
 }

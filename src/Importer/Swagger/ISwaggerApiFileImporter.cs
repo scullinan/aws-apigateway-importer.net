@@ -16,5 +16,6 @@ namespace Importer.Swagger
         IDictionary<string, Key> ListKeys();
         IEnumerable<string> ListOperations(string filePath);
         string ExportAsSwagger(string exportApiId, string stage);
+        string Combine(IEnumerable<string> files);
     }
 }
