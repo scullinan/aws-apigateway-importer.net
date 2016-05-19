@@ -1,6 +1,7 @@
-﻿using NUnit.Framework;
+﻿using APIGateway.Management.Impl;
+using NUnit.Framework;
 
-namespace Importer.Tests
+namespace APIGateway.Mgmt.Core.Tests
 {
     [TestFixture]
     public class PatchOperationBuilderTest

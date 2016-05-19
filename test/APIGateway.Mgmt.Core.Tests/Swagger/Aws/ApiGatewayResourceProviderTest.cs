@@ -1,27 +1,27 @@
 ﻿using Amazon.APIGateway;
 using Amazon.APIGateway.Model;
 using Amazon.Runtime.Internal;
-using Importer.Swagger;
-using Importer.Swagger.Aws;
-using Importer.Swagger.Aws.Impl;
+using APIGateway.Management;
+using APIGateway.Management.Impl;
+using APIGateway.Swagger;
 using Moq;
 using NUnit.Framework;
 
-namespace Importer.Tests.Swagger.Aws
+namespace APIGateway.Mgmt.Core.Tests.Swagger.Aws
 {
     [TestFixture]
-    public class ApiGatewaySdkResourceProviderTest
+    public class ApiGatewayResourceProviderTest
     {
-        private ApiGatewaySdkResourceProvider underTest;
+        private ApiGatewayResourceProvider underTest;
         private Mock<IAmazonAPIGateway> gatewayMock;
-        private Mock<IApiGatewaySdkMethodProvider> sdkMethodProviderMock;
+        private Mock<IApiGatewayMethodProvider> sdkMethodProviderMock;
         private string apiId = "pwfy7quvxh";
 
-        public ApiGatewaySdkResourceProviderTest()
+        public ApiGatewayResourceProviderTest()
         {
             gatewayMock = new Mock<IAmazonAPIGateway>();
-            sdkMethodProviderMock = new Mock<IApiGatewaySdkMethodProvider>();
-            underTest = new ApiGatewaySdkResourceProvider(gatewayMock.Object, sdkMethodProviderMock.Object);
+            sdkMethodProviderMock = new Mock<IApiGatewayMethodProvider>();
+            underTest = new ApiGatewayResourceProvider(gatewayMock.Object, sdkMethodProviderMock.Object);
         }
 
         [Test]

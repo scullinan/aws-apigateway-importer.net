@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Importer.Tests.Impl {
+namespace APIGateway.Mgmt.Core.Tests.Impl {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Importer.Tests.Impl {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Importer.Tests.Impl.SchemaResource", typeof(SchemaResource).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("APIGateway.Mgmt.Core.Tests.Impl.SchemaResource", typeof(SchemaResource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

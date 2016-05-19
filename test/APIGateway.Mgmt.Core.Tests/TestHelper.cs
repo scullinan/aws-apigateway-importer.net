@@ -4,7 +4,7 @@ using Amazon.APIGateway.Model;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace Importer.Tests
+namespace APIGateway.Mgmt.Core.Tests
 {
     /// <summary>
     /// Need to disable "| Options | Tools | Unit Testing | Shadow-copy assemblies being tested" to run unit tests from bin folder so the test file are picked-up.

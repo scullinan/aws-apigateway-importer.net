@@ -7,10 +7,11 @@
     <ProjectGuid>{E8AFC315-80FD-4210-AC47-4A970AB27A15}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Importer.Tests</RootNamespace>
-    <AssemblyName>Importer.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <RootNamespace>APIGateway.Mgmt.Core.Tests</RootNamespace>
+    <AssemblyName>APIGateway.Mgmt.Core.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -63,22 +64,21 @@
   <ItemGroup>
     <Compile Include="PatchOperationBuilderTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Swagger\Aws\ApiGatewaySdkDeploymentProviderTest.cs" />
-    <Compile Include="Swagger\Aws\ApiGatewaySdkMethodIntegrationProviderTest.cs" />
-    <Compile Include="Swagger\Aws\ApiGatewaySdkMethodParameterProviderTest.cs" />
-    <Compile Include="Swagger\Aws\ApiGatewaySdkMethodProviderTest.cs" />
-    <Compile Include="Swagger\Aws\ApiGatewaySdkMethodResponseProviderTest.cs" />
-    <Compile Include="Swagger\Aws\ApiGatewaySdkModelProviderTest.cs" />
-    <Compile Include="Swagger\Aws\ApiGatewaySdkResourceProviderTest.cs" />
-    <Compile Include="Swagger\Aws\ApiGatewaySdkSwaggerApiImporterFactoryTest.cs" />
-    <Compile Include="Swagger\Aws\ApiGatewaySdkSwaggerApiImporterTest.cs" />
+    <Compile Include="Swagger\Aws\ApiGatewayDeploymentProviderTest.cs" />
+    <Compile Include="Swagger\Aws\ApiGatewayMethodIntegrationProviderTest.cs" />
+    <Compile Include="Swagger\Aws\ApiGatewayMethodParameterProviderTest.cs" />
+    <Compile Include="Swagger\Aws\ApiGatewayMethodProviderTest.cs" />
+    <Compile Include="Swagger\Aws\ApiGatewayMethodResponseProviderTest.cs" />
+    <Compile Include="Swagger\Aws\ApiGatewayModelProviderTest.cs" />
+    <Compile Include="Swagger\Aws\ApiGatewayResourceProviderTest.cs" />
+    <Compile Include="Swagger\Aws\ApiGatewayProviderFactoryTest.cs" />
+    <Compile Include="Swagger\Aws\ApiGatewayProviderTest.cs" />
     <Compile Include="Impl\SchemaResource.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>SchemaResource.resx</DependentUpon>
     </Compile>
     <Compile Include="Impl\SchemaTransformerTest.cs" />
-    <Compile Include="Swagger\SwaggerApiFileImporterTest.cs" />
     <Compile Include="TestHelper.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -113,13 +113,13 @@
     <None Include="Resources\uber.json" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Importer\Importer.csproj">
-      <Project>{365747c1-ae08-4795-903f-c25152d2967b}</Project>
-      <Name>Importer</Name>
-    </ProjectReference>
+    <Analyzer Include="..\..\packages\AWSSDK.APIGateway.3.2.3.1-beta\analyzers\dotnet\cs\AWSSDK.APIGateway.CodeAnalysis.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\..\packages\AWSSDK.APIGateway.3.2.3.1-beta\analyzers\dotnet\cs\AWSSDK.APIGateway.CodeAnalysis.dll" />
+    <ProjectReference Include="..\..\src\APIGateway.Mgmt.Core\APIGateway.Mgmt.Core.csproj">
+      <Project>{aa715080-c3d0-4aa2-add7-ab4260d02cf7}</Project>
+      <Name>APIGateway.Mgmt.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

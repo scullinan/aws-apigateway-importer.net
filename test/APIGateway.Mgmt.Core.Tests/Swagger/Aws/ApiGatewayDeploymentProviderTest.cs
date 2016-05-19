@@ -1,28 +1,29 @@
 using Amazon.APIGateway;
 using Amazon.APIGateway.Model;
-using Importer.Swagger.Aws.Impl;
+using APIGateway.Management;
+using APIGateway.Management.Impl;
 using Moq;
 using NUnit.Framework;
 
-namespace Importer.Tests.Swagger.Aws
+namespace APIGateway.Mgmt.Core.Tests.Swagger.Aws
 {
     [TestFixture]
-    public class ApiGatewaySdkDeploymentProviderTest
+    public class ApiGatewayDeploymentProviderTest
     {
-        private ApiGatewaySdkDeploymentProvider underTest;
+        private ApiGatewayDeploymentProvider underTest;
         private Mock<IAmazonAPIGateway> gatewayMock;
         private string apiId = "pwfy7quvxh";
 
-        public ApiGatewaySdkDeploymentProviderTest()
+        public ApiGatewayDeploymentProviderTest()
         {
             gatewayMock = new Mock<IAmazonAPIGateway>();
-            underTest = new ApiGatewaySdkDeploymentProvider(gatewayMock.Object);
+            underTest = new ApiGatewayDeploymentProvider(gatewayMock.Object);
         }
 
         [Test]
         public void CreateDeploymentTest()
         {
-            var config = TestHelper.Import<DeploymentConfig>("deployment.json");
+            var config = TestHelper.Import<DeploymentDocument>("deployment.json");
             
             gatewayMock.Setup(x => x.PutIntegration(It.IsAny<PutIntegrationRequest>()))
                 .Returns(new PutIntegrationResponse());
@@ -36,7 +37,7 @@ namespace Importer.Tests.Swagger.Aws
         [Test]
         public void CreateDomainTest()
         {
-            var config = TestHelper.Import<DeploymentConfig>("deployment.json");
+            var config = TestHelper.Import<DeploymentDocument>("deployment.json");
 
             underTest.CreateDomain(config);
             gatewayMock.Verify(x => x.CreateDomainName(It.IsAny<CreateDomainNameRequest>()), Times.Once);

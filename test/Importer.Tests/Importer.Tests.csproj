@@ -111,12 +111,6 @@
     <None Include="Resources\uber.json" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Importer\Importer.csproj">
-      <Project>{365747c1-ae08-4795-903f-c25152d2967b}</Project>
-      <Name>Importer</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Analyzer Include="..\..\packages\AWSSDK.APIGateway.3.2.3.1-beta\analyzers\dotnet\cs\AWSSDK.APIGateway.CodeAnalysis.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,35 +1,32 @@
-﻿using System.IO;
-using Amazon.APIGateway;
+﻿using Amazon.APIGateway;
 using Amazon.APIGateway.Model;
-using Importer.Swagger;
-using Importer.Swagger.Aws;
-using Importer.Swagger.Aws.Impl;
+using APIGateway.Management;
+using APIGateway.Management.Impl;
+using APIGateway.Swagger;
 using Moq;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using NUnit.Framework;
 
-namespace Importer.Tests.Swagger.Aws
+namespace APIGateway.Mgmt.Core.Tests.Swagger.Aws
 {
-    public class ApiGatewaySdkSwaggerApiImporterTest
+    public class ApiGatewayProviderTest
     {
-        private ApiGatewaySdkSwaggerApiImporter underTest;
+        private ApiGatewayProvider underTest;
         private Mock<IAmazonAPIGateway> gatewayMock;
-        private Mock<IApiGatewaySdkModelProvider> sdkModelProviderMock;
-        private Mock<IApiGatewaySdkResourceProvider> resourceProviderMock;
-        private Mock<IApiGatewaySdkMethodProvider> methodProviderMock;
-        private Mock<IApiGatewaySdkDeploymentProvider> deploymentProviderMock;
+        private Mock<IApiGatewayModelProvider> sdkModelProviderMock;
+        private Mock<IApiGatewayResourceProvider> resourceProviderMock;
+        private Mock<IApiGatewayMethodProvider> methodProviderMock;
+        private Mock<IApiGatewayDeploymentProvider> deploymentProviderMock;
         private string apiId = "pwfy7quvxh";
 
-        public ApiGatewaySdkSwaggerApiImporterTest()
+        public ApiGatewayProviderTest()
         {
             gatewayMock = new Mock<IAmazonAPIGateway>();
-            sdkModelProviderMock = new Mock<IApiGatewaySdkModelProvider>();
-            resourceProviderMock = new Mock<IApiGatewaySdkResourceProvider>();
-            deploymentProviderMock = new Mock<IApiGatewaySdkDeploymentProvider>();
-            methodProviderMock = new Mock<IApiGatewaySdkMethodProvider>();
+            sdkModelProviderMock = new Mock<IApiGatewayModelProvider>();
+            resourceProviderMock = new Mock<IApiGatewayResourceProvider>();
+            deploymentProviderMock = new Mock<IApiGatewayDeploymentProvider>();
+            methodProviderMock = new Mock<IApiGatewayMethodProvider>();
 
-            underTest = new ApiGatewaySdkSwaggerApiImporter(gatewayMock.Object, sdkModelProviderMock.Object, resourceProviderMock.Object, methodProviderMock.Object, deploymentProviderMock.Object);
+            underTest = new ApiGatewayProvider(gatewayMock.Object, sdkModelProviderMock.Object, resourceProviderMock.Object, methodProviderMock.Object, deploymentProviderMock.Object);
         }
 
         [Test]
@@ -41,7 +38,7 @@ namespace Importer.Tests.Swagger.Aws
             gatewayMock.Setup(x => x.GetResources(It.IsAny<GetResourcesRequest>())).Returns(new GetResourcesResponse());
 
 
-            var result = underTest.CreateApi(swagger, "api");
+            var result = underTest.Create("api", swagger);
 
             gatewayMock.Verify(x => x.CreateRestApi(It.IsAny<CreateRestApiRequest>()), Times.Once);
             sdkModelProviderMock.Verify(x => x.DeleteModels(It.IsAny<RestApi>()), Times.Once);
@@ -54,14 +51,14 @@ namespace Importer.Tests.Swagger.Aws
         [Test]
         public void DeleteApiTest()
         {
-            underTest.DeleteApi(apiId);
+            underTest.Delete(apiId);
             gatewayMock.Verify(x => x.DeleteRestApi(It.IsAny<DeleteRestApiRequest>()), Times.Once);
         }
 
         [Test]
         public void DeployApiTest()
         {
-            var deploymentConfig = TestHelper.Import<DeploymentConfig>("deployment.json");
+            var deploymentConfig = TestHelper.Import<DeploymentDocument>("deployment.json");
 
             underTest.Deploy(apiId, deploymentConfig);
 
@@ -71,10 +68,8 @@ namespace Importer.Tests.Swagger.Aws
         [Test]
         public void ProvisionApiKeyTest()
         {
-            underTest.ProvisionApiKey(apiId, It.IsAny<string>(), It.IsAny<string>());
+            underTest.CreateApiKey(apiId, It.IsAny<string>(), It.IsAny<string>());
             deploymentProviderMock.Verify(x => x.CreateApiKey(apiId, It.IsAny<string>(), It.IsAny<string>()), Times.Once);
         }
-
-        
     }
 }

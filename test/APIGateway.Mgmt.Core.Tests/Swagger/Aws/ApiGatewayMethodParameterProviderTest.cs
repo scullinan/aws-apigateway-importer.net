@@ -1,25 +1,25 @@
 using System.Linq;
 using Amazon.APIGateway;
 using Amazon.APIGateway.Model;
-using Importer.Swagger;
-using Importer.Swagger.Aws.Impl;
+using APIGateway.Management.Impl;
+using APIGateway.Swagger;
 using Moq;
 using NUnit.Framework;
 
-namespace Importer.Tests.Swagger.Aws
+namespace APIGateway.Mgmt.Core.Tests.Swagger.Aws
 {
     [TestFixture]
-    public class ApiGatewaySdkMethodParameterProviderTest
+    public class ApiGatewayMethodParameterProviderTest
     {
-        private ApiGatewaySdkMethodParameterProvider underTest;
+        private ApiGatewayMethodParameterProvider underTest;
         private Mock<IAmazonAPIGateway> gatewayMock;
         private string apiId = "pwfy7quvxh";
 
-        public ApiGatewaySdkMethodParameterProviderTest()
+        public ApiGatewayMethodParameterProviderTest()
         {
             gatewayMock = new Mock<IAmazonAPIGateway>();
             gatewayMock.Setup(x => x.GetModel(It.IsAny<GetModelRequest>())).Returns(new GetModelResponse());
-            underTest = new ApiGatewaySdkMethodParameterProvider(gatewayMock.Object);
+            underTest = new ApiGatewayMethodParameterProvider(gatewayMock.Object);
         }
 
         [Test]
@@ -33,7 +33,6 @@ namespace Importer.Tests.Swagger.Aws
             var operation = swagger.Paths.FirstOrDefault().Value.Get;
 
             underTest.CreateMethodParameters(restApi, rootResource, method, operation.Parameters);
-
             gatewayMock.Verify(x => x.UpdateMethod(It.IsAny<UpdateMethodRequest>()), Times.Exactly(2));
         }
     }

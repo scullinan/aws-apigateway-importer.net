@@ -1,24 +1,24 @@
 using System.Linq;
 using Amazon.APIGateway;
 using Amazon.APIGateway.Model;
-using Importer.Swagger;
-using Importer.Swagger.Aws.Impl;
+using APIGateway.Management.Impl;
+using APIGateway.Swagger;
 using Moq;
 using NUnit.Framework;
 
-namespace Importer.Tests.Swagger.Aws
+namespace APIGateway.Mgmt.Core.Tests.Swagger.Aws
 {
     [TestFixture]
-    public class ApiGatewaySdkMethodIntegrationProviderTest
+    public class ApiGatewayMethodIntegrationProviderTest
     {
-        private ApiGatewaySdkMethodIntegrationProvider underTest;
+        private ApiGatewayMethodIntegrationProvider underTest;
         private Mock<IAmazonAPIGateway> gatewayMock;
         private string apiId = "pwfy7quvxh";
 
-        public ApiGatewaySdkMethodIntegrationProviderTest()
+        public ApiGatewayMethodIntegrationProviderTest()
         {
             gatewayMock = new Mock<IAmazonAPIGateway>();
-            underTest = new ApiGatewaySdkMethodIntegrationProvider(gatewayMock.Object);
+            underTest = new ApiGatewayMethodIntegrationProvider(gatewayMock.Object);
         }
 
         [Test]

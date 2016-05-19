@@ -2,36 +2,36 @@
 using System.Linq;
 using Amazon.APIGateway;
 using Amazon.APIGateway.Model;
-using Importer.Swagger;
-using Importer.Swagger.Aws;
-using Importer.Swagger.Aws.Impl;
+using APIGateway.Management;
+using APIGateway.Management.Impl;
+using APIGateway.Swagger;
 using Moq;
 using NUnit.Framework;
 
-namespace Importer.Tests.Swagger.Aws
+namespace APIGateway.Mgmt.Core.Tests.Swagger.Aws
 {
     [TestFixture]
-    public class ApiGatewaySdkMethodProviderTest
+    public class ApiGatewayMethodProviderTest
     {
-        private ApiGatewaySdkMethodProvider underTest;
+        private ApiGatewayMethodProvider underTest;
         private HashSet<string> processedModels;
         private Mock<IAmazonAPIGateway> gatewayMock;
-        private Mock<IApiGatewaySdkModelProvider> modelProviderMock;
-        private Mock<IApiGatewaySdkMethodResponseProvider> methodResponseProviderMock;
-        private Mock<IApiGatewaySdkMethodParameterProvider> methodParameterProviderMock;
-        private Mock<IApiGatewaySdkMethodIntegrationProvider> methodIntegrationProviderMock;
+        private Mock<IApiGatewayModelProvider> modelProviderMock;
+        private Mock<IApiGatewayMethodResponseProvider> methodResponseProviderMock;
+        private Mock<IApiGatewayMethodParameterProvider> methodParameterProviderMock;
+        private Mock<IApiGatewayMethodIntegrationProvider> methodIntegrationProviderMock;
         private string apiId = "pwfy7quvxh";
 
-        public ApiGatewaySdkMethodProviderTest()
+        public ApiGatewayMethodProviderTest()
         {
             processedModels = new HashSet<string>();
             gatewayMock = new Mock<IAmazonAPIGateway>();
-            modelProviderMock = new Mock<IApiGatewaySdkModelProvider>();
-            methodResponseProviderMock = new Mock<IApiGatewaySdkMethodResponseProvider>();
-            methodParameterProviderMock = new Mock<IApiGatewaySdkMethodParameterProvider>();
-            methodIntegrationProviderMock = new Mock<IApiGatewaySdkMethodIntegrationProvider>();
+            modelProviderMock = new Mock<IApiGatewayModelProvider>();
+            methodResponseProviderMock = new Mock<IApiGatewayMethodResponseProvider>();
+            methodParameterProviderMock = new Mock<IApiGatewayMethodParameterProvider>();
+            methodIntegrationProviderMock = new Mock<IApiGatewayMethodIntegrationProvider>();
 
-            underTest = new ApiGatewaySdkMethodProvider(
+            underTest = new ApiGatewayMethodProvider(
                 processedModels, 
                 gatewayMock.Object, 
                 modelProviderMock.Object, 

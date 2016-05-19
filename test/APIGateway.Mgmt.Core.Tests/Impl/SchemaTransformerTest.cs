@@ -1,10 +1,11 @@
 ﻿using System.Text;
-using Importer.Swagger;
+using APIGateway.Management.Impl;
+using APIGateway.Swagger;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using NUnit.Framework;
 
-namespace Importer.Tests.Impl
+namespace APIGateway.Mgmt.Core.Tests.Impl
 {
     [TestFixture]
     public class SchemaTransformerTest

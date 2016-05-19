@@ -2,35 +2,34 @@ using System.Collections.Generic;
 using System.Linq;
 using Amazon.APIGateway;
 using Amazon.APIGateway.Model;
-using Amazon.Runtime.Internal.Util;
-using Importer.Swagger;
-using Importer.Swagger.Aws;
-using Importer.Swagger.Aws.Impl;
+using APIGateway.Management;
+using APIGateway.Management.Impl;
+using APIGateway.Swagger;
 using Moq;
 using NUnit.Framework;
 
-namespace Importer.Tests.Swagger.Aws
+namespace APIGateway.Mgmt.Core.Tests.Swagger.Aws
 {
     [TestFixture]
-    public class ApiGatewaySdkMethodResponseProviderTest
+    public class ApiGatewayMethodResponseProviderTest
     {
-        private ApiGatewaySdkMethodResponseProvider underTest;
+        private ApiGatewayMethodResponseProvider underTest;
         private HashSet<string> processedModels;
         private Mock<IAmazonAPIGateway> gatewayMock;
-        private Mock<IApiGatewaySdkModelProvider> modelProviderMock;
+        private Mock<IApiGatewayModelProvider> modelProviderMock;
         private Mock<ModelNameResolver> modelNameResolverMock;
         private string apiId = "pwfy7quvxh";
 
-        public ApiGatewaySdkMethodResponseProviderTest()
+        public ApiGatewayMethodResponseProviderTest()
         {
             processedModels = new HashSet<string>();
             gatewayMock = new Mock<IAmazonAPIGateway>();
-            modelProviderMock = new Mock<IApiGatewaySdkModelProvider>();
+            modelProviderMock = new Mock<IApiGatewayModelProvider>();
             modelNameResolverMock = new Mock<ModelNameResolver>();
             gatewayMock.Setup(x => x.GetModel(It.IsAny<GetModelRequest>())).Returns(new GetModelResponse());
 
             modelProviderMock.Setup(x => x.NameResolver).Returns(modelNameResolverMock.Object);
-            underTest = new ApiGatewaySdkMethodResponseProvider(processedModels, gatewayMock.Object, modelProviderMock.Object);
+            underTest = new ApiGatewayMethodResponseProvider(processedModels, gatewayMock.Object, modelProviderMock.Object);
         }
 
         [Test]
