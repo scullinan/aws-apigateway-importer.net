@@ -64,7 +64,10 @@ namespace APIGateway.Console
         private static void Handle(Options options, string fileName)
         {
             var importer = Container.Resolve<IApiGatewayProvider>();
-            var swagger = Import<SwaggerDocument>(fileName);
+            SwaggerDocument swagger = null;
+
+            if (!string.IsNullOrEmpty(fileName))
+                swagger = Import<SwaggerDocument>(fileName);
 
             if (options.Create)
             {
