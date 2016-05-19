@@ -9,11 +9,12 @@ namespace APIGateway.Management
         string Create(string apiName, SwaggerDocument swagger);
         void Update(string apiId, SwaggerDocument swagger);
         void Merge(string apiId, SwaggerDocument swagger);
-        SwaggerDocument Combine(List<SwaggerDocument> documents);
         void Delete(string apiId);
         void Destory(string apiId);
         void Deploy(string apiId, DeploymentDocument config);
         string Export(string apiId, string stageName, string exportType = "swagger", string accepts = "application/json");
+
+        SwaggerDocument Combine(List<SwaggerDocument> documents);
 
         string CreateApiKey(string apiId, string keyName, string stageName);
         void DeleteApiKey(string keyName);
