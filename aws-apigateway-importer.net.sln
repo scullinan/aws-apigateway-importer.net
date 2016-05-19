@@ -12,9 +12,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".files", ".files", "{30F037
 		__JSONSchema = https://github.com/OAI/OpenAPI-Specification/blob/master/schemas/v2.0/schema.json
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Importer", "src\Importer\Importer.csproj", "{365747C1-AE08-4795-903F-C25152D2967B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIGateway.Mgmt.Core", "src\APIGateway.Mgmt.Core\APIGateway.Mgmt.Core.csproj", "{AA715080-C3D0-4AA2-ADD7-AB4260D02CF7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Importer.Tests", "Importer.Tests\Importer.Tests.csproj", "{9D9F5A73-A709-4CDE-920E-4DDD3D82ED86}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIGateway.Console", "src\APIGateway.Console\APIGateway.Console.csproj", "{E1BA88AF-51DF-4255-A02B-1C242EAF763F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIGateway.Mgmt.Core.Tests", "test\APIGateway.Mgmt.Core.Tests\APIGateway.Mgmt.Core.Tests.csproj", "{E8AFC315-80FD-4210-AC47-4A970AB27A15}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -22,14 +24,18 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{365747C1-AE08-4795-903F-C25152D2967B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{365747C1-AE08-4795-903F-C25152D2967B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{365747C1-AE08-4795-903F-C25152D2967B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{365747C1-AE08-4795-903F-C25152D2967B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9D9F5A73-A709-4CDE-920E-4DDD3D82ED86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9D9F5A73-A709-4CDE-920E-4DDD3D82ED86}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9D9F5A73-A709-4CDE-920E-4DDD3D82ED86}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9D9F5A73-A709-4CDE-920E-4DDD3D82ED86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA715080-C3D0-4AA2-ADD7-AB4260D02CF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA715080-C3D0-4AA2-ADD7-AB4260D02CF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA715080-C3D0-4AA2-ADD7-AB4260D02CF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA715080-C3D0-4AA2-ADD7-AB4260D02CF7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1BA88AF-51DF-4255-A02B-1C242EAF763F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1BA88AF-51DF-4255-A02B-1C242EAF763F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1BA88AF-51DF-4255-A02B-1C242EAF763F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1BA88AF-51DF-4255-A02B-1C242EAF763F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8AFC315-80FD-4210-AC47-4A970AB27A15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8AFC315-80FD-4210-AC47-4A970AB27A15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8AFC315-80FD-4210-AC47-4A970AB27A15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8AFC315-80FD-4210-AC47-4A970AB27A15}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
