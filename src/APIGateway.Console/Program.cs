@@ -117,6 +117,11 @@ namespace APIGateway.Console
                             importer.DeleteApiKey(options.ApiKeyOptions[1]);
                             break;
                         }
+                    case ApiKeyCommands.Clear:
+                        {
+                            importer.ClearApiKeys();
+                            break;
+                        }
                 }
             }
 
@@ -180,7 +185,7 @@ namespace APIGateway.Console
         {
             return JsonConvert.SerializeObject(document, Formatting.Indented, new JsonSerializerSettings()
             {
-                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                ContractResolver = new SwaggerContractResolver(),
                 NullValueHandling = NullValueHandling.Ignore
             });
         }

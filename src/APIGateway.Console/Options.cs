@@ -91,6 +91,7 @@ namespace APIGateway.Console
             {
                 case ApiKeyCommands.Create:
                 case ApiKeyCommands.Delete:
+                case ApiKeyCommands.Clear:
                     return cmd;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(cmd));

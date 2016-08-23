@@ -18,6 +18,7 @@ namespace APIGateway.Management
 
         string CreateApiKey(string apiId, string keyName, string stageName);
         void DeleteApiKey(string keyName);
+        void ClearApiKeys();
 
         IDictionary<string, string> ListApis();
         IDictionary<string, Key> ListKeys();

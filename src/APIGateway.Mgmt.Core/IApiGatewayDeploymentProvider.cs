@@ -7,5 +7,6 @@
         //ToDo:Move
         string CreateApiKey(string apiId, string name, string stage);
         void DeleteApiKey(string key);
+        void ClearApiKeys();
     }
 }

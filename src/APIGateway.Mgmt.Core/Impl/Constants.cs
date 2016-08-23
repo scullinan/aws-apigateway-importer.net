@@ -18,6 +18,7 @@ namespace APIGateway.Management.Impl
     {
         public const string Create = "create";
         public const string Delete = "delete";
+        public const string Clear = "clear";
     }
 
     public static class Paths

@@ -169,6 +169,11 @@ namespace APIGateway.Management.Impl
             deploymentProvider.DeleteApiKey(key);
         }
 
+        public void ClearApiKeys()
+        {
+            deploymentProvider.ClearApiKeys();
+        }
+
         public IDictionary<string, string> ListApis()
         {
             var results = Gateway.PageWaitAndRetry<RestApi>((x, limit, pos) => x.GetRestApis(new GetRestApisRequest() {
