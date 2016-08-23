@@ -102,5 +102,18 @@ namespace APIGateway.Management.Impl
                 ApiKey = key
             }));
         }
+
+        public void ClearApiKeys()
+        {
+            var result = gateway.WaitAndRetry(x => x.GetApiKeys(new GetApiKeysRequest()));
+
+            foreach (var key in result.Items)
+            {
+                gateway.WaitAndRetry(x => x.DeleteApiKey(new DeleteApiKeyRequest()
+                {
+                    ApiKey = key.Id
+                }));
+            }
+        }
     }
 }
