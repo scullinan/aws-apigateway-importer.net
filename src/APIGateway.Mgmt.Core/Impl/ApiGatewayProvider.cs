@@ -146,6 +146,7 @@ namespace APIGateway.Management.Impl
             {
                 foreach (var path in doc.Paths)
                 {
+                    UpdatePathItem(path.Value);
                     first.Paths.Add(path);
                 }
 
@@ -223,6 +224,25 @@ namespace APIGateway.Management.Impl
         {
             var api = Gateway.WaitAndRetry(x => x.GetRestApi(new GetRestApiRequest() {RestApiId = apiId}));
             return new RestApi() { Id = api.Id, Name = api.Name };
+        }
+
+        private void UpdatePathItem(PathItem pathItem)
+        {
+            UpdateDescription(pathItem.Get);
+            UpdateDescription(pathItem.Post);
+            UpdateDescription(pathItem.Put);
+            UpdateDescription(pathItem.Delete);
+            UpdateDescription(pathItem.Options);
+            UpdateDescription(pathItem.Patch);
+            UpdateDescription(pathItem.Head);
+        }
+
+        private void UpdateDescription(Operation op)
+        {
+            if (op == null) return;
+
+            op.Description = op.Summary;
+            op.Summary = null;
         }
     }
 }
